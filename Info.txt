@@ -1,0 +1,3 @@
+https://tailwindcss.com/ come framework css
+Vue.js come front-end
+Nest.js come back-end

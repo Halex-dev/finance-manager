@@ -1,0 +1,3 @@
+- Rateizzazione spese
+- Due lingue
+- Programmazione volo/spesa
