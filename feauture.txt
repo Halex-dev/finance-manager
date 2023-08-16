@@ -1,3 +1,4 @@
 - Rateizzazione spese
 - Due lingue
 - Programmazione volo/spesa
+- Budget Alerts: Receive notifications when your expenses in a given category are about to exceed your established budget. This helps you avoid unpleasant surprises and stay in control of your finances.
