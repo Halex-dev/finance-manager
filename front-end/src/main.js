@@ -9,7 +9,6 @@ import { iconsSet as icons } from '@/assets/icons'
 //import DocsExample from '@/components/DocsExample'
 
 // styles
-
 import "@/styles/style.scss";
 
 const app = createApp(App)

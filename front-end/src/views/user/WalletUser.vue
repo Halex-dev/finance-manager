@@ -56,7 +56,7 @@
     </CRow>
     <CModal size="lg" alignment="center" backdrop="static" :visible="ModalAdd" @close="() => { ModalAdd = false }">
         <CModalHeader>
-        <CModalTitle>Modal title</CModalTitle>
+        <CModalTitle>Add Wallet</CModalTitle>
         </CModalHeader>
         <CModalBody>
         <CForm class="row g-3">

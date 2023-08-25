@@ -5,54 +5,78 @@
             <CCard class="mb-4">
                 <CCardBody>
                     <CCardTitle>Income</CCardTitle>
-                    <div class="d-flex flex-row-reverse my-2">
-                        <span @click="() => { ModalAdd = true }">
-                            <CIcon :icon="cibAddthis" size="xl"/>
-                        </span>
-                    </div>
-                    
-                    <vue-good-table class="items-center w-full bg-transparent border-collapse"
-                    v-on:selected-rows-change="selectionChanged"
-                    :columns="columns"
-                    :rows="rows"
-                    :select-options="{ 
-                        enabled: true,
-                        selectOnCheckboxOnly: true,
-                    }"
-                    :pagination-options="{
-                        enabled: true,
-                        mode: 'records' 
-                    }"
-                    :search-options="{
-                        enabled: true
-                    }"
-                    styleClass="vgt-table">
-                    
-                    <template #table-row="props">
-                        <span v-if="props.column.field == 'buttons'">
-                            <span @click="openEditModal(props.row)">
-                                <CIcon :icon="cilPen" size="xl"/>
+                    <CContainer class="pt-2">
+                    <CRow>
+                        <CCol xs="5">
+                            <CFormLabel for="inputDate">Date Start:</CFormLabel>
+                            <VueDatePicker v-model="startDate" :enable-time-picker="false"></VueDatePicker>
+                        </CCol>
+                        <CCol xs="5">
+                            <CFormLabel for="inputDate">Date End:</CFormLabel>
+                            <VueDatePicker v-model="endDate" :enable-time-picker="false"></VueDatePicker>
+                        </CCol>
+                        <CCol class="auto align-bottom-right">
+                            <CContainer>
+                                <CRow>
+                                    <CCol xs="6">
+                                        <span class='pr-4' @click="fetchIncomeByDate()">
+                                            <CIcon :icon="cilSearch" size="xxl"/>
+                                        </span>
+                                    </CCol>
+                                    <CCol xs="6">
+                                        <span @click="() => { ModalAdd = true }">
+                                            <CIcon :icon="cibAddthis" size="xxl"/>
+                                        </span>
+                                    </CCol>
+                                </CRow>
+                            </CContainer>
+                        </CCol>
+                    </CRow>
+                    </CContainer>
+                    <div class="pt-4">
+                        <vue-good-table class="items-center w-full bg-transparent border-collapse"
+                        v-on:selected-rows-change="selectionChanged"
+                        :columns="columns"
+                        :rows="rows"
+                        :select-options="{ 
+                            enabled: true,
+                            selectOnCheckboxOnly: true,
+                        }"
+                        :pagination-options="{
+                            enabled: true,
+                            mode: 'records' 
+                        }"
+                        :search-options="{
+                            enabled: true
+                        }"
+                        styleClass="vgt-table">
+                        
+                        <template #table-row="props">
+                            <span v-if="props.column.field == 'buttons'">
+                                <span @click="openEditModal(props.row)">
+                                    <CIcon :icon="cilPen" size="xl"/>
+                                </span>
+                                <span @click="deleteIncome(props.row.id)">
+                                    <CIcon :icon="cilTrash" size="xl"/>
+                                </span>
                             </span>
-                            <span @click="deleteIncome(props.row.id)">
+                            <span v-else-if="props.column.field == 'wallet'">
+                                {{props.formattedRow[props.column.field].description}}
+                            </span>
+                            <span v-else-if="props.column.field == 'income'">
+                                {{props.formattedRow[props.column.field]}}€	
+                            </span>
+                            <span v-else>
+                                {{props.formattedRow[props.column.field]}}
+                            </span>
+                        </template>
+                        <template #selected-row-actions>
+                            <span @click="deleteIncomeRow();">
                                 <CIcon :icon="cilTrash" size="xl"/>
                             </span>
-                        </span>
-                        <span v-else-if="props.column.field == 'wallet'">
-                            {{props.formattedRow[props.column.field].description}}
-                        </span>
-                        <span v-else-if="props.column.field == 'income'">
-                            {{props.formattedRow[props.column.field]}}€	
-                        </span>
-                        <span v-else>
-                            {{props.formattedRow[props.column.field]}}
-                        </span>
-                    </template>
-                    <template #selected-row-actions>
-                        <span @click="deleteIncomeRow();">
-                            <CIcon :icon="cilTrash" size="xl"/>
-                        </span>
-                    </template>
-                    </vue-good-table>
+                        </template>
+                        </vue-good-table>
+                    </div>  
                 </CCardBody>
             </CCard>
         </CCol>
@@ -70,7 +94,7 @@
                 />
             </CCol>
             <CCol md="6">
-              <CFormLabel for="inputIncome">Price</CFormLabel>
+              <CFormLabel for="inputIncome">Income</CFormLabel>
               <CFormInput
                 id="inputIncome"
                 :class="{ 'is-invalid': fieldErrors.income }"
@@ -123,14 +147,14 @@
                   />
               </CCol>
               <CCol md="6">
-                  <CFormLabel for="inputEditIncome">Price</CFormLabel>
+                  <CFormLabel for="inputEditIncome">Income</CFormLabel>
                   <CFormInput
                   id="inputEditIncome"
                   :class="{ 'is-invalid': fieldErrors.income }"
                   type="number"
                   min=0
                   />
-                  <div v-if="fieldErrors.editPrice" class="invalid-feedback">{{ errorMessages.editPrice }}</div>
+                  <div v-if="fieldErrors.editIncome" class="invalid-feedback">{{ errorMessages.editIncome }}</div>
               </CCol>
               <CCol md="6">
                   <CFormLabel for="inputEditWallet">Wallet</CFormLabel>
@@ -165,27 +189,33 @@
     
   </template>
   
-  <script>
-  import axios from 'axios';
-  import 'vue-good-table-next/dist/vue-good-table-next.css'
-  import { VueGoodTable } from 'vue-good-table-next';
-  import { CIcon } from '@coreui/icons-vue';
-  import { cibAddthis, cilPen, cilTrash } from '@coreui/icons';
-  
+<script>
+import axios from 'axios';
+import 'vue-good-table-next/dist/vue-good-table-next.css'
+import { VueGoodTable } from 'vue-good-table-next';
+import { CIcon } from '@coreui/icons-vue';
+import { cibAddthis, cilPen, cilTrash, cilSearch } from '@coreui/icons';
+import VueDatePicker  from '@vuepic/vue-datepicker';
+import '@vuepic/vue-datepicker/dist/main.css'
+
   export default {
   components: {
         VueGoodTable,
         CIcon,
+        VueDatePicker,
     },
   setup() {
     return {
         cilTrash,
         cibAddthis,
         cilPen,
+        cilSearch,
     }
   },
   data(){
     return {
+        startDate: null, // La data di inzio selezionata
+        endDate: null, // La data di fine selezionata
         ModalAdd: false,
         ModalEdit: false,
         selectedDate: '',
@@ -204,7 +234,7 @@
             income: false,
             editDate: false,
             editWallet: false,
-            editPrice: false,
+            editIncome: false,
         },
         errorMessages: {
             date: "Questo campo non può essere vuoto",
@@ -313,6 +343,19 @@
           console.error('Error fetching wallets:', error);
       }
     },
+    async fetchIncomeByDate(){
+        try {
+            const responseIncomes = await axios.get('http://localhost:3000/api/incomes', {
+                params: {
+                    startDate: this.startDate,
+                    endDate: this.endDate
+                }
+            })
+            this.rows = responseIncomes.data;
+        } catch (error) {
+            console.error('Error fetching costs:', error);
+        }
+    },
     async addIncome() { //Add a row in the database of the server 
           const inputDescription = document.getElementById('inputDescription');
           const inputDate = document.getElementById('inputDate');
@@ -365,7 +408,7 @@
         this.selectedWallet = null;
         this.ModalAdd = false; // Close the Add Category modal
     },
-    async updateIncome(){ //Update a row in the database //TODO ORDINE SULLA TABELLA PER WALLET
+    async updateIncome(){ //Update a row in the database
 
       const inputEditDescription = document.getElementById('inputEditDescription');
       const inputEditDate = document.getElementById('inputEditDate');

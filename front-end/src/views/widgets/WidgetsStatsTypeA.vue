@@ -371,7 +371,7 @@
 <script>
 import { CChart } from '@coreui/vue-chartjs'
 export default {
-  name: 'WidgetsStatsA',
+  name: 'WidgetSummary',
   components: {
     CChart,
   },

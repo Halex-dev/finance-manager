@@ -12,6 +12,9 @@ export class Category {
   description: string;
 
   @Column()
+  type: number;
+
+  @Column()
   date: string;
 
   @OneToMany(() => Cost, cost => cost.category)

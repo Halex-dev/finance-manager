@@ -37,6 +37,9 @@
                                 <CIcon :icon="cilTrash" size="xl"/>
                             </span>
                         </span>
+                        <span v-else-if="props.column.field == 'type'">
+                            {{ getTypeLabel(props.formattedRow[props.column.field]) }}
+                        </span>
                         <span v-else>
                             {{props.formattedRow[props.column.field]}}
                         </span>
@@ -53,7 +56,7 @@
     </CRow>
     <CModal size="lg" alignment="center" backdrop="static" :visible="ModalAdd" @close="() => { ModalAdd = false }">
         <CModalHeader>
-        <CModalTitle>Modal title</CModalTitle>
+        <CModalTitle>Add category</CModalTitle>
         </CModalHeader>
         <CModalBody>
         <CForm class="row g-3">
@@ -64,6 +67,18 @@
                 :class="{ 'is-invalid': fieldErrors.description }"
                 />
                 <div v-if="fieldErrors.description" class="invalid-feedback">{{ errorMessages.description }}</div>
+            </CCol>
+            <CCol md="6">
+                <CFormLabel for="inputType">Select type of category</CFormLabel>
+                <CFormSelect
+                    id="inputType"
+                    aria-label="Select a type of category"
+                    :options="typeRows"
+                    v-model="selectedLevel"
+                    :class="{ 'is-invalid': fieldErrors.type }"
+                >
+                </CFormSelect>
+                <div v-if="fieldErrors.type" class="invalid-feedback">{{ errorMessages.type }}</div>
             </CCol>
             <CCol md="6">
             <CFormLabel for="inputDate">Date</CFormLabel>
@@ -97,6 +112,18 @@
                 :class="{ 'is-invalid': fieldErrors.editDescription }"
                 />
                 <div v-if="fieldErrors.editDescription" class="invalid-feedback">{{ errorMessages.description }}</div>
+            </CCol>
+            <CCol md="6">
+                <CFormLabel for="selectedEditType">Select type of category</CFormLabel>
+                <CFormSelect
+                    id="selectedEditType"
+                    aria-label="Select a type of category"
+                    :options="typeRows"
+                    v-model="selectedEditType"
+                    :class="{ 'is-invalid': fieldErrors.editType }"
+                >
+                </CFormSelect>
+                <div v-if="fieldErrors.editType" class="invalid-feedback">{{ errorMessages.type }}</div>
             </CCol>
             <CCol md="6">
             <CFormLabel for="inputEditDate">Date</CFormLabel>
@@ -147,17 +174,28 @@ export default {
         liveExampleVisible: false,
         alertText: "",
         EditID: null,
+        selectedLevel: null,
+        selectedEditType: null,
         selectedRows: [],
         rows: [],
+        typeRows:[
+            'Open this select menu',
+            { label: 'Necessarie', value: 1 },
+            { label: 'Discrezionali', value: 2 },
+            { label: 'Risparmio/Investimenti', value: 3}
+        ],
         fieldErrors: {
             description: false,
             date: false,
+            type: false,
             editDescription: false,
             editDate: false,
+            editType: false,
         },
         errorMessages: {
             description: "Questo campo non può essere vuoto",
             date: "Questo campo non può essere vuoto",
+            type: "Questo campo non può essere vuoto",
         },
         columns: [
             {
@@ -168,6 +206,10 @@ export default {
             {
                 label: 'Description',
                 field: 'description',
+            },
+            {
+                label: 'Type',
+                field: 'type',
             },
             {
                 label: 'Created On',
@@ -196,6 +238,11 @@ export default {
         this.selectedDate = `${year}-${month}-${day}`;
   },
   methods: {
+    getTypeLabel(typeValue) {
+        console.log('typeValue:', typeValue);
+        const foundType = this.typeRows.find(type => type.value === typeValue);
+        return foundType ? foundType.label : typeValue;
+    },
     async selectionChanged(params) {
         this.selectedRows = params.selectedRows;
     },
@@ -210,9 +257,10 @@ export default {
     async addCategory() { //Add a row in the database of the server 
         const inputDescription = document.getElementById('inputDescription');
         const inputDate = document.getElementById('inputDate');
-
+ 
         const newCategoryData = {
             description: inputDescription.value,
+            type: parseFloat(this.selectedLevel),
             date: inputDate.value,
         };
 
@@ -229,6 +277,13 @@ export default {
             return;
         } else {
             this.fieldErrors.description = false; // Reset description error state on validation success
+        }
+
+        if (!newCategoryData.type || newCategoryData.type < 0) {
+            this.fieldErrors.type = true; // Set description error state
+            return;
+        } else {
+            this.fieldErrors.type = false; // Reset description error state on validation success
         }
 
         // Send request to create category
@@ -281,6 +336,7 @@ export default {
             if (inputEditDescription && inputEditDate) {
                 inputEditDescription.value = row.description;
                 inputEditDate.value = row.date;
+                this.selectedEditType = row.type;
                 this.EditID = row.id;
             }
         });
@@ -291,6 +347,7 @@ export default {
 
       const updateData = {
         description: inputEditDescription.value,
+        type: parseFloat(this.selectedEditType),
         date: inputEditDate.value,
       };
 
@@ -307,6 +364,13 @@ export default {
       } else {
         this.fieldErrors.editDescription = false; // Reset error state if validation passes
       }
+
+      if (!updateData.type || updateData.type < 0) {
+            this.fieldErrors.editType = true; // Set description error state
+            return;
+        } else {
+            this.fieldErrors.editType = false; // Reset description error state on validation success
+        }
 
       try {
         const response = await axios.post(`http://localhost:3000/api/categories/${this.EditID}`,updateData);

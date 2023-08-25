@@ -36,3 +36,6 @@ build/
 
 # Runtime data
 .nuxt/
+
+# DATABASE
+.sqlite

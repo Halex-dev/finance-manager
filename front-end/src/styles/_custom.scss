@@ -12,4 +12,9 @@
   color: white;
   border-radius: 2px;
 }
-  
+
+.align-bottom-right {
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+}

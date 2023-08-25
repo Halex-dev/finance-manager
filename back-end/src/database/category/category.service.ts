@@ -2,6 +2,10 @@ import { BadRequestException, Injectable, NotFoundException } from '@nestjs/comm
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Category } from './category.entity';
+import * as dotenv from 'dotenv';
+dotenv.config();
+
+const TYPES_CATEGORY: number = parseInt(process.env.TYPES_CATEGORY, 10);
 
 @Injectable()
 export class CategoryService {
@@ -69,6 +73,10 @@ export class CategoryService {
   async validateInput(category: Category): Promise<void> {
     if (!category.description || category.description.trim() === '') {
       throw new BadRequestException('Errore, la descrizione non può essere nulla.');
+    }
+
+    if (!category.type || category.type < 0 || category.type > TYPES_CATEGORY) {
+      throw new BadRequestException('Errore, devi inserire a che tipologia di spesa appartiene la categoria');
     }
   }
 

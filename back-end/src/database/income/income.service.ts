@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Between, Repository } from 'typeorm';
 import { Income } from './income.entity';
 import { Wallet } from '../wallet/wallet.entity';
 
@@ -18,6 +18,15 @@ export class IncomeService {
   async findAllIncome(): Promise<Income[]> {
     return this.incomeRepository.find({
       relations: ['wallet'], //Relations
+    });
+  }
+
+  async findAllIncomeByDate(startDate: Date, endDate: Date): Promise<Income[]> {
+    return this.incomeRepository.find({
+      relations: ['wallet'],
+      where: {
+        date: Between(startDate.toISOString(), endDate.toISOString())
+      }
     });
   }
 

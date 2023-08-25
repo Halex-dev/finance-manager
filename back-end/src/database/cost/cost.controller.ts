@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Delete, Body, Param } from '@nestjs/common';
+import { Controller, Get, Post, Delete, Body, Param, Query } from '@nestjs/common';
 import { CostService } from './cost.service';
 import { Cost } from './cost.entity';
 
@@ -7,8 +7,16 @@ export class CostController {
   constructor(private readonly costService: CostService) {}
 
   @Get()
-  async getCost(): Promise<Cost[]> {
-    return this.costService.findAllCost();
+  async getCost(@Query('startDate') startDate: string, @Query('endDate') endDate: string): Promise<Cost[]> {
+
+    if (startDate && endDate) {
+      const parsedStartDate = new Date(startDate);
+      const parsedEndDate = new Date(endDate);
+      return this.costService.findAllCostByDate(parsedStartDate, parsedEndDate);
+    } 
+    else {
+      return this.costService.findAllCost();
+    }
   }
 
   @Get(':id') // Aggiunta della route per ottenere una riga tramite ID

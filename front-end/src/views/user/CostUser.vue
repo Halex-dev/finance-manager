@@ -5,13 +5,36 @@
           <CCard class="mb-4">
               <CCardBody>
                   <CCardTitle>Cost</CCardTitle>
-                  <div class="d-flex flex-row-reverse my-2">
-                      <span @click="() => { ModalAdd = true }">
-                          <CIcon :icon="cibAddthis" size="xl"/>
-                      </span>
-                  </div>
-                  
-                  <vue-good-table class="items-center w-full bg-transparent border-collapse"
+                  <CContainer class="pt-2">
+                    <CRow>
+                        <CCol xs="5">
+                            <CFormLabel for="inputDate">Date Start:</CFormLabel>
+                            <VueDatePicker v-model="startDate" :enable-time-picker="false"></VueDatePicker>
+                        </CCol>
+                        <CCol xs="5">
+                            <CFormLabel for="inputDate">Date End:</CFormLabel>
+                            <VueDatePicker v-model="endDate" :enable-time-picker="false"></VueDatePicker>
+                        </CCol>
+                        <CCol class="auto align-bottom-right">
+                            <CContainer>
+                                <CRow>
+                                    <CCol xs="6">
+                                        <span class='pr-4' @click="fetchCostByDate()">
+                                            <CIcon :icon="cilSearch" size="xxl"/>
+                                        </span>
+                                    </CCol>
+                                    <CCol xs="6">
+                                        <span @click="() => { ModalAdd = true }">
+                                            <CIcon :icon="cibAddthis" size="xxl"/>
+                                        </span>
+                                    </CCol>
+                                </CRow>
+                            </CContainer>
+                        </CCol>
+                    </CRow>
+                  </CContainer>
+                  <div class="pt-4">
+                    <vue-good-table class="items-center w-full bg-transparent border-collapse"
                   v-on:selected-rows-change="selectionChanged"
                   :columns="columns"
                   :rows="rows"
@@ -53,6 +76,7 @@
                       </span>
                   </template>
                   </vue-good-table>
+                  </div>      
               </CCardBody>
           </CCard>
       </CCol>
@@ -186,7 +210,6 @@
       </CForm>
       </CModalBody>
   </CModal>
-  
 </template>
 
 <script>
@@ -194,22 +217,29 @@ import axios from 'axios';
 import 'vue-good-table-next/dist/vue-good-table-next.css'
 import { VueGoodTable } from 'vue-good-table-next';
 import { CIcon } from '@coreui/icons-vue';
-import { cibAddthis, cilPen, cilTrash } from '@coreui/icons';
+import { cibAddthis, cilPen, cilTrash, cilSearch } from '@coreui/icons';
+import VueDatePicker  from '@vuepic/vue-datepicker';
+import '@vuepic/vue-datepicker/dist/main.css'
+
 
 export default {
 components: {
       VueGoodTable,
       CIcon,
+      VueDatePicker ,
   },
 setup() {
-  return {
-      cilTrash,
-      cibAddthis,
-      cilPen,
-  }
+    return {
+        cilTrash,
+        cibAddthis,
+        cilPen,
+        cilSearch,
+    }
 },
 data(){
   return {
+      startDate: null, // La data di inzio selezionata
+      endDate: null, // La data di fine selezionata
       ModalAdd: false,
       ModalEdit: false,
       selectedDate: '',
@@ -364,6 +394,20 @@ methods: {
         console.error('Error fetching wallets:', error);
     }
   },
+  async fetchCostByDate(){
+    try {
+        const responseCosts = await axios.get('http://localhost:3000/api/costs', {
+            params: {
+                startDate: this.startDate,
+                endDate: this.endDate
+            }
+        })
+
+        this.rows = responseCosts.data;
+    } catch (error) {
+        console.error('Error fetching costs:', error);
+    }
+  },
   async addCost() { //Add a row in the database of the server 
         const inputDescription = document.getElementById('inputDescription');
         const inputDate = document.getElementById('inputDate');
@@ -509,5 +553,3 @@ methods: {
 },
 };
 </script>
-
-
