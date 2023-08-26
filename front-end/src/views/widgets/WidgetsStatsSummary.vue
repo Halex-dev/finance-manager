@@ -70,11 +70,29 @@
 
 <script>
 import { CChart } from '@coreui/vue-chartjs'
-import axios from 'axios';
+
 export default {
-  name: 'WidgetsStatsA',
+  name: 'WidgetsStatsSummary',
   components: {
     CChart,
+  },
+  props: {
+    dataCosts: {
+      type: Object,
+      required: true
+    },
+    dataIncomes: {
+      type: Object,
+      required: true
+    },
+    dataOldIncomes: {
+      type: Object,
+      required: true
+    },
+    dataOldCosts: {
+      type: Object,
+      required: true
+    }
   },
   data(){
     return {
@@ -135,55 +153,13 @@ export default {
     this.calculateStats();     
   },
   methods:{
-    async fetchCostByDate(startDate, endDate){
-      try {
-          const responseCosts = await axios.get('http://localhost:3000/api/costs', {
-              params: {
-                  startDate: startDate,
-                  endDate: endDate
-              }
-          })
-          
-          this.responseCosts = responseCosts.data;
-          return responseCosts.data;
-      } catch (error) {
-          console.error('Error fetching costs:', error);
-      }  
-    },
-    async fetchIncomeByDate(startDate, endDate){
-      try {
-          const responseIncomes = await axios.get('http://localhost:3000/api/incomes', {
-              params: {
-                  startDate: startDate,
-                  endDate: endDate
-              }
-          })
-
-          this.responseIncomes = responseIncomes.data;
-          return responseIncomes.data;
-      } catch (error) {
-          console.error('Error fetching costs:', error);
-      }
-    },
     async calculateStats(){
-      const currentDate = new Date();
-      const currentYear = currentDate.getFullYear();
-      const currentMonth = currentDate.getMonth(); // I mesi in JavaScript partono da 0
 
-      const lastMonth = currentMonth === 0 ? 11 : currentMonth - 1;
+      const costs = this.dataCosts;
+      const incomes = this.dataIncomes;
+      const oldCosts = this.dataOldCosts;
+      const oldIncomes = this.dataOldIncomes;
       
-      const firstDayOfThisMonth = new Date(currentYear, currentMonth, 1); // Primo giorno del mese corrente
-      const lastDayOfThisMonth = new Date(currentYear, currentMonth + 1, 0); // Ultimo giorno del mese corrente
-
-      const firstDayOfLastMonth = new Date(currentYear, lastMonth, 1); // Primo giorno del mese precedente
-      const lastDayOfLastMonth = new Date(currentYear, currentMonth, 0); // Ultimo giorno del mese precedente
-      
-      const oldIncomes = await this.fetchIncomeByDate(firstDayOfLastMonth, lastDayOfLastMonth);
-      const incomes = await this.fetchIncomeByDate(firstDayOfThisMonth, lastDayOfThisMonth);
-
-      const oldCosts = await this.fetchCostByDate(firstDayOfLastMonth, lastDayOfLastMonth);
-      const costs = await this.fetchCostByDate(firstDayOfThisMonth, lastDayOfThisMonth);
-
       //TODO ALERT ERRORE SERVER
       if(!costs && !oldCosts && !incomes && !oldIncomes)
         return;

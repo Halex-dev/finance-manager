@@ -1,10 +1,10 @@
 <template>
   <div>
     <CRow>
-      <WidgetSummary />
+      <WidgetSummary  v-if="dataFetched" :data-costs="this.fetchCosts" :data-incomes="this.fetchIncomes" :data-old-costs="this.fetchOldCosts" :data-old-incomes="this.fetchOldIncome"/>
     </CRow>
     <CRow>
-    <WidgetsDoughnut/>
+    <WidgetsDoughnut v-if="dataFetched" :data-costs="this.fetchCosts" :data-incomes="this.fetchIncomes" :data-costs-year="this.fetchCostsYear"/>
     </CRow>
     <CRow>
       <CCol :md="12">
@@ -210,6 +210,7 @@
 import MainChartExample from '../charts/MainChartExample.vue'
 import WidgetSummary from '../widgets/WidgetsStatsSummary.vue'
 import WidgetsDoughnut from '../widgets/WidgetsDoughnut.vue'
+import axios from 'axios';
 
 export default {
   name: 'DashboardUser',
@@ -217,6 +218,73 @@ export default {
     MainChartExample,
     WidgetSummary,
     WidgetsDoughnut,
+  },
+  data() {
+    return {
+      fetchCosts: null,
+      fetchIncomes: null,
+      fetchOldIncome: null,
+      fetchOldCosts: null,
+      fetchCostsYear: null,
+      dataFetched: false,
+    };
+  },
+  methods:{
+    async fetchCostByDate(startDate, endDate){
+      try {
+          const responseCosts = await axios.get('http://localhost:3000/api/costs', {
+              params: {
+                  startDate: startDate,
+                  endDate: endDate
+              }
+          })
+          
+          this.responseCosts = responseCosts.data;
+          return responseCosts.data;
+      } catch (error) {
+          console.error('Error fetching costs:', error);
+      }  
+    },
+    async fetchIncomeByDate(startDate, endDate){
+      try {
+          const responseIncomes = await axios.get('http://localhost:3000/api/incomes', {
+              params: {
+                  startDate: startDate,
+                  endDate: endDate
+              }
+          })
+
+          this.responseIncomes = responseIncomes.data;
+          return responseIncomes.data;
+      } catch (error) {
+          console.error('Error fetching costs:', error);
+      }
+    },
+  },
+  async mounted() {
+
+    const currentDate = new Date();
+    const currentYear = currentDate.getFullYear();
+    const currentMonth = currentDate.getMonth(); // I mesi in JavaScript partono da 0
+    const lastMonth = currentMonth === 0 ? 11 : currentMonth - 1;
+
+    const firstDayOfThisMonth = new Date(currentYear, currentMonth, 1); // Primo giorno del mese corrente
+    const lastDayOfThisMonth = new Date(currentYear, currentMonth + 1, 0); // Ultimo giorno del mese corrente
+
+    this.fetchCosts = await this.fetchCostByDate(firstDayOfThisMonth, lastDayOfThisMonth);
+    this.fetchIncomes = await this.fetchIncomeByDate(firstDayOfThisMonth, lastDayOfThisMonth);
+
+    const firstDayOfLastMonth = new Date(currentYear, lastMonth, 1); // Primo giorno del mese precedente
+    const lastDayOfLastMonth = new Date(currentYear, currentMonth, 0); // Ultimo giorno del mese precedente
+      
+    this.fetchOldIncome = await this.fetchIncomeByDate(firstDayOfLastMonth, lastDayOfLastMonth);
+    this.fetchOldCosts = await this.fetchCostByDate(firstDayOfLastMonth, lastDayOfLastMonth);
+
+    const firstDayOfThisYear = new Date(currentYear, 0, 1); // Primo giorno dell'anno
+
+    //this.fetchOldIncome = await this.fetchIncomeByDate(firstDayOfThisYear, lastDayOfThisMonth);
+    this.fetchCostsYear = await this.fetchCostByDate(firstDayOfThisYear, lastDayOfThisMonth);
+    this.dataFetched = true;
   },
   setup() {
     const progressGroupExample1 = [

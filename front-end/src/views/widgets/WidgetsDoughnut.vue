@@ -5,22 +5,22 @@
       <CCardHeader>Rule 50/30/20</CCardHeader>
       <CCardBody>
         <div class="category">
-          <h4>Spese Necessarie (50%)</h4>
-          <p>Limite di spesa: {{ this.tot50  }}€</p>
-          <p>Speso finora: {{ this.current50 }}€</p>
-          <p>Ancora disponibile: {{ this.tot50 - this.current50 }}€</p>
+          <h4>Necessary Cost: (50%)</h4>
+          <p>Expense limit: {{ this.tot50  }}€</p>
+          <p>Spent so far: {{ this.current50 }}€</p>
+          <p>Still available: {{ this.tot50 - this.current50 }}€</p>
         </div>
           <div class="category">
-          <h4>Spese Discrezionali (30%)</h4>
-          <p>Limite di spesa: {{ this.tot30 }}€</p>
-          <p>Speso finora: {{ this.current30 }}€</p>
-          <p>Ancora disponibile: {{ this.tot30 - this.current30 }}€</p>
+          <h4>Discretionary Expenses (30%)</h4>
+          <p>Expense limit: {{ this.tot30 }}€</p>
+          <p>Spent so far: {{ this.current30 }}€</p>
+          <p>Still available: {{ this.tot30 - this.current30 }}€</p>
         </div>
         <div class="category">
-          <h4>Risparmio/Investimenti (20%)</h4>
-          <p>Limite di risparmio: {{ this.tot20 }}€</p>
-          <p>Risparmiato finora: {{ this.current20 }}€</p>
-          <p>Ancora disponibile: {{ this.tot20 - this.current20 }}€</p>
+          <h4>Savings/Investments (20%)</h4>
+          <p>Savings limit: {{ this.tot20 }}€</p>
+          <p>RSaved so far: {{ this.current20 }}€</p>
+          <p>Still available: {{ this.tot20 - this.current20 }}€</p>
         </div>
       </CCardBody>
       </CCard>
@@ -29,10 +29,9 @@
       <CCard class="mb-4">
         <CCardHeader><h4 class="card-title m-30">Costs divided by category</h4>
           <CButtonGroup
-                  class="float-end me-3"
+                  class="float-end me-2"
                   role="group"
                 >
-                <CButton color="secondary" variant="outline" :class="{ active: activeButton === 'day' }" @click="setActiveButton('day')">Day</CButton>
                 <CButton color="secondary" variant="outline" :class="{ active: activeButton === 'month' }" @click="setActiveButton('month')">Month</CButton>
                 <CButton color="secondary" variant="outline" :class="{ active: activeButton === 'year' }" @click="setActiveButton('year')">Year</CButton>
                 </CButtonGroup>
@@ -53,16 +52,30 @@
 
 <script>
 import { CChart } from '@coreui/vue-chartjs'
-import axios from 'axios';
 
 export default {
-  name: 'WidgetsStatsA',
+  name: 'WidgetsDoughnut',
+  props: {
+    dataCosts: {
+      type: Object,
+      required: true
+    },
+    dataIncomes: {
+      type: Object,
+      required: true
+    },
+    dataCostsYear: {
+      type: Object,
+      required: true
+    }
+  },
   components: {
     CChart,
   },
   data(){
     return {
-      categoryData: {},
+      categoryDataMonth: null,
+      categoryDataYear: null,
       chartRefCategory: null,
       activeButton: 'month',
       tot50: 0,
@@ -148,54 +161,20 @@ export default {
   methods:{
     async setActiveButton(button) {
       this.activeButton = button;
-    },
-    async fetchCostByDate(startDate, endDate){
-      try {
-          const responseCosts = await axios.get('http://localhost:3000/api/costs', {
-              params: {
-                  startDate: startDate,
-                  endDate: endDate
-              }
-          })
-          
-          this.responseCosts = responseCosts.data;
-          return responseCosts.data;
-      } catch (error) {
-          console.error('Error fetching costs:', error);
-      }  
-    },
-    async fetchIncomeByDate(startDate, endDate){
-      try {
-          const responseIncomes = await axios.get('http://localhost:3000/api/incomes', {
-              params: {
-                  startDate: startDate,
-                  endDate: endDate
-              }
-          })
 
-          this.responseIncomes = responseIncomes.data;
-          return responseIncomes.data;
-      } catch (error) {
-          console.error('Error fetching costs:', error);
+      if(this.activeButton === 'year'){
+        this.chartRefCategory.chart.data.datasets[0].data = Object.values(this.categoryDataYear).map(category => category.total);
+        this.chartRefCategory.chart.data.labels = Object.keys(this.categoryDataYear);
+        this.chartRefCategory.chart.update();
+      }
+      else{
+        this.chartRefCategory.chart.data.datasets[0].data = Object.values(this.categoryDataMonth).map(category => category.total);
+        this.chartRefCategory.chart.data.labels = Object.keys(this.categoryDataMonth);
+        this.chartRefCategory.chart.update();
       }
     },
-    async calculateStats(){
-      const currentDate = new Date();
-      const currentYear = currentDate.getFullYear();
-      const currentMonth = currentDate.getMonth(); // I mesi in JavaScript partono da 0
-      
-      const firstDayOfThisMonth = new Date(currentYear, currentMonth, 1); // Primo giorno del mese corrente
-      const lastDayOfThisMonth = new Date(currentYear, currentMonth + 1, 0); // Ultimo giorno del mese corrente
-      
-      const costs = await this.fetchCostByDate(firstDayOfThisMonth, lastDayOfThisMonth);
-      const incomes = await this.fetchIncomeByDate(firstDayOfThisMonth, lastDayOfThisMonth);
-
-      //TODO ALERT ERRORE SERVER
-      if(!costs)
-        return;
-
-      // Raggruppa i costi per categoria e calcola il totale per ciascuna categoria
-      this.categoryData = costs.reduce((acc, cost) => {
+    async calculateChart(costs){
+        return costs.reduce((acc, cost) => {
 
         const categoryName = cost.category.description;
         if (!acc[categoryName]) {
@@ -209,13 +188,28 @@ export default {
         acc[categoryName].type = cost.category.type;
         acc[categoryName].data.push(cost.price);
         return acc;
-      }, {});
+        }, {});
+    },
+    async calculateStats(){
+      
+      const costs = this.dataCosts;
+      const costsYear = this.dataCostsYear;
+      const incomes = this.dataIncomes;
 
-      console.log(this.categoryData);
+      //TODO ALERT ERRORE SERVER
+      if(!costs || !incomes || !costsYear)
+        return;
 
-      // Assegna i prezzi dei costi alla variabile del grafico
-      this.chartRefCategory.chart.data.datasets[0].data = Object.values(this.categoryData).map(category => category.total);
-      this.chartRefCategory.chart.data.labels = Object.keys(this.categoryData);
+      // Raggruppa i costi per categoria e calcola il totale per ciascuna categoria
+      this.categoryDataMonth = await this.calculateChart(costs);
+      this.categoryDataYear = await this.calculateChart(costsYear);
+
+      //console.log(this.categoryDataMonth);
+      //console.log(this.categoryDataYear);
+
+      // Assegna i dati al grafico di categoria
+      this.chartRefCategory.chart.data.datasets[0].data = Object.values(this.categoryDataMonth).map(category => category.total);
+      this.chartRefCategory.chart.data.labels = Object.keys(this.categoryDataMonth);
       this.chartRefCategory.chart.update();
 
       const currentIncome = incomes.reduce((total, income) => total + income.income, 0);
@@ -225,15 +219,15 @@ export default {
       this.tot30 = currentIncome * 30 / 100;
       this.tot20 = currentIncome * 20 / 100;
 
-      for (const category in this.categoryData) {
-        if(this.categoryData[category].type === 1){
-          this.current50 += this.categoryData[category].total;
+      for (const category in this.categoryDataMonth) {
+        if(this.categoryDataMonth[category].type === 1){
+          this.current50 += this.categoryDataMonth[category].total;
         }
-        else if(this.categoryData[category].type === 2){
-          this.current30 += this.categoryData[category].total;
+        else if(this.categoryDataMonth[category].type === 2){
+          this.current30 += this.categoryDataMonth[category].total;
         }
-        else if(this.categoryData[category].type === 3){
-          this.current20 += this.categoryData[category].total;
+        else if(this.categoryDataMonth[category].type === 3){
+          this.current20 += this.categoryDataMonth[category].total;
         }
       }
     }
