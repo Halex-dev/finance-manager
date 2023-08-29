@@ -56,7 +56,20 @@ export class CategoryService {
   }
 
   async deleteCategory(id: number): Promise<void> {
-    await this.categoryRepository.delete(id);
+    try {
+      await this.categoryRepository.delete(id);
+    } catch (error) {
+
+      if (error instanceof Error && error.message.includes('FOREIGN KEY constraint failed')) {
+        throw new BadRequestException('Impossibile eliminare la categoria: è ancora referenziata a qualche costo, elimina quelli prima.');
+      }
+
+      if (error instanceof BadRequestException) {
+        throw error; // L'eccezione di univocità è già stata gestita, rilanciala
+      }
+
+      throw new BadRequestException('Errore durante la eliminazione della categoria.');
+    }
   }
   
   async validateUniqueness(category: Category): Promise<void> {
@@ -78,7 +91,16 @@ export class CategoryService {
     if (!category.type || category.type < 0 || category.type > TYPES_CATEGORY) {
       throw new BadRequestException('Errore, devi inserire a che tipologia di spesa appartiene la categoria');
     }
+
+    category.color = await this.generateRandomColor();
   }
 
-
+  async generateRandomColor() {
+    const letters = '0123456789ABCDEF';
+    let color = '#';
+    for (let i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+  }
 }

@@ -5,7 +5,7 @@
         <template #value
           >€{{ this.currentSpending }}
           <span class="fs-6 fw-normal">
-            ({{ this.percentageCost }}% <CIcon v-if="this.percentageCost > 0" icon="cil-arrow-top" />
+            ({{ this.percentageCost == Infinity ? "--": this.percentageCost }}% <CIcon v-if="this.percentageCost > 0" icon="cil-arrow-top" />
               <CIcon v-else icon="cil-arrow-bottom" />)      
           </span>
         </template>
@@ -27,7 +27,7 @@
         <template #value
           >€{{ this.currentIncome }}
           <span class="fs-6 fw-normal">
-            ({{ this.percentageIncome }}% <CIcon v-if="this.percentageIncome > 0" icon="cil-arrow-top" />
+            ({{ this.percentageIncome == Infinity ? "--": this.percentageIncome }}% <CIcon v-if="this.percentageIncome > 0" icon="cil-arrow-top" />
               <CIcon v-else icon="cil-arrow-bottom" />)
           </span>
         </template>
@@ -47,10 +47,10 @@
     <CCol :xs="4">
       <CWidgetStatsA class="mb-4" color="warning">
         <template #value
-          >€{{ this.currentIncome }}
+          >€{{ this.currentIncome - this.currentSpending }}
           <span class="fs-6 fw-normal">
-            ({{ this.percentageDiff }}% <CIcon v-if="this.percentageDiff > 0" icon="cil-arrow-top" />
-              <CIcon v-else icon="cil-arrow-bottom" />)
+            ({{ this.percentageDiff == Infinity ? "--": this.percentageDiff }}% <CIcon v-if="this.percentageDiff > 0" icon="cil-arrow-top" />
+              <CIcon v-else-if="this.percentageDiff < 0" icon="cil-arrow-bottom" /> <CIcon v-else />)
           </span>
         </template>
         <template #title>Different</template>

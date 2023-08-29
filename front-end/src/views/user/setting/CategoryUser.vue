@@ -239,7 +239,6 @@ export default {
   },
   methods: {
     getTypeLabel(typeValue) {
-        console.log('typeValue:', typeValue);
         const foundType = this.typeRows.find(type => type.value === typeValue);
         return foundType ? foundType.label : typeValue;
     },
@@ -303,6 +302,7 @@ export default {
             this.fetchCategory();// Update the table
         } catch (error) {
             console.error('Error deleting category:', error);
+            this.SendAlert(error);
         }
     },
     async deleteCategoryRow() { //Delete all the row selected in the database

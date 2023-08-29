@@ -2,27 +2,143 @@
   <CRow>
     <CCol :xs="6">
       <CCard class="mb-4">
-      <CCardHeader>Rule 50/30/20</CCardHeader>
-      <CCardBody>
-        <div class="category">
-          <h4>Necessary Cost: (50%)</h4>
-          <p>Expense limit: {{ this.tot50  }}€</p>
-          <p>Spent so far: {{ this.current50 }}€</p>
-          <p>Still available: {{ this.tot50 - this.current50 }}€</p>
+        <div>
+          <CNav variant="tabs">
+            <CNavItem v-for="(tab, index) in tabs" :key="index">
+              <CNavLink :active="activeTab === index" @click="changeTab(index)" :style="{ cursor: 'pointer', color: '#374253'}">
+                {{ tab.title }}
+              </CNavLink>
+            </CNavItem>
+          </CNav>
+          <div>
+            <!-- Contenuto della tab 1 -->
+            <div v-if="activeTab === 0">
+              <CCardBody>
+                <div class="progress-group">
+                  <div class="progress-group-header">
+                    <span class="title">Necessary Cost:</span>
+                    <span class="ms-auto fw-semibold">Expense limit: {{ (this.currentIncome * 50 / 100) }}€
+                      <span class="text-medium-emphasis small">({{ this.percent50 }}%)</span>
+                    </span>
+                  </div>
+                  <div class="progress-group-bars">
+                    <CProgress class="mb-3">
+                      <CProgressBar v-if="this.percent50 < 100" color="success" :value="this.percent50">{{ this.currentNecessary }}€</CProgressBar>
+                      <CProgressBar v-else color="danger" variant="striped" :value="this.percent50">{{ this.currentNecessary }}€</CProgressBar>
+                    </CProgress>
+                  </div>
+                </div>
+                <div class="progress-group">
+                  <div class="progress-group-header">
+                    <span class="title">Discretionary Expenses:</span>
+                    <span class="ms-auto fw-semibold">Expense limit: {{ (this.currentIncome * 30 / 100) }}€
+                      <span class="text-medium-emphasis small">({{ this.percent30 }}%)</span>
+                    </span>
+                  </div>
+                  <div class="progress-group-bars">
+                    <CProgress class="mb-3">
+                      <CProgressBar v-if="this.percent30 < 100" color="warning" :value="this.percent30">{{ this.currentDiscretionary }}€</CProgressBar>
+                      <CProgressBar v-else color="danger" variant="striped" :value="this.percent30">{{ this.currentDiscretionary }}€</CProgressBar>
+                    </CProgress>
+                  </div>
+                </div>
+                <div class="progress-group">
+                  <div class="progress-group-header">
+                    <span class="title">Savings/Investments:</span>
+                    <span class="ms-auto fw-semibold">Savings limit: {{ (this.currentIncome * 20 / 100) }}€
+                      <span class="text-medium-emphasis small">({{ this.percent20 }}%)</span>
+                    </span>
+                  </div>
+                  <div class="progress-group-bars">
+                    <CProgress class="mb-3">
+                      <CProgressBar v-if="this.percent20 < 100" color="info" :value="this.percent20">{{ this.currentSaves }}€</CProgressBar>
+                      <CProgressBar v-else color="danger" variant="striped" :value="this.percent20">{{ this.currentSaves }}€</CProgressBar>
+                    </CProgress>
+                  </div>
+                </div>
+              </CCardBody>
+            </div>
+            <div v-if="activeTab === 1">
+              <CCardBody>
+                <div class="progress-group">
+                  <div class="progress-group-header">
+                    <span class="title">Necessary Cost:</span>
+                    <span class="ms-auto fw-semibold">Expense limit: {{ (this.currentIncome * 80 / 100)}}€
+                      <span class="text-medium-emphasis small">({{ this.percent80 }}%)</span>
+                    </span>
+                  </div>
+                  <div class="progress-group-bars">
+                    <CProgress class="mb-3">
+                      <CProgressBar v-if="this.percent80 < 100" color="success" :value="this.percent80">{{ this.currentNecessary + this.currentDiscretionary }}€</CProgressBar>
+                      <CProgressBar v-else color="danger" variant="striped" :value="this.percent80">{{ this.currentNecessary + this.currentDiscretionary }}€</CProgressBar>
+                    </CProgress>
+                  </div>
+                </div>
+                <div class="progress-group">
+                  <div class="progress-group-header">
+                    <span class="title">Savings/Investments:</span>
+                    <span class="ms-auto fw-semibold">Savings limit: {{ (this.currentIncome * 20 / 100) }}€
+                      <span class="text-medium-emphasis small">({{ this.percent20 }}%)</span>
+                    </span>
+                  </div>
+                  <div class="progress-group-bars">
+                    <CProgress class="mb-3">
+                      <CProgressBar v-if="this.percent20 < 100" color="warning" :value="this.percent20">{{ this.currentSaves }}€</CProgressBar>
+                      <CProgressBar v-else color="danger" variant="striped" :value="this.percent20">{{ this.currentSaves }}€</CProgressBar>
+                    </CProgress>
+                  </div>
+                </div>
+              </CCardBody>
+            </div>
+            <div v-if="activeTab === 2">
+              <CCardBody>
+                <div class="progress-group">
+                  <div class="progress-group-header">
+                    <span class="title">Necessary Cost:</span>
+                    <span class="ms-auto fw-semibold">Expense limit: {{ (this.currentIncome * 60 / 100) }}€
+                      <span class="text-medium-emphasis small">({{ this.percent60 }}%)</span>
+                    </span>
+                  </div>
+                  <div class="progress-group-bars">
+                    <CProgress class="mb-3">
+                      <CProgressBar v-if="this.percent60 < 100" color="success" :value="this.percent60">{{ this.currentNecessary }}€</CProgressBar>
+                      <CProgressBar v-else color="danger" variant="striped" :value="this.percent60">{{ this.currentNecessary }}€</CProgressBar>
+                    </CProgress>
+                  </div>
+                </div>
+                <div class="progress-group">
+                  <div class="progress-group-header">
+                    <span class="title">Discretionary Expenses:</span>
+                    <span class="ms-auto fw-semibold">Expense limit: {{ (this.currentIncome * 20 / 100)}}€
+                      <span class="text-medium-emphasis small">({{ this.percent20Disc }}%)</span>
+                    </span>
+                  </div>
+                  <div class="progress-group-bars">
+                    <CProgress class="mb-3">
+                      <CProgressBar v-if="this.percent20Disc < 100" color="warning" :value="this.percent20Disc">{{ this.currentDiscretionary }}€</CProgressBar>
+                      <CProgressBar v-else color="danger" variant="striped" :value="this.percent20Disc">{{ this.currentDiscretionary }}€</CProgressBar>
+                    </CProgress>
+                  </div>
+                </div>
+                <div class="progress-group">
+                  <div class="progress-group-header">
+                    <span class="title">Savings/Investments:</span>
+                    <span class="ms-auto fw-semibold">Savings limit: {{ (this.currentIncome * 20 / 100) }}€
+                      <span class="text-medium-emphasis small">({{ this.percent20 }}%)</span>
+                    </span>
+                  </div>
+                  <div class="progress-group-bars">
+                    <CProgress class="mb-3">
+                      <CProgressBar v-if="this.percent20 < 100" color="info" :value="this.percent20">{{ this.currentSaves }}€</CProgressBar>
+                      <CProgressBar v-else color="danger" variant="striped" :value="this.percent20">{{ this.currentSaves }}€</CProgressBar>
+                    </CProgress>
+                  </div>
+                </div>
+              </CCardBody>
+            </div>
+            <!-- Contenuto delle altre schede... -->
+          </div>
         </div>
-          <div class="category">
-          <h4>Discretionary Expenses (30%)</h4>
-          <p>Expense limit: {{ this.tot30 }}€</p>
-          <p>Spent so far: {{ this.current30 }}€</p>
-          <p>Still available: {{ this.tot30 - this.current30 }}€</p>
-        </div>
-        <div class="category">
-          <h4>Savings/Investments (20%)</h4>
-          <p>Savings limit: {{ this.tot20 }}€</p>
-          <p>RSaved so far: {{ this.current20 }}€</p>
-          <p>Still available: {{ this.tot20 - this.current20 }}€</p>
-        </div>
-      </CCardBody>
       </CCard>
     </CCol>
     <CCol :xs="6">
@@ -40,7 +156,6 @@
           <CChart
               ref="chartCategory"
               type="doughnut"
-              style="height: 70px width: 70px"
               :data="chartData"
               :options="chartOptions"
             />
@@ -52,6 +167,7 @@
 
 <script>
 import { CChart } from '@coreui/vue-chartjs'
+import { CNav, CNavItem, CNavLink } from '@coreui/vue';
 
 export default {
   name: 'WidgetsDoughnut',
@@ -71,6 +187,9 @@ export default {
   },
   components: {
     CChart,
+    CNav,
+    CNavItem,
+    CNavLink,
   },
   data(){
     return {
@@ -82,14 +201,27 @@ export default {
       tot30: 0,
       tot20: 0,
       currentSpending: 0,
-      current50: 0,
-      current30: 0,
-      current20: 0,
+      percent50: 0,
+      percent30: 0,
+      percent20: 0,
+      percent20Disc: 0,
+      currentIncome: 0,
+      currentNecessary: 0,
+      currentDiscretionary: 0,
+      currentSaves: 0,
       chartData: {
         labels: ["test","troia","testone"], // Etichette dell'asse x
         datasets: [
           {
-            backgroundColor: ['#41B883', '#E46651', '#00D8FF', '#DD1B16'],
+            //TODO Far si che prende il colore dalla category e far si che lo vedo nella tabella di categoria etc
+            backgroundColor: [
+              '#41B883', '#E46651', '#00D8FF', '#DD1B16',
+              '#34A853', '#FF8800', '#1A73E8', '#FABC09',
+              '#4285F4', '#EA4335', '#FBBC05', '#34A853',
+              '#FF5500', '#651FFF', '#FF6F00', '#2979FF',
+              '#FFD600', '#6200EA', '#F50057', '#0091EA',
+              '#FF3D00', '#3D5AFE', '#FFAB00', '#304FFE',
+            ],
             pointBackgroundColor: '#321fdb',
             data: [500,30,10], // Array di numeri come dati del grafico
           },
@@ -151,7 +283,13 @@ export default {
             hoverRadius: 4,
           },
         },
-      }
+      },
+      tabs: [
+        { title: 'Rule 50/30/20'},
+        { title: 'Rule 80/20'},
+        { title: 'Rule 60/20/20'},
+      ],
+      activeTab: 0,
     }
   },
   mounted() {   
@@ -159,17 +297,22 @@ export default {
     this.calculateStats();   
   },
   methods:{
+    changeTab(index) {
+      this.activeTab = index;
+    },
     async setActiveButton(button) {
       this.activeButton = button;
 
       if(this.activeButton === 'year'){
         this.chartRefCategory.chart.data.datasets[0].data = Object.values(this.categoryDataYear).map(category => category.total);
         this.chartRefCategory.chart.data.labels = Object.keys(this.categoryDataYear);
+        //this.chartRefCategory.chart.data.datasets[0].backgroundColor = Object.values(this.categoryDataYear).map(category => category.color);
         this.chartRefCategory.chart.update();
       }
       else{
         this.chartRefCategory.chart.data.datasets[0].data = Object.values(this.categoryDataMonth).map(category => category.total);
         this.chartRefCategory.chart.data.labels = Object.keys(this.categoryDataMonth);
+        //this.chartRefCategory.chart.data.datasets[0].backgroundColor = Object.values(this.categoryDataMonth).map(category => category.color);
         this.chartRefCategory.chart.update();
       }
     },
@@ -182,6 +325,7 @@ export default {
             total: 0,
             data: [],
             type: -1,
+            color: cost.category.color,
           };
         }
         acc[categoryName].total += cost.price;
@@ -204,55 +348,41 @@ export default {
       this.categoryDataMonth = await this.calculateChart(costs);
       this.categoryDataYear = await this.calculateChart(costsYear);
 
-      //console.log(this.categoryDataMonth);
-      //console.log(this.categoryDataYear);
-
       // Assegna i dati al grafico di categoria
+      //this.chartRefCategory.chart.data.datasets[0].backgroundColor = Object.values(this.categoryDataMonth).map(category => category.color);
       this.chartRefCategory.chart.data.datasets[0].data = Object.values(this.categoryDataMonth).map(category => category.total);
       this.chartRefCategory.chart.data.labels = Object.keys(this.categoryDataMonth);
       this.chartRefCategory.chart.update();
 
-      const currentIncome = incomes.reduce((total, income) => total + income.income, 0);
+      this.currentIncome = incomes.reduce((total, income) => total + income.income, 0);
       this.currentSpending = costs.reduce((total, cost) => total + cost.price, 0);
 
-      this.tot50 = currentIncome * 50 / 100;
-      this.tot30 = currentIncome * 30 / 100;
-      this.tot20 = currentIncome * 20 / 100;
+      const tot50 = this.currentIncome * 50 / 100;
+      const tot30 = this.currentIncome * 30 / 100;
+      const tot80 = this.currentIncome * 80 / 100;
+      const tot60 = this.currentIncome * 60 / 100;
+      const tot20 = this.currentIncome * 20 / 100;
 
       for (const category in this.categoryDataMonth) {
         if(this.categoryDataMonth[category].type === 1){
-          this.current50 += this.categoryDataMonth[category].total;
+          this.currentNecessary += this.categoryDataMonth[category].total;
         }
         else if(this.categoryDataMonth[category].type === 2){
-          this.current30 += this.categoryDataMonth[category].total;
+          this.currentDiscretionary += this.categoryDataMonth[category].total;
         }
         else if(this.categoryDataMonth[category].type === 3){
-          this.current20 += this.categoryDataMonth[category].total;
+          this.currentSaves += this.categoryDataMonth[category].total;
         }
       }
+
+      this.percent50 = Number( parseFloat((this.currentNecessary / tot50) * 100).toFixed(2));
+      this.percent30 = Number(parseFloat((this.currentDiscretionary / tot30) * 100).toFixed(2));
+      this.percent20 = Number(parseFloat((this.currentSaves / tot20) * 100).toFixed(2));
+
+      this.percent80 = Number(parseFloat(((this.currentNecessary + this.currentDiscretionary) / tot80) * 100).toFixed(2));
+      this.percent60 = Number(parseFloat((this.currentNecessary / tot60) * 100).toFixed(2));
+      this.percent20Disc = Number(parseFloat((this.currentDiscretionary / tot20) * 100).toFixed(2));
     }
   }
 }
 </script>
-
-<style scoped>
-.financial-rule {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  margin: 20px auto;
-  width: 80%;
-}
-
-.category {
-  margin: 20px 0;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  width: 100%;
-  text-align: center;
-}
-</style>

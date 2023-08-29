@@ -54,9 +54,24 @@ export class WalletService {
 
   //GESTIRE BADREQUESTEXCEPTION se voglio eliminare tutto il wallet con i costi o no
   async deleteWallet(id: number): Promise<void> {
-    await this.walletRepository.delete(id);
+    try {
+      await this.walletRepository.delete(id);
+    } catch (error) {
+  
+      if (error instanceof Error && error.message.includes('FOREIGN KEY constraint failed')) {
+        throw new BadRequestException('Impossibile eliminare il wallet: è ancora referenziata a qualche cost o income, elimina quelli prima.');
+      }
+  
+      if (error instanceof BadRequestException) {
+        throw error; // L'eccezione di univocità è già stata gestita, rilanciala
+      }
+  
+      throw new BadRequestException('Errore durante la eliminazione del wallet.');
+    }
   }
   
+  
+
   async validateUniqueness(wallet: Wallet): Promise<void> {
     const description = wallet.description;
     const existingCategory = await this.walletRepository.findOne({

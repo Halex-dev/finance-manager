@@ -15,9 +15,12 @@ export class Category {
   type: number;
 
   @Column()
+  color: string;
+
+  @Column()
   date: string;
 
-  @OneToMany(() => Cost, cost => cost.category)
+  @OneToMany(() => Cost, cost => cost.category, { cascade: true })
   costs: Cost[];
 
 }

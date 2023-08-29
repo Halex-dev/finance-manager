@@ -16,10 +16,11 @@ Welcome to the Financial Manager! This tool is designed to help you manage your 
 - [ ] Future Planning
 - [ ] Amortization of costs
 - [ ] Reports and Charts
-- [ ] Repeated costs automaticatly 
+- [ ] Repeated costs/incomes automaticatly (con icona spesa effettuata o ancora da effettuare)
 - [ ] Two or more languages
 - [ ] Famous cryptocurrencies with automatic earn or loss
 - [ ] Budget Alerts: Receive notifications when your expenses in a given category are about to exceed your established budget. This helps you avoid unpleasant surprises and stay in control of your finances.
+- [ ] 
 
 
 # How to start it

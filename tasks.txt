@@ -1,0 +1,15 @@
+
+
+Tempo zero:
+
+- Aggiungere log backend
+- Datepicker nei modal
+
+
+Poco complessi:
+
+- Gestire che ogni cateogira ha un colore (in database e che dopo posso modificarlo?)
+
+Richiedono tempo:
+
+- Delete category or wallet and recover it

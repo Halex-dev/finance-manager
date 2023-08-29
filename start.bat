@@ -1,7 +1,6 @@
 @echo off
 
-
-echo Compaling front-end...
+echo Compiling front-end...
 cd frontend
 npm run build
 cd ..
