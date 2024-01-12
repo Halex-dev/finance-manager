@@ -49,6 +49,12 @@ const routes = [
           import('@/views/user/CostUser.vue'),
       },
       {
+        path: '/user/amortization',
+        name: 'Amortization',
+        component: () =>
+          import('@/views/user/AmortizationUser.vue'),
+      },
+      {
         path: '/user/wallet',
         name: 'Wallet',
         component: () =>

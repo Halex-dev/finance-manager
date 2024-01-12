@@ -18,12 +18,13 @@
                   <div class="progress-group-header">
                     <span class="title">Necessary Cost:</span>
                     <span class="ms-auto fw-semibold">Expense limit: {{ (this.currentIncome * 50 / 100) }}€
-                      <span class="text-medium-emphasis small">({{ this.percent50 }}%)</span>
+                      <span class="text-medium-emphasis small">({{ isNaN(this.percent50) ? "--": this.percent50  }}%)</span> 
                     </span>
                   </div>
                   <div class="progress-group-bars">
                     <CProgress class="mb-3">
                       <CProgressBar v-if="this.percent50 < 100" color="success" :value="this.percent50">{{ this.currentNecessary }}€</CProgressBar>
+                      <CProgressBar v-else-if="isNaN(this.percent50)" color="success" :value="this.percent50">{{ this.currentNecessary }}€</CProgressBar>
                       <CProgressBar v-else color="danger" variant="striped" :value="this.percent50">{{ this.currentNecessary }}€</CProgressBar>
                     </CProgress>
                   </div>
@@ -32,12 +33,13 @@
                   <div class="progress-group-header">
                     <span class="title">Discretionary Expenses:</span>
                     <span class="ms-auto fw-semibold">Expense limit: {{ (this.currentIncome * 30 / 100) }}€
-                      <span class="text-medium-emphasis small">({{ this.percent30 }}%)</span>
+                      <span class="text-medium-emphasis small">({{ isNaN(this.percent30) ? "--": this.percent30 }}%)</span>
                     </span>
                   </div>
                   <div class="progress-group-bars">
                     <CProgress class="mb-3">
                       <CProgressBar v-if="this.percent30 < 100" color="warning" :value="this.percent30">{{ this.currentDiscretionary }}€</CProgressBar>
+                      <CProgressBar v-else-if="isNaN(this.percent30)" color="warning" :value="this.percent30">{{ this.currentDiscretionary }}€</CProgressBar>
                       <CProgressBar v-else color="danger" variant="striped" :value="this.percent30">{{ this.currentDiscretionary }}€</CProgressBar>
                     </CProgress>
                   </div>
@@ -46,12 +48,13 @@
                   <div class="progress-group-header">
                     <span class="title">Savings/Investments:</span>
                     <span class="ms-auto fw-semibold">Savings limit: {{ (this.currentIncome * 20 / 100) }}€
-                      <span class="text-medium-emphasis small">({{ this.percent20 }}%)</span>
+                      <span class="text-medium-emphasis small">({{ isNaN(this.percent20) ? "--": this.percent20}}%)</span>
                     </span>
                   </div>
                   <div class="progress-group-bars">
                     <CProgress class="mb-3">
                       <CProgressBar v-if="this.percent20 < 100" color="info" :value="this.percent20">{{ this.currentSaves }}€</CProgressBar>
+                      <CProgressBar v-else-if="isNaN(this.percent20)" color="info" :value="this.percent20">{{ this.currentSaves }}€</CProgressBar>
                       <CProgressBar v-else color="danger" variant="striped" :value="this.percent20">{{ this.currentSaves }}€</CProgressBar>
                     </CProgress>
                   </div>
@@ -64,12 +67,13 @@
                   <div class="progress-group-header">
                     <span class="title">Necessary Cost:</span>
                     <span class="ms-auto fw-semibold">Expense limit: {{ (this.currentIncome * 80 / 100)}}€
-                      <span class="text-medium-emphasis small">({{ this.percent80 }}%)</span>
+                      <span class="text-medium-emphasis small">({{ isNaN(this.percent80) ? "--": this.percent80}}%)</span>
                     </span>
                   </div>
                   <div class="progress-group-bars">
                     <CProgress class="mb-3">
                       <CProgressBar v-if="this.percent80 < 100" color="success" :value="this.percent80">{{ this.currentNecessary + this.currentDiscretionary }}€</CProgressBar>
+                      <CProgressBar v-else-if="isNaN(this.percent80)" color="success" :value="this.percent80">{{ this.currentNecessary + this.currentDiscretionary }}€</CProgressBar>
                       <CProgressBar v-else color="danger" variant="striped" :value="this.percent80">{{ this.currentNecessary + this.currentDiscretionary }}€</CProgressBar>
                     </CProgress>
                   </div>
@@ -78,12 +82,13 @@
                   <div class="progress-group-header">
                     <span class="title">Savings/Investments:</span>
                     <span class="ms-auto fw-semibold">Savings limit: {{ (this.currentIncome * 20 / 100) }}€
-                      <span class="text-medium-emphasis small">({{ this.percent20 }}%)</span>
+                      <span class="text-medium-emphasis small">({{ isNaN(this.percent20) ? "--": this.percent20 }}%)</span>
                     </span>
                   </div>
                   <div class="progress-group-bars">
                     <CProgress class="mb-3">
                       <CProgressBar v-if="this.percent20 < 100" color="warning" :value="this.percent20">{{ this.currentSaves }}€</CProgressBar>
+                      <CProgressBar v-else-if="isNaN(this.percent20)" color="warning" :value="this.percent20">{{ this.currentSaves }}€</CProgressBar>
                       <CProgressBar v-else color="danger" variant="striped" :value="this.percent20">{{ this.currentSaves }}€</CProgressBar>
                     </CProgress>
                   </div>
@@ -96,12 +101,13 @@
                   <div class="progress-group-header">
                     <span class="title">Necessary Cost:</span>
                     <span class="ms-auto fw-semibold">Expense limit: {{ (this.currentIncome * 60 / 100) }}€
-                      <span class="text-medium-emphasis small">({{ this.percent60 }}%)</span>
+                      <span class="text-medium-emphasis small">({{ isNaN(this.percent60) ? "--": this.percent60 }}%)</span>
                     </span>
                   </div>
                   <div class="progress-group-bars">
                     <CProgress class="mb-3">
                       <CProgressBar v-if="this.percent60 < 100" color="success" :value="this.percent60">{{ this.currentNecessary }}€</CProgressBar>
+                      <CProgressBar v-else-if="isNaN(this.percent60)" color="success" :value="this.percent60">{{ this.currentNecessary }}€</CProgressBar>
                       <CProgressBar v-else color="danger" variant="striped" :value="this.percent60">{{ this.currentNecessary }}€</CProgressBar>
                     </CProgress>
                   </div>
@@ -110,12 +116,13 @@
                   <div class="progress-group-header">
                     <span class="title">Discretionary Expenses:</span>
                     <span class="ms-auto fw-semibold">Expense limit: {{ (this.currentIncome * 20 / 100)}}€
-                      <span class="text-medium-emphasis small">({{ this.percent20Disc }}%)</span>
+                      <span class="text-medium-emphasis small">({{ isNaN(this.percent20Disc) ? "--": this.percent20Disc }}%)</span>
                     </span>
                   </div>
                   <div class="progress-group-bars">
                     <CProgress class="mb-3">
                       <CProgressBar v-if="this.percent20Disc < 100" color="warning" :value="this.percent20Disc">{{ this.currentDiscretionary }}€</CProgressBar>
+                      <CProgressBar v-else-if="isNaN(this.percent20Disc)" color="warning" :value="this.percent20Disc">{{ this.currentDiscretionary }}€</CProgressBar>
                       <CProgressBar v-else color="danger" variant="striped" :value="this.percent20Disc">{{ this.currentDiscretionary }}€</CProgressBar>
                     </CProgress>
                   </div>
@@ -124,12 +131,13 @@
                   <div class="progress-group-header">
                     <span class="title">Savings/Investments:</span>
                     <span class="ms-auto fw-semibold">Savings limit: {{ (this.currentIncome * 20 / 100) }}€
-                      <span class="text-medium-emphasis small">({{ this.percent20 }}%)</span>
+                      <span class="text-medium-emphasis small">({{ isNaN(this.percent20) ? "--": this.percent20 }}%)</span>
                     </span>
                   </div>
                   <div class="progress-group-bars">
                     <CProgress class="mb-3">
                       <CProgressBar v-if="this.percent20 < 100" color="info" :value="this.percent20">{{ this.currentSaves }}€</CProgressBar>
+                      <CProgressBar v-else-if="isNaN(this.percent20)" color="info" :value="this.percent20">{{ this.currentSaves }}€</CProgressBar>
                       <CProgressBar v-else color="danger" variant="striped" :value="this.percent20">{{ this.currentSaves }}€</CProgressBar>
                     </CProgress>
                   </div>
@@ -382,6 +390,8 @@ export default {
       this.percent80 = Number(parseFloat(((this.currentNecessary + this.currentDiscretionary) / tot80) * 100).toFixed(2));
       this.percent60 = Number(parseFloat((this.currentNecessary / tot60) * 100).toFixed(2));
       this.percent20Disc = Number(parseFloat((this.currentDiscretionary / tot20) * 100).toFixed(2));
+
+      console.log(this.percent50);
     }
   }
 }

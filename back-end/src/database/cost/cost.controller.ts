@@ -6,7 +6,7 @@ import { Cost } from './cost.entity';
 export class CostController {
   constructor(private readonly costService: CostService) {}
 
-  @Get()
+  @Get() //TODO aggiungere controlli se ho startDate e non endDate e viceversa, controllare anche negli altri
   async getCost(@Query('startDate') startDate: string, @Query('endDate') endDate: string): Promise<Cost[]> {
 
     if (startDate && endDate) {

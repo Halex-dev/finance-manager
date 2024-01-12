@@ -5,6 +5,7 @@ import { CostService } from '../database/cost/cost.service';
 import { TypeService } from '../database/type/type.service';
 import { WalletService } from '../database/wallet/wallet.service';
 import { IncomeService } from '../database/income/income.service';
+import { AmortizationService } from 'src/database/amortization/amortization.service';
 
 const Services = [
     AppService,
@@ -13,6 +14,7 @@ const Services = [
     TypeService,
     WalletService,
     IncomeService,
+    AmortizationService,
 ];
 
 export default Services

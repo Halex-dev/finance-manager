@@ -1,15 +1,35 @@
 
+BUG:
+
+- Controllare perché ogni tanto non si aggiornano i costi aggiunti
+
+Semplificazione vita xd:
+
+- Aggiungere log avanzato backend
+- Aggiungere commenti
+- Gestione errori
 
 Tempo zero:
 
-- Aggiungere log backend
 - Datepicker nei modal
-
+- Costi e income al contrario in tabella
 
 Poco complessi:
 
 - Gestire che ogni cateogira ha un colore (in database e che dopo posso modificarlo?)
+- Aggiungere campo "pagato/da pagare" in costi e in caso non prenderli in considerazione
 
 Richiedono tempo:
 
 - Delete category or wallet and recover it
+- Amortization of costs
+- Repeated costs/incomes automaticatly (con icona spesa effettuata o ancora da effettuare)
+
+
+
+FORSE:
+
+status: 
+- 0 pagato
+- 1 Non contabilizzato
+- 2 Non contabilizzato ammortamento
