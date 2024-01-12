@@ -28,10 +28,22 @@ export default [
     icon: 'cil-money',
   },
   {
-    component: 'CNavItem',
+    component: 'CNavGroup',
     name: 'Cost',
-    to: '/user/cost',
+    to: '/user/',
     icon: 'cil-credit-card',
+    items: [
+      {
+        component: 'CNavItem',
+        name: 'Cost',
+        to: '/user/cost',
+      },
+      {
+        component: 'CNavItem',
+        name: 'Amortization',
+        to: '/user/amortization',
+      },
+    ],
   },
   {
     component: 'CNavItem',

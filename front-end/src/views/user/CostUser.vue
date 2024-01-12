@@ -6,7 +6,7 @@
               <CCardBody>
                   <CCardTitle>Cost</CCardTitle>
                   <CContainer class="pt-2">
-                    <CRow>
+                    <CRow class="align-items-end">
                         <CCol xs="5">
                             <CFormLabel for="inputDate">Date Start:</CFormLabel>
                             <VueDatePicker v-model="startDate" :enable-time-picker="false"></VueDatePicker>
@@ -15,21 +15,13 @@
                             <CFormLabel for="inputDate">Date End:</CFormLabel>
                             <VueDatePicker v-model="endDate" :enable-time-picker="false"></VueDatePicker>
                         </CCol>
-                        <CCol class="auto align-bottom-right">
-                            <CContainer>
-                                <CRow>
-                                    <CCol xs="6">
-                                        <span class='pr-4' @click="fetchCostByDate()">
-                                            <CIcon :icon="cilSearch" size="xxl"/>
-                                        </span>
-                                    </CCol>
-                                    <CCol xs="6">
-                                        <span @click="() => { ModalAdd = true }">
-                                            <CIcon :icon="cibAddthis" size="xxl"/>
-                                        </span>
-                                    </CCol>
-                                </CRow>
-                            </CContainer>
+                        <CCol xs="2" class="d-flex justify-content-end align-items-end">
+                            <span class="mx-1" @click="fetchCostByDate()">
+                                <CIcon :icon="cilSearch" size="xxl"/>
+                            </span>
+                            <span @click="() => { ModalAdd = true }">
+                                <CIcon :icon="cibAddthis" size="xxl"/>
+                            </span>
                         </CCol>
                     </CRow>
                   </CContainer>
@@ -128,14 +120,15 @@
             <div v-if="fieldErrors.wallet" class="invalid-feedback">{{ errorMessages.wallet }}</div>
           </CCol>
           <CCol md="6">
-          <CFormLabel for="inputDate">Date</CFormLabel>
-          <CFormInput
-              type="date"
-              id="inputDate"
-              v-model="selectedDate"
-              :class="{ 'is-invalid': fieldErrors.date }"
-              />
-              <div v-if="fieldErrors.date" class="invalid-feedback">{{ errorMessages.date }}</div>
+            <CFormLabel for="inputDate">Date</CFormLabel>
+            <VueDatePicker id="inputDate" v-model="selectedDate" :class="{ 'is-invalid': fieldErrors.date }" :enable-time-picker="false"><div v-if="fieldErrors.date" class="invalid-feedback">{{ errorMessages.date }}</div></VueDatePicker>
+          </CCol>
+          <CCol md="6">
+            <CFormCheck id="CheckAmortization" label="Amortization" v-model="showAmortization"/>
+            <div v-if="showAmortization">
+                <CFormRange label="How many months:" :min="2" :max="36" :value="3" v-model="selectedMonths" id="customRange2"/>
+                <p>Selected Months: {{ selectedMonths }}</p>
+            </div>
           </CCol>
           <CModalFooter>
           <CButton color="secondary" @click="CloseModal()">
@@ -192,14 +185,8 @@
                 <div v-if="fieldErrors.editWallet" class="invalid-feedback">{{ errorMessages.editWallet }}</div>
                 </CCol>
             <CCol md="6">
-            <CFormLabel for="inputEditDate">Date</CFormLabel>
-            <CFormInput
-                type="date"
-                id="inputEditDate"
-                v-model="selectedDate"
-                :class="{ 'is-invalid': fieldErrors.editDate }"
-                />
-                <div v-if="fieldErrors.editDate" class="invalid-feedback">{{ errorMessages.date }}</div>
+                <CFormLabel for="inputEditDate">Date</CFormLabel>
+                <VueDatePicker id="inputEditDate" v-model="selectedDate" :class="{ 'is-invalid': fieldErrors.editDate }" :enable-time-picker="false"><div v-if="fieldErrors.date" class="invalid-feedback">{{ errorMessages.date }}</div></VueDatePicker>
             </CCol>
             <CModalFooter>
             <CButton color="secondary" @click="CloseModal()">
@@ -240,6 +227,8 @@ data(){
   return {
       startDate: null, // La data di inzio selezionata
       endDate: null, // La data di fine selezionata
+      showAmortization: false,
+      selectedMonths: "3",
       ModalAdd: false,
       ModalEdit: false,
       selectedDate: '',
@@ -294,7 +283,7 @@ data(){
             label: 'Created On',
             field: 'date',
             type: 'date',
-            dateInputFormat: 'yyyy-MM-dd',
+            dateInputFormat: 'yyyy-MM-dd\'T\'HH:mm:ss.SSS\'Z\'',
             dateOutputFormat: 'dd/MM/yyyy',
           },
           {
@@ -308,13 +297,18 @@ data(){
   };
 },
 mounted() {
-      this.fetchCost();
-      const today = new Date();
-      const year = today.getFullYear();
-      const month = String(today.getMonth() + 1).padStart(2, '0'); // Add +1 cause months start from 0
-      const day = String(today.getDate()).padStart(2, '0');
+    this.fetchWallet();
+    this.fetchCategory();
 
-      this.selectedDate = `${year}-${month}-${day}`;
+    const currentDate = new Date();
+    const currentYear = currentDate.getFullYear();
+    const currentMonth = currentDate.getMonth(); // I mesi in JavaScript partono da 0
+
+    this.startDate = new Date(currentYear, currentMonth, 1); // Primo giorno del mese corrente
+    this.endDate = currentDate; // Ultimo giorno del mese corrente
+    this.fetchCostByDate();
+
+    this.selectedDate = currentDate;
 },
 methods: {
   async selectionChanged(params) {
@@ -355,29 +349,7 @@ methods: {
             }
         });  
   },
-  async fetchCost() { //Function to fetch the table
-    try {
-        const responseCosts = await axios.get('http://localhost:3000/api/costs/');
-        this.rows = responseCosts.data;
-    } catch (error) {
-        console.error('Error fetching costs:', error);
-    }
-
-    try {
-        const responseCategories = await axios.get('http://localhost:3000/api/categories/');
-        const categories = responseCategories.data;
-
-        this.categoryRows = [
-            { label: 'Select a category', value: -1 }, // Default option
-            ...categories.map(category => ({
-                label: category.description, // Use the appropriate property of the category data
-                value: parseFloat(category.id),   // Use the appropriate property of the category data
-            })),
-        ];
-    } catch (error) {
-        console.error('Error fetching categories:', error);
-    }
-
+  async fetchWallet() {
     try {
         const responseWallets = await axios.get('http://localhost:3000/api/wallets/');
         const wallets = responseWallets.data;
@@ -392,6 +364,30 @@ methods: {
         
     } catch (error) {
         console.error('Error fetching wallets:', error);
+    }
+  },
+  async fetchCategory() {
+    try {
+        const responseCategories = await axios.get('http://localhost:3000/api/categories/');
+        const categories = responseCategories.data;
+
+        this.categoryRows = [
+            { label: 'Select a category', value: -1 }, // Default option
+            ...categories.map(category => ({
+                label: category.description, // Use the appropriate property of the category data
+                value: parseFloat(category.id),   // Use the appropriate property of the category data
+            })),
+        ];
+    } catch (error) {
+        console.error('Error fetching categories:', error);
+    }
+  },
+  async fetchCost() { //Function to fetch the table
+    try {
+        const responseCosts = await axios.get('http://localhost:3000/api/costs/');
+        this.rows = responseCosts.data;
+    } catch (error) {
+        console.error('Error fetching costs:', error);
     }
   },
   async fetchCostByDate(){
@@ -409,65 +405,70 @@ methods: {
     }
   },
   async addCost() { //Add a row in the database of the server 
-        const inputDescription = document.getElementById('inputDescription');
-        const inputDate = document.getElementById('inputDate');
-        const inputPrice = document.getElementById('inputPrice');
 
-        const priceValue = parseFloat(inputPrice.value);
-        if (!isNaN(priceValue)) { // Arrotonda il valore money a due decimali
-            inputPrice.value = priceValue.toFixed(2);
-        }
+    
+    const inputDescription = document.getElementById('inputDescription');
+    const inputPrice = document.getElementById('inputPrice');
 
-        if (!this.selectedCategory || this.selectedCategory < 0) {
-            this.fieldErrors.category = true; // Set category error state
-            return;
-        } else {
-            this.fieldErrors.category = false; // Reset category error state on validation success
-        }
-         
-        if (!this.selectedWallet || this.selectedWallet < 0) {
-            this.fieldErrors.wallet = true; // Set wallet error state
-            return;
-        } else {
-            this.fieldErrors.wallet = false; // Reset wallet error state on validation success
-        }
+    const priceValue = parseFloat(inputPrice.value);
+    if (!isNaN(priceValue)) { // Arrotonda il valore money a due decimali
+        inputPrice.value = priceValue.toFixed(2);
+    }
 
-        const newData = {
-            description: inputDescription.value,
-            date: inputDate.value,
-            price: parseFloat(inputPrice.value),
-            wallet: this.selectedWallet,
-            category: this.selectedCategory,
-        };
+    if (!this.selectedCategory || this.selectedCategory < 0) {
+        this.fieldErrors.category = true; // Set category error state
+        return;
+    } else {
+        this.fieldErrors.category = false; // Reset category error state on validation success
+    }
+        
+    if (!this.selectedWallet || this.selectedWallet < 0) {
+        this.fieldErrors.wallet = true; // Set wallet error state
+        return;
+    } else {
+        this.fieldErrors.wallet = false; // Reset wallet error state on validation success
+    }
 
-        // Validate input fields
-        if (!newData.date || newData.date === '') {
-            this.fieldErrors.date = true; // Set date error state
-            return;
-        } else {
-            this.fieldErrors.date = false; // Reset date error state on validation success
-        }
+    const newData = {
+        description: inputDescription.value,
+        date: this.selectedDate,
+        status: 0,
+        price: parseFloat(inputPrice.value),
+        wallet: this.selectedWallet,
+        category: this.selectedCategory,
+        checkAmortization: this.showAmortization,
+        selectedMonths: this.selectedMonths,
+    };
 
-        // Validate input fields
-        if (!newData.price || newData.price < 0) {
-            this.fieldErrors.price = true; // Set date error state
-            return;
-        } else {
-            this.fieldErrors.price = false; // Reset date error state on validation success
-        }
+    // Validate input fields
+    if (!newData.date || newData.date === '') {
+        this.fieldErrors.date = true; // Set date error state
+        return;
+    } else {
+        this.fieldErrors.date = false; // Reset date error state on validation success
+    }
 
-      // Send request to create category
-      try {
-          await axios.post('http://localhost:3000/api/costs/', newData); // Replace with actual POST endpoint
-          this.fetchCost(); // Update the table
-      } catch (error) {
-          console.error('Error adding new category:', error);
-          this.sendAlert(error);
-      }
+    console.log(newData);
+    // Validate input fields
+    if (!newData.price || newData.price < 0) {
+        this.fieldErrors.price = true; // Set date error state
+        return;
+    } else {
+        this.fieldErrors.price = false; // Reset date error state on validation success
+    }
 
-      this.selectedCategory = null;
-      this.selectedWallet = null;
-      this.ModalAdd = false; // Close the Add Category modal
+    // Send request to create category
+    try {
+        await axios.post('http://localhost:3000/api/costs/', newData); // Replace with actual POST endpoint
+        this.fetchCostByDate(); // Update the table
+    } catch (error) {
+        console.error('Error adding new category:', error);
+        this.sendAlert(error);
+    }
+
+    this.selectedCategory = null;
+    this.selectedWallet = null;
+    this.ModalAdd = false; // Close the Add Category modal
   },
   async updateCost(){ //Update a row in the database //TODO SISTEMARE LA FUNZIONE + ORDINE SULLA TABELLA PER WALLET O CATEGORY
     const inputEditDescription = document.getElementById('inputEditDescription');
@@ -513,7 +514,7 @@ methods: {
 
       console.log('Update category:', response.data);
       // Update the table
-      this.fetchCost();
+      this.fetchCostByDate();
     } catch (error) {
       console.error('Error updating category:', error);
       this.sendAlert(error);
@@ -524,7 +525,7 @@ methods: {
   async deleteCost(id) { //Delete row in the database
       try {
           await axios.delete(`http://localhost:3000/api/costs/${id}`);
-          this.fetchCost();// Update the table
+          this.fetchCostByDate();// Update the table
       } catch (error) {
           console.error('Error deleting category:', error);
       }
@@ -537,7 +538,7 @@ methods: {
           }
           
           // Update the table
-          this.fetchCost();
+          this.fetchCostByDate();
       } catch (error) {
           console.error('Error deleting category:', error);
       }

@@ -5,8 +5,8 @@
         <template #value
           >€{{ this.currentSpending }}
           <span class="fs-6 fw-normal">
-            ({{ this.percentageCost == Infinity ? "--": this.percentageCost }}% <CIcon v-if="this.percentageCost > 0" icon="cil-arrow-top" />
-              <CIcon v-else icon="cil-arrow-bottom" />)      
+            ({{ isNaN(this.percentageCost) ? "--": this.percentageCost }}% <CIcon v-if="this.percentageCost > 0" icon="cil-arrow-top" />
+              <CIcon v-else-if="this.percentageCost < 0" icon="cil-arrow-bottom" />)      
           </span>
         </template>
         <template #title>Costs</template>
@@ -27,8 +27,8 @@
         <template #value
           >€{{ this.currentIncome }}
           <span class="fs-6 fw-normal">
-            ({{ this.percentageIncome == Infinity ? "--": this.percentageIncome }}% <CIcon v-if="this.percentageIncome > 0" icon="cil-arrow-top" />
-              <CIcon v-else icon="cil-arrow-bottom" />)
+            ({{ isNaN(this.percentageIncome) ? "--": this.percentageIncome }}% <CIcon v-if="this.percentageIncome > 0" icon="cil-arrow-top" />
+              <CIcon v-else-if="this.percentageIncome < 0" icon="cil-arrow-bottom" />)
           </span>
         </template>
         <template #title>Income</template>
@@ -49,8 +49,8 @@
         <template #value
           >€{{ this.currentIncome - this.currentSpending }}
           <span class="fs-6 fw-normal">
-            ({{ this.percentageDiff == Infinity ? "--": this.percentageDiff }}% <CIcon v-if="this.percentageDiff > 0" icon="cil-arrow-top" />
-              <CIcon v-else-if="this.percentageDiff < 0" icon="cil-arrow-bottom" /> <CIcon v-else />)
+            ({{ isNaN(this.percentageDiff) ? "--": this.percentageDiff }}% <CIcon v-if="this.percentageDiff > 0" icon="cil-arrow-top" />
+              <CIcon v-else-if="this.percentageDiff < 0" icon="cil-arrow-bottom" />)
           </span>
         </template>
         <template #title>Different</template>

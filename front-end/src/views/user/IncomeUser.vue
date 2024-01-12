@@ -15,21 +15,13 @@
                             <CFormLabel for="inputDate">Date End:</CFormLabel>
                             <VueDatePicker v-model="endDate" :enable-time-picker="false"></VueDatePicker>
                         </CCol>
-                        <CCol class="auto align-bottom-right">
-                            <CContainer>
-                                <CRow>
-                                    <CCol xs="6">
-                                        <span class='pr-4' @click="fetchIncomeByDate()">
-                                            <CIcon :icon="cilSearch" size="xxl"/>
-                                        </span>
-                                    </CCol>
-                                    <CCol xs="6">
-                                        <span @click="() => { ModalAdd = true }">
-                                            <CIcon :icon="cibAddthis" size="xxl"/>
-                                        </span>
-                                    </CCol>
-                                </CRow>
-                            </CContainer>
+                        <CCol xs="2" class="d-flex justify-content-end align-items-end">
+                            <span class="mx-1" @click="fetchIncomeByDate()">
+                                <CIcon :icon="cilSearch" size="xxl"/>
+                            </span>
+                            <span @click="() => { ModalAdd = true }">
+                                <CIcon :icon="cibAddthis" size="xxl"/>
+                            </span>
                         </CCol>
                     </CRow>
                     </CContainer>
@@ -275,7 +267,16 @@ import '@vuepic/vue-datepicker/dist/main.css'
     };
   },
   mounted() {
-        this.fetchIncome();
+        this.fetchWallet();
+
+        const currentDate = new Date();
+        const currentYear = currentDate.getFullYear();
+        const currentMonth = currentDate.getMonth(); // I mesi in JavaScript partono da 0
+
+        this.startDate = new Date(currentYear, currentMonth, 1); // Primo giorno del mese corrente
+        this.endDate = currentDate; // Ultimo giorno del mese corrente
+        this.fetchIncomeByDate();
+
         const today = new Date();
         const year = today.getFullYear();
         const month = String(today.getMonth() + 1).padStart(2, '0'); // Add +1 cause months start from 0
@@ -319,15 +320,8 @@ import '@vuepic/vue-datepicker/dist/main.css'
               }
           });  
     },
-    async fetchIncome() { //Function to fetch the table
-      try {
-          const responseIncomes = await axios.get('http://localhost:3000/api/incomes/');
-          this.rows = responseIncomes.data;
-      } catch (error) {
-          console.error('Error fetching costs:', error);
-      }
-  
-      try {
+    async fetchWallet(){
+        try {
           const responseWallets = await axios.get('http://localhost:3000/api/wallets/');
           const wallets = responseWallets.data;
   
@@ -341,6 +335,14 @@ import '@vuepic/vue-datepicker/dist/main.css'
           
       } catch (error) {
           console.error('Error fetching wallets:', error);
+      }
+    },
+    async fetchIncome() { //Function to fetch the table
+      try {
+          const responseIncomes = await axios.get('http://localhost:3000/api/incomes/');
+          this.rows = responseIncomes.data;
+      } catch (error) {
+          console.error('Error fetching costs:', error);
       }
     },
     async fetchIncomeByDate(){
@@ -399,7 +401,7 @@ import '@vuepic/vue-datepicker/dist/main.css'
         // Send request to create category
         try {
             await axios.post('http://localhost:3000/api/incomes/', newData); // Replace with actual POST endpoint
-            this.fetchIncome(); // Update the table
+            this.fetchIncomeByDate(); // Update the table
         } catch (error) {
             console.error('Error adding new category:', error);
             this.sendAlert(error);
@@ -445,7 +447,7 @@ import '@vuepic/vue-datepicker/dist/main.css'
   
         console.log('Update category:', response.data);
         // Update the table
-        this.fetchIncome();
+        this.fetchIncomeByDate();
       } catch (error) {
         console.error('Error updating category:', error);
         this.sendAlert(error);
@@ -456,7 +458,7 @@ import '@vuepic/vue-datepicker/dist/main.css'
     async deleteIncome(id) { //Delete row in the database
         try {
             await axios.delete(`http://localhost:3000/api/incomes/${id}`);
-            this.fetchIncome();// Update the table
+            this.fetchIncomeByDate();// Update the table
         } catch (error) {
             console.error('Error deleting category:', error);
         }
@@ -469,7 +471,7 @@ import '@vuepic/vue-datepicker/dist/main.css'
             }
             
             // Update the table
-            this.fetchIncome();
+            this.fetchIncomeByDate();
         } catch (error) {
             console.error('Error deleting category:', error);
         }

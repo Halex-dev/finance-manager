@@ -78,10 +78,10 @@ export default {
     this.fetchIncomes = await this.fetchIncomeByDate(firstDayOfThisMonth, lastDayOfThisMonth);
 
     const firstDayOfLastMonth = new Date(currentYear, lastMonth, 1); // Primo giorno del mese precedente
-    const lastDayOfLastMonth = new Date(currentYear, currentMonth, 0); // Ultimo giorno del mese precedente
+    //const lastDayOfLastMonth = new Date(currentYear, currentMonth, 0); // Ultimo giorno del mese precedente
       
-    this.fetchOldIncome = await this.fetchIncomeByDate(firstDayOfLastMonth, lastDayOfLastMonth);
-    this.fetchOldCosts = await this.fetchCostByDate(firstDayOfLastMonth, lastDayOfLastMonth);
+    this.fetchOldIncome = await this.fetchIncomeByDate(firstDayOfLastMonth, currentDate);
+    this.fetchOldCosts = await this.fetchCostByDate(firstDayOfLastMonth, currentDate);
 
     const firstDayOfThisYear = new Date(currentYear, 0, 1); // Primo giorno dell'anno
 

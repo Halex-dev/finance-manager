@@ -22,5 +22,4 @@ export class Category {
 
   @OneToMany(() => Cost, cost => cost.category, { cascade: true })
   costs: Cost[];
-
 }

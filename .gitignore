@@ -38,4 +38,4 @@ build/
 .nuxt/
 
 # DATABASE
-.sqlite
+*.sqlite

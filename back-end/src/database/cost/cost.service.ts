@@ -4,6 +4,8 @@ import { Between, Repository } from 'typeorm';
 import { Cost } from './cost.entity';
 import { Wallet } from '../wallet/wallet.entity';
 import { Category } from '../category/category.entity';
+import { AmortizationService } from '../amortization/amortization.service';
+import { Amortization } from '../amortization/amortization.entity';
 
 @Injectable()
 export class CostService {
@@ -16,7 +18,9 @@ export class CostService {
     private readonly walletRepository: Repository<Wallet>,
 
     @InjectRepository(Category) // Inietta il repository dell'entità Category
-    private readonly categoryRepository: Repository<Category>
+    private readonly categoryRepository: Repository<Category>,
+
+    private readonly amortizationService: AmortizationService
   ) {}
 
   async findAllCost(): Promise<Cost[]> {
@@ -29,7 +33,7 @@ export class CostService {
     return this.costRepository.find({
       relations: ['category', 'wallet'],
       where: {
-        date: Between(startDate.toISOString(), endDate.toISOString())
+        date: Between(startDate, endDate)
       }
     });
   }
@@ -40,11 +44,14 @@ export class CostService {
     });
   }
 
+  //TODO SOLO SE IL COSTO VIENE OGGI O PRECEDENTE
   async createCost(cost: Cost): Promise<Cost> {
     try {
         await this.validateInput(cost);
         
         const wallet = await this.walletRepository.findOne({ where: { id:  Number(cost.wallet) } });
+        const today = new Date();
+        const categoryToAssociate = await this.categoryRepository.findOne({ where: { id:  Number(cost.category) } });
 
         if (!wallet) {
             throw new NotFoundException('Portafoglio non trovato.');
@@ -54,11 +61,42 @@ export class CostService {
             throw new BadRequestException('Fondi insufficienti nel portafoglio.');
         }
 
-        wallet.money -= cost.price; // Sottrai il costo dal saldo del portafoglio
-        wallet.money = parseFloat(wallet.money.toFixed(2));
-        await this.walletRepository.update(wallet.id, wallet);  // Salva l'entità Wallet modificata
+        if(cost.checkAmortization === true && cost.selectedMonths > 1){
 
-        return await this.costRepository.save(cost); 
+          const monthlyCost = cost.price / cost.selectedMonths;
+
+          if( cost.date <= today ){
+            wallet.money -= monthlyCost; // Sottrai il costo dal saldo del portafoglio
+            wallet.money = parseFloat(wallet.money.toFixed(2));
+            await this.walletRepository.update(wallet.id, wallet);  // Salva l'entità Wallet modificata
+          }
+
+          const amortization = {
+            description: cost.description,
+            dateStart: today,
+            months: cost.selectedMonths,
+            price: cost.price,
+          }; // Clona l'oggetto costo
+
+          //await this.amortizationService.createAmortization(amortization, cost.category, cost.wallet);
+
+          await this.amortizationService.createAmortization(amortization, cost.category, cost.wallet)
+          //await this.costRepository.save(cost)
+          return; 
+        }
+        else{
+
+          //TODO SOLO SE IL COSTO VIENE OGGI O PRECEDENTE
+
+          if( cost.date <= today ){
+            wallet.money -= cost.price; // Sottrai il costo dal saldo del portafoglio
+            wallet.money = parseFloat(wallet.money.toFixed(2));
+            await this.walletRepository.update(wallet.id, wallet);  // Salva l'entità Wallet modificata
+          }
+
+          return await this.costRepository.save(cost); 
+        }
+
     } catch (error) {
       console.log(error);
       if (error instanceof BadRequestException) {
@@ -76,6 +114,10 @@ export class CostService {
 
       if (!oldCost) {
         throw new NotFoundException('Portafoglio non trovato.');
+      }
+
+      if (oldCost.checkAmortization === true && oldCost.selectedMonths > 1) {
+        throw new BadRequestException('Non puoi modificare un costo ammortizzato.');
       }
 
       const walletToAssociate = await this.walletRepository.findOne({ where: { id:  Number(cost.wallet) } });
@@ -137,6 +179,8 @@ export class CostService {
     }
   }
   
+
+  //TODO Elimino anche gli altri ammortizzati (Se elimino il padre), altrimenti non posso eliminarli
   async deleteCost(id: number): Promise<void> {
     try {
 
@@ -149,6 +193,8 @@ export class CostService {
       oldCost.wallet.money += oldCost.price; // Aggiungo il costo dal saldo del portafoglio
       oldCost.wallet.money = parseFloat(oldCost.wallet.money.toFixed(2));
       
+      oldCost
+
       await this.walletRepository.update(oldCost.wallet.id, oldCost.wallet);  // Salva l'entità Wallet modificata
       await this.costRepository.delete(id); 
     } catch (error) {
@@ -167,4 +213,6 @@ export class CostService {
     // Arrotonda il valore money a due decimali
     cost.price = parseFloat(cost.price.toFixed(2));
   }
+
+  
 }

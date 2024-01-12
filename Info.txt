@@ -1,3 +1,9 @@
 https://tailwindcss.com/ come framework css
 Vue.js come front-end
 Nest.js come back-end
+
+
+status: 
+- 0 pagato
+- 1 Non contabilizzato
+- 2 Non contabilizzato ammortamento
