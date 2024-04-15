@@ -1,106 +1,129 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import { Category } from './category.entity';
-import * as dotenv from 'dotenv';
-dotenv.config();
+import { logger } from '../../module/logger';
 
-const TYPES_CATEGORY: number = parseInt(process.env.TYPES_CATEGORY, 10);
+//TODO fare una cosa globale???
+enum CategoryType {
+  INCOME = 'income',
+  EXPENSE = 'expense',
+}
 
 @Injectable()
 export class CategoryService {
   constructor(
     @InjectRepository(Category)
-    //private readonly categoryRepository: Repository<Cost>,
-    private categoryRepository: Repository<Category>,
+    private readonly categoryRepository: Repository<Category>,
   ) {}
 
   async findAllCategory(): Promise<Category[]> {
-    return this.categoryRepository.find();
+    try {
+      return await this.categoryRepository.find();
+    } catch (error) {
+      logger.error(`Error while fetching all wallets: ${error}`);
+      throw new BadRequestException('Error while fetching all wallets');
+    }
   }
 
   async findCategoryById(id: number): Promise<Category> {
-    return this.categoryRepository.findOne({ where: { id } });
+    try {
+      return this.categoryRepository.findOne({ where: { id } });
+    } catch (error) {
+      logger.error(`Error while fetching all wallets: ${error}`);
+      throw new BadRequestException(
+        `Error while fetching wallet with ID: ${id}`,
+      );
+    }
   }
 
   async createCategory(category: Category): Promise<Category> {
     try {
-      await this.validateUniqueness(category);
       await this.validateInput(category);
-      return await this.categoryRepository.save(category); 
+
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { id, ...newCategory } = category;
+      return await this.categoryRepository.save(newCategory);
     } catch (error) {
       if (error instanceof BadRequestException) {
         throw error; // L'eccezione di univocità è già stata gestita, rilanciala
       }
-      throw new BadRequestException('Errore durante la creazione della categoria.');
+      logger.error(`Error while creating a new wallet: ${error}`);
+      throw new BadRequestException('Error while creating a new wallet');
     }
   }
 
   async updateCategory(id: number, category: Category): Promise<Category> {
     try {
-      await this.validateInput(category);
-      const updatedCategory = await this.categoryRepository.update(id, category);
+      await this.validateInput(category, id);
+      const updatedCategory = await this.categoryRepository.update(
+        id,
+        category,
+      );
 
       // Verifica se l'aggiornamento ha avuto successo
       if (updatedCategory.affected === 0) {
         throw new NotFoundException(`Categoria con ID ${id} non trovata.`);
       }
       return category;
-      
     } catch (error) {
       if (error instanceof BadRequestException) {
         throw error; // L'eccezione di univocità è già stata gestita, rilanciala
       }
-      throw new BadRequestException('Errore durante la creazione della categoria.');
+      logger.error(`Error while updating a new wallet: ${error}`);
+      throw new BadRequestException('Error while updating a wallet');
     }
   }
 
+  //TODO GESTIRE BADREQUESTEXCEPTION se voglio eliminare tutto il wallet con i costi o no
   async deleteCategory(id: number): Promise<void> {
     try {
       await this.categoryRepository.delete(id);
     } catch (error) {
-
-      if (error instanceof Error && error.message.includes('FOREIGN KEY constraint failed')) {
-        throw new BadRequestException('Impossibile eliminare la categoria: è ancora referenziata a qualche costo, elimina quelli prima.');
+      if (
+        error instanceof Error &&
+        error.message.includes('FOREIGN KEY constraint failed')
+      ) {
+        throw new BadRequestException(
+          'Impossibile eliminare la categoria: è ancora referenziata a qualche costo, elimina quelli prima.',
+        );
       }
 
       if (error instanceof BadRequestException) {
         throw error; // L'eccezione di univocità è già stata gestita, rilanciala
       }
 
-      throw new BadRequestException('Errore durante la eliminazione della categoria.');
+      logger.error(`Error while deleting a wallet: ${error}`);
+      throw new BadRequestException('Error while deleting a wallet');
     }
   }
-  
-  async validateUniqueness(category: Category): Promise<void> {
-    const description = category.description;
+
+  async validateUniqueness(category: Category, id = null): Promise<void> {
+    const name = category.name;
     const existingCategory = await this.categoryRepository.findOne({
-      where: { description },
+      where: [{ name }, { name: Like(`%${name}%`) }],
     });
-  
-    if (existingCategory) {
-      throw new BadRequestException('Errore, la descrizione deve essere univoca.');
+
+    if (existingCategory && id != existingCategory.id) {
+      throw new BadRequestException('The name must be unique');
     }
   }
 
-  async validateInput(category: Category): Promise<void> {
-    if (!category.description || category.description.trim() === '') {
-      throw new BadRequestException('Errore, la descrizione non può essere nulla.');
+  async validateInput(category: Category, id = null): Promise<void> {
+    if (!category.name || category.name.trim() === '') {
+      throw new BadRequestException('The name cannot be invalid.');
     }
 
-    if (!category.type || category.type < 0 || category.type > TYPES_CATEGORY) {
-      throw new BadRequestException('Errore, devi inserire a che tipologia di spesa appartiene la categoria');
+    if (!Object.values(CategoryType).includes(category.category_type)) {
+      throw new BadRequestException(
+        'You must enter what type of expense the category belongs to',
+      );
     }
 
-    category.color = await this.generateRandomColor();
-  }
-
-  async generateRandomColor() {
-    const letters = '0123456789ABCDEF';
-    let color = '#';
-    for (let i = 0; i < 6; i++) {
-      color += letters[Math.floor(Math.random() * 16)];
-    }
-    return color;
+    await this.validateUniqueness(category, id);
   }
 }

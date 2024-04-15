@@ -1,22 +1,18 @@
 <template>
-  <router-view />
+  <RouterView />
 </template>
 
-<script>
-export default {
-  name: 'App',
-  watch: {
-    '$route'(to) {
-      this.updatePageTitle(to);
-    }
-  },
-  mounted() {
-    this.updatePageTitle(this.$route);
-  },
-  methods: {
-    updatePageTitle(route) {
-      document.title = route.meta.title || 'Finance manager';
-    }
-  }
-};
-</script>
+<style lang="scss">
+@import 'scss/main.scss';
+
+#app {
+  font-family: 'Inter', Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  min-width: 20rem;
+}
+</style>

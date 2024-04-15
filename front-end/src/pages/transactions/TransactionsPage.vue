@@ -1,0 +1,148 @@
+<template>
+  <h1 class="page-title">Transactions</h1>
+
+  <VaCard>
+    <VaCardContent>
+      <div class="flex flex-col md:flex-row gap-2 mb-2 justify-between">
+        <div class="flex flex-col md:flex-row gap-2 justify-start">
+          <VaButtonToggle
+            v-model="filters.category_type"
+            color="background-element"
+            border-color="background-element"
+            :options="[
+              { label: 'All', value: 'all' },
+              { label: 'Expense', value: 'expense' },
+              { label: 'Income', value: 'income' },
+            ]"
+          />
+          <VaInput v-model="filters.search" placeholder="Search">
+            <template #prependInner>
+              <VaIcon name="search" color="secondary" size="small" />
+            </template>
+          </VaInput>
+        </div>
+        <VaButton @click="showAddTransactionModal">Add Transaction</VaButton>
+      </div>
+
+      <TransactionTable
+        v-model:sort-by="sorting.sortBy"
+        v-model:sorting-order="sorting.sortingOrder"
+        :transactions="transactions"
+        :loading="isLoading"
+        :pagination="pagination"
+        @editTransaction="showEditTransactionModal"
+        @deleteTransaction="onTransactionDelete"
+      />
+    </VaCardContent>
+  </VaCard>
+
+  <VaModal
+    v-slot="{ cancel, ok }"
+    v-model="doShowEditTransactionModal"
+    size="small"
+    mobile-fullscreen
+    close-button
+    hide-default-actions
+    :before-cancel="beforeEditFormModalClose"
+  >
+    <h1 class="va-h5">{{ TransactionToEdit ? 'Edit Transaction' : 'Add Transaction' }}</h1>
+    <TransactionModal
+      ref="editFormRef"
+      :transaction="TransactionToEdit"
+      :save-button-label="TransactionToEdit ? 'Save' : 'Add'"
+      @close="cancel"
+      @save="
+        (Transaction) => {
+          onTransactionSaved(Transaction)
+          ok()
+        }
+      "
+    />
+  </VaModal>
+</template>
+
+<script setup lang="ts">
+import { Transaction } from './types'
+import { useTransaction } from './composables/useTransaction'
+import { ref } from 'vue'
+import TransactionTable from './widgets/TransactionTable.vue'
+import TransactionModal from './widgets/TransactionModal.vue'
+import { useModal, useToast } from 'vuestic-ui'
+
+const doShowEditTransactionModal = ref(false)
+
+const { transactions, isLoading, filters, sorting, pagination, ...transactionsApi } = useTransaction()
+
+const TransactionToEdit = ref<Transaction | null>(null)
+
+const showEditTransactionModal = (Transaction: Transaction) => {
+  TransactionToEdit.value = Transaction
+  doShowEditTransactionModal.value = true
+}
+
+const showAddTransactionModal = () => {
+  TransactionToEdit.value = null
+  doShowEditTransactionModal.value = true
+}
+
+const { init: notify } = useToast()
+
+const onTransactionSaved = async (Transaction: Transaction) => {
+  if (TransactionToEdit.value) {
+    const response = await transactionsApi.update(Transaction)
+
+    if (response) {
+      notify({
+        message: response,
+        color: 'danger',
+      })
+    } else {
+      notify({
+        message: `${Transaction.id} has been updated`,
+        color: 'success',
+      })
+    }
+  } else {
+    const response = await transactionsApi.add(Transaction)
+
+    if (response) {
+      notify({
+        message: response,
+        color: 'danger',
+      })
+    } else {
+      notify({
+        message: `${Transaction.id} has been updated`,
+        color: 'success',
+      })
+    }
+  }
+}
+
+const onTransactionDelete = async (Transaction: Transaction) => {
+  await transactionsApi.remove(Transaction)
+  notify({
+    message: `${Transaction.id} has been deleted`,
+    color: 'success',
+  })
+}
+
+const editFormRef = ref()
+
+const { confirm } = useModal()
+
+const beforeEditFormModalClose = async (hide: () => unknown) => {
+  if (editFormRef.value.isFormHasUnsavedChanges) {
+    const agreed = await confirm({
+      maxWidth: '380px',
+      message: 'Form has unsaved changes. Are you sure you want to close it?',
+      size: 'small',
+    })
+    if (agreed) {
+      hide()
+    }
+  } else {
+    hide()
+  }
+}
+</script>

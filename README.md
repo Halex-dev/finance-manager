@@ -13,11 +13,13 @@ Welcome to the Financial Manager! This tool is designed to help you manage your 
 
 
 - [X] Expense Tracking
-- [ ] Amortization of costs
-- [ ] Repeated costs/incomes automaticatly (con icona spesa effettuata o ancora da effettuare)
-- [ ] Future Planning
+- [X] Amortization of costs
 - [ ] More reports and Charts
 - [ ] Two or more languages
+- [ ] Repeated costs/incomes automaticatly (con icona spesa effettuata o ancora da effettuare)
+- [ ] Future Planning
+- [ ] ETF, etc
+- [ ] Monitor price for funko etc
 - [ ] Famous cryptocurrencies with automatic earn or loss
 - [ ] Budget Alerts: Receive notifications when your expenses in a given category are about to exceed your established budget. This helps you avoid unpleasant surprises and stay in control of your finances.
 - [ ] idk yet....

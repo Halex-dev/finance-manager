@@ -1,26 +1,19 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, BeforeInsert, BeforeUpdate, JoinColumn, OneToMany } from 'typeorm';
-import { Cost } from '../cost/cost.entity';
+import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
 @Entity()
 export class Amortization {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'decimal', precision: 10, scale: 2 })
-  price: number;
+  @Column({ type: 'date' })
+  startDate: Date;
 
-  @Column()
-  description: string;
+  @Column({ type: 'float' })
+  initialAmount: number;
 
-  @Column()
-  months: number;
+  @Column({ type: 'int' })
+  durationMonths: number;
 
-  @Column()
-  dateStart: Date;
-
-  @Column()
-  dateEnd: Date;
-
-  @OneToMany(() => Cost, cost => cost.amortization, { nullable: true }) // Aggiungi la relazione nullable
-  childCosts: Cost[];
+  @Column({ type: 'float' })
+  residualValue: number;
 }

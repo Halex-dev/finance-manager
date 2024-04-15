@@ -22,13 +22,15 @@ export class WalletController {
   }
 
   @Post(':id')
-  async updateWallet(@Param('id') id: number, @Body() cost: Wallet): Promise<Wallet> {
+  async updateWallet(
+    @Param('id') id: number,
+    @Body() cost: Wallet,
+  ): Promise<Wallet> {
     return this.walletService.updateWallet(id, cost);
   }
-  
+
   @Delete(':id') // Aggiunta della route per eliminare una riga tramite ID
   async deleteWalletById(@Param('id') id: number): Promise<void> {
     await this.walletService.deleteWallet(id);
   }
-
 }

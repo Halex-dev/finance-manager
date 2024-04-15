@@ -1,1 +1,0 @@
-vue-good-table-next  //Tabelle

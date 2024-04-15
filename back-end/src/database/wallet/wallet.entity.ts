@@ -1,6 +1,6 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany, BeforeInsert, BeforeUpdate } from 'typeorm';
-import { Cost } from '../cost/cost.entity';
-import { Income } from '../income/income.entity';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { Transaction } from '../transaction/transaction.entity';
+import { Movement } from '../movement/movement.entity';
 
 @Entity()
 export class Wallet {
@@ -8,17 +8,20 @@ export class Wallet {
   id: number;
 
   @Column()
-  description: string;
+  name: string; //description to name
 
   @Column({ type: 'decimal', precision: 10, scale: 2 })
-  money: number;
+  currency: number; //money to currency
 
   @Column()
-  date: string;
+  date: Date;
 
-  @OneToMany(() => Cost, cost => cost.wallet)
-  costs: Cost[];
+  @Column()
+  avatar: string;
 
-  @OneToMany(() => Income, income => income.wallet)
-  income: Income[];
+  @OneToMany(() => Transaction, (transaction) => transaction.wallet)
+  transactions: Transaction[];
+
+  @OneToMany(() => Movement, (movement) => movement.wallet)
+  movements: Movement[];
 }

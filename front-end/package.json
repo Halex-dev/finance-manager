@@ -1,58 +1,77 @@
 {
-  "name": "front-end",
-  "version": "0.1.0",
+  "name": "vuestic-admin",
   "private": true,
+  "version": "3.1.0",
   "scripts": {
-    "start": "vue-cli-service serve",
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "prepare": "husky install",
+    "dev": "vite",
+    "dev:host": "vite --host",
+    "build": "npm run lint && vue-tsc --noEmit && vite build",
+    "build:ci": "vite build",
+    "start:ci": "serve -s ./dist",
+    "prelint": "npm run format",
+    "lint": "eslint \"./src/**/*.{ts,js,vue}\" --fix",
+    "format": "prettier --write .",
+    "preview": "vite preview",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
+  },
+  "lint-staged": {
+    "./src/**/*.{ts,js,vue}": [
+      "npm run lint"
+    ]
   },
   "dependencies": {
-    "@coreui/chartjs": "^3.1.2",
-    "@coreui/icons": "^3.0.1",
-    "@coreui/icons-vue": "^2.0.0",
-    "@coreui/utils": "^2.0.2",
-    "@coreui/vue": "^4.10.0",
-    "@coreui/vue-chartjs": "^2.1.0",
-    "@vue/cli-service": "^5.0.8",
-    "@vuepic/vue-datepicker": "^6.0.0",
-    "axios": "^1.4.0",
-    "chartjs": "^0.3.24",
-    "core-js": "^3.8.3",
-    "sass": "^1.64.2",
-    "sass-loader": "^13.3.2",
-    "vue": "^3.2.13",
-    "vue-good-table-next": "^0.2.1",
-    "vue-router": "^4.2.4",
-    "vuex": "^4.1.0"
+    "@gtm-support/vue-gtm": "^2.0.0",
+    "@vuestic/tailwind": "^0.1.3",
+    "@vueuse/core": "^10.6.1",
+    "axios": "^1.6.8",
+    "chart.js": "^4.4.1",
+    "chartjs-chart-geo": "^4.2.8",
+    "epic-spinners": "^2.0.0",
+    "flag-icons": "^7.2.1",
+    "ionicons": "^7.3.1",
+    "medium-editor": "^5.23.3",
+    "pinia": "^2.1.7",
+    "register-service-worker": "^1.7.1",
+    "sass": "^1.69.5",
+    "serve": "^14.2.1",
+    "vue": "^3.4.21",
+    "vue-chartjs": "^5.3.0",
+    "vue-i18n": "^9.6.2",
+    "vue-router": "^4.2.5",
+    "vuestic-ui": "^1.9.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.12.16",
-    "@babel/eslint-parser": "^7.12.16",
-    "@vue/cli-plugin-babel": "~5.0.0",
-    "@vue/cli-plugin-eslint": "~5.0.0",
-    "eslint": "^7.32.0",
-    "eslint-plugin-vue": "^8.0.3"
-  },
-  "eslintConfig": {
-    "root": true,
-    "env": {
-      "node": true
-    },
-    "extends": [
-      "plugin:vue/vue3-essential",
-      "eslint:recommended"
-    ],
-    "parserOptions": {
-      "parser": "@babel/eslint-parser"
-    },
-    "rules": {}
-  },
-  "browserslist": [
-    "> 1%",
-    "last 2 versions",
-    "not dead",
-    "not ie 11"
-  ]
+    "@intlify/unplugin-vue-i18n": "^4.0.0",
+    "@storybook/addon-essentials": "^8.0.6",
+    "@storybook/addon-interactions": "^8.0.6",
+    "@storybook/addon-links": "^8.0.6",
+    "@storybook/blocks": "^8.0.6",
+    "@storybook/testing-library": "^0.2.2",
+    "@storybook/vue3": "^8.0.6",
+    "@storybook/vue3-vite": "^8.0.6",
+    "@types/medium-editor": "^5.0.5",
+    "@types/node": "^20.9.0",
+    "@typescript-eslint/eslint-plugin": "^7.6.0",
+    "@typescript-eslint/parser": "^7.6.0",
+    "@vitejs/plugin-vue": "^5.0.4",
+    "@vue/eslint-config-prettier": "^9.0.0",
+    "@vue/eslint-config-typescript": "^13.0.0",
+    "autoprefixer": "^10.4.13",
+    "eslint": "^8.13.0",
+    "eslint-plugin-prettier": "^5.0.1",
+    "eslint-plugin-storybook": "^0.8.0",
+    "eslint-plugin-vue": "^9.18.1",
+    "husky": "^9.0.11",
+    "lint-staged": "^15.1.0",
+    "postcss": "^8.4.21",
+    "prettier": "^3.1.0",
+    "storybook": "^8.0.6",
+    "tailwindcss": "^3.4.0",
+    "typescript": "^5.2.2",
+    "vite": "^5.2.8",
+    "vue-eslint-parser": "^9.3.2",
+    "vue-tsc": "^2.0.11"
+  }
 }

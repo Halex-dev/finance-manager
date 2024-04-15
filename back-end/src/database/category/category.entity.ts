@@ -1,25 +1,26 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
-import { Cost } from '../cost/cost.entity';
-import { BadRequestException} from '@nestjs/common';
+import { Transaction } from '../transaction/transaction.entity';
+
+enum CategoryType {
+  INCOME = 'income',
+  EXPENSE = 'expense',
+}
 
 @Entity()
 export class Category {
-
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
-  description: string;
+  name: string;
 
-  @Column()
-  type: number;
+  // @Column({ type: 'enum', enum: ['income', 'expense'] }) other method
+  @Column({ type: 'text' })
+  category_type: CategoryType;
 
   @Column()
   color: string;
 
-  @Column()
-  date: string;
-
-  @OneToMany(() => Cost, cost => cost.category, { cascade: true })
-  costs: Cost[];
+  @OneToMany(() => Transaction, (transaction) => transaction.category)
+  transactions: Transaction[];
 }

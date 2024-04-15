@@ -1,4 +1,4 @@
-const winston = require('winston');
+import * as winston from 'winston';
 
 // Configurazione dei trasporti per la scrittura dei log
 const transports = [
@@ -8,15 +8,13 @@ const transports = [
 ];
 
 // Creazione dell'istanza del logger
-const logger = winston.createLogger({
+export const logger = winston.createLogger({
   level: 'info', // Livello minimo di log da visualizzare
   format: winston.format.combine(
     winston.format.timestamp(),
     winston.format.printf(({ timestamp, level, message }) => {
       return `${timestamp} ${level}: ${message}`;
-    })
+    }),
   ),
   transports,
 });
-
-module.exports = logger;
