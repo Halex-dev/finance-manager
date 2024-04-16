@@ -4,6 +4,17 @@ import { Transaction } from '../types'
 import { PropType, computed, toRef } from 'vue'
 import { Pagination, Sorting } from '../../../data/api/transactions'
 import { useVModel } from '@vueuse/core'
+import { format } from 'date-fns'
+
+//TODO modificare dipende alla lingua
+const formatDate = (value: string) => {
+  const date = Date.parse(value)
+  if (!isNaN(date)) {
+    return format(new Date(date), 'dd/MM/yyyy HH:mm')
+  } else {
+    return 'Invalid Date'
+  }
+}
 
 const columns = defineVaDataTableColumns([
   { label: 'id', key: 'id', sortable: true },
@@ -56,7 +67,7 @@ const onTransactionDelete = async (transaction: Transaction) => {
   }
 }
 </script>
-
+//TODO segnare le spese in negativo
 <template>
   <VaDataTable
     v-model:sort-by="sortByVModel"
@@ -65,6 +76,9 @@ const onTransactionDelete = async (transaction: Transaction) => {
     :items="transactions"
     :loading="$props.loading"
   >
+    <template #cell(date)="{ rowData }">
+      {{ formatDate(rowData.date.toString()) }}
+    </template>
     <template #cell(actions)="{ rowData }">
       <div class="flex gap-2 justify-end">
         <VaButton

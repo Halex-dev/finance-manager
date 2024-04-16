@@ -32,7 +32,7 @@
           <VaIcon name="mso-attach_money" color="#fff" size="large" />
         </div>
         <section>
-          <div class="text-xl font-bold mb-2">{{ monthlyEarnings }}</div>
+          <div class="text-xl font-bold mb-2">{{ formatMoney(monthlyEarnings) }}</div>
           <p class="text-xs text-success">
             <VaIcon name="arrow_upward" />
             25.36%
@@ -55,19 +55,32 @@ import { useChartData } from '../../../../data/charts/composables/useChartData'
 import { lineChartData } from '../../../../data/charts/lineChartData'
 import { ChartOptions } from 'chart.js'
 
-import { useRevenuesStore } from '../../../../stores/api/revenue'
-const revenuesStore = useRevenuesStore()
+import { useTransactionsStore } from '../../../../stores/api/transactions'
+import { formatMoney } from '../../../../data/charts/revenueChartData'
+import { CategoryType } from '../../../categories/types'
 
-const loading = computed(() => revenuesStore.loading)
-const revenues = computed(() => revenuesStore.monthlyRevenue)
+const transactionsStore = useTransactionsStore()
+const loading = computed(() => transactionsStore.loading)
+const transactions = computed(() => transactionsStore.transactions)
 
 let monthlyEarnings = 0
 
-watch([revenues], ([revenues]) => {
-  monthlyEarnings = 0
+watch([transactions], ([transactions]) => {
   const d = new Date()
   const month = d.getMonth()
-  revenues[month].map((cost) => (monthlyEarnings = +cost.price))
+  monthlyEarnings = 0
+
+  transactions.forEach((transaction) => {
+    if (transaction.category.category_type === CategoryType.INCOME) {
+      const dateTransa = new Date(transaction.date)
+      const transactionMonth = dateTransa.getMonth()
+      if (transactionMonth === month) {
+        monthlyEarnings += transaction.amount
+      }
+    }
+  })
+
+  return monthlyEarnings
 })
 
 const chartData = useChartData(lineChartData)
@@ -103,5 +116,5 @@ const options: ChartOptions<'line'> = {
   },
 }
 
-revenuesStore.fetch(revenuesStore)
+transactionsStore.fetch()
 </script>

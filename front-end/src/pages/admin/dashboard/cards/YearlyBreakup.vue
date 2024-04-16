@@ -42,7 +42,8 @@
       </VaCardTitle>
       <VaCardContent class="flex flex-row gap-1">
         <section class="w-1/2">
-          <div class="text-xl font-bold mb-2">{{ totalRevenueOfYear }}</div>
+          <div class="text-xl font-bold mb-2">{{ formatMoney(totalRevenueOfYear) }}</div>
+          <!-- TODO fare statistiche -->
           <p class="text-xs text-success whitespace-nowrap">
             <VaIcon name="arrow_outward" />
             +2,5%
@@ -83,12 +84,13 @@ import { doughnutConfig } from '../../../../components/va-charts/vaChartConfigs'
 import { ChartOptions } from 'chart.js'
 import { externalTooltipHandler } from '../../../../components/va-charts/external-tooltip'
 
-import { useRevenuesStore } from '../../../../stores/api/revenue'
+import { useTransactionsStore } from '../../../../stores/api/transactions'
+import { formatMoney } from '../../../../data/charts/revenueChartData'
+import { CategoryType } from '../../../categories/types'
 
-const revenuesStore = useRevenuesStore()
-
-const loading = computed(() => revenuesStore.loading)
-const revenues = computed(() => revenuesStore.monthlyRevenue)
+const transactionsStore = useTransactionsStore()
+const loading = computed(() => transactionsStore.loading)
+const transactions = computed(() => transactionsStore.transactions)
 
 let totalRevenueOfYear = 0
 
@@ -108,19 +110,13 @@ const options: ChartOptions<'doughnut'> = {
   circumference: 360 * (chartData.value.datasets[0].data.reduce((acc: number, d: number) => acc + d, 0) / 800),
 }
 
-watch([revenues], ([revenues]) => {
+watch([transactions], ([transactions]) => {
   totalRevenueOfYear = 0
-  for (const monthKey of Object.keys(revenues)) {
-    // Ottieni l'array di record di entrate per questo mese
-    const monthData = revenues[monthKey]
-
-    // Itera attraverso ogni record di entrate per questo mese
-    for (const entry of monthData) {
-      // Somma l'entrata di questo record alla variabile totale
-      totalRevenueOfYear += entry.earning
-    }
+  for (const transaction of transactions) {
+    // Aggiungi l'importo di ogni transazione alla variabile totale
+    if (transaction.category.category_type === CategoryType.INCOME) totalRevenueOfYear += transaction.amount
   }
 })
 
-revenuesStore.fetch(revenuesStore)
+transactionsStore.fetch()
 </script>

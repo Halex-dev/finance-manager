@@ -80,13 +80,7 @@ const onSave = () => {
   >
     <div class="self-stretch flex-col justify-start items-start gap-4 flex">
       <div class="flex gap-4 flex-col sm:flex-row w-full">
-        <VaInput
-          v-model="newTransaction.description"
-          label="Description"
-          class="w-full sm:w-1/2"
-          :rules="[validators.required]"
-          name="description"
-        />
+        <VaInput v-model="newTransaction.description" label="Description" class="w-full sm:w-1/2" name="description" />
         <VaInput
           v-model="newTransaction.amount"
           label="Amount"

@@ -16,15 +16,14 @@ const props = defineProps({
   },
 })
 
-const defaultNewWallet: Wallet = {
-  id: -1,
+const defaultNewWallet: Partial<Wallet> = {
   avatar: '',
   name: '',
   currency: 0,
   date: new Date(),
 }
 
-const newWallet = ref<Wallet>({ ...defaultNewWallet })
+const newWallet = ref<Partial<Wallet>>({ ...defaultNewWallet })
 
 const isFormHasUnsavedChanges = computed(() => {
   return Object.keys(newWallet.value).some((key) => {

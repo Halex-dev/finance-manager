@@ -4,12 +4,25 @@ import { Category } from '../types'
 import { PropType, computed, toRef } from 'vue'
 import { Pagination, Sorting } from '../../../data/api/categories'
 import { useVModel } from '@vueuse/core'
+import { format } from 'date-fns'
 
+//TODO modificare dipende alla lingua
+const formatDate = (value: string) => {
+  const date = Date.parse(value)
+  if (!isNaN(date)) {
+    return format(new Date(date), 'dd/MM/yyyy')
+  } else {
+    return 'Invalid Date'
+  }
+}
+
+//TODO cambiare expense e income e colore
 const columns = defineVaDataTableColumns([
   { label: 'id', key: 'id', sortable: true },
   { label: 'Name', key: 'name', sortable: true },
   { label: 'Type', key: 'category_type', sortable: true },
   { label: 'Color', key: 'color', sortable: true },
+  { label: 'Date', key: 'date', sortable: true },
   { label: ' ', key: 'actions', align: 'right' },
 ])
 
@@ -64,6 +77,9 @@ const onCategoryDelete = async (category: Category) => {
     :items="categories"
     :loading="$props.loading"
   >
+    <template #cell(date)="{ rowData }">
+      {{ formatDate(rowData.date.toString()) }}
+    </template>
     <template #cell(actions)="{ rowData }">
       <div class="flex gap-2 justify-end">
         <VaButton

@@ -10,7 +10,7 @@ const avatarColor = (userName: string) => {
 
 defineProps({
   wallet: {
-    type: Object as PropType<Wallet>,
+    type: Object as PropType<Partial<Wallet>>,
     required: true,
   },
   size: {
@@ -27,8 +27,8 @@ const isUrl = (avatar: string) => {
 <template>
   <VaAvatar
     :size="size"
-    :src="isUrl(wallet.avatar) ? wallet.avatar : ''"
+    :src="isUrl(wallet.avatar ?? '') ? wallet.avatar : ''"
     :fallback-text="wallet.avatar"
-    :color="avatarColor(wallet.name)"
+    :color="avatarColor(wallet.name ?? '')"
   />
 </template>

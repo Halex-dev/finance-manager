@@ -31,7 +31,7 @@ export const useCategoriesStore = defineStore('categories', {
     },
     async updateCategory(updateCategory: any) {
       try {
-        await axios.post(`${import.meta.env.VITE_API_URL}/categories/${updateCategory.id}`, updateCategory)
+        await axios.patch(`${import.meta.env.VITE_API_URL}/categories/${updateCategory.id}`, updateCategory)
 
         const index = this.categories.findIndex((category) => category.id === updateCategory.id)
         if (index !== -1) {

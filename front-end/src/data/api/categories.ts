@@ -3,8 +3,6 @@ import { Category } from './../../pages/categories/types'
 import { useCategoriesStore } from './../../stores/api/categories'
 
 export const categoriesStore = useCategoriesStore()
-await categoriesStore.fetch()
-
 export const categories = computed(() => categoriesStore.categories)
 
 export type Pagination = {
@@ -23,7 +21,7 @@ export type Filters = {
 }
 
 export const getCategories = async (filters: Partial<Filters & Pagination & Sorting>) => {
-  //await sleep(1000)
+  await categoriesStore.fetch()
   const { search, sortBy, sortingOrder } = filters
   let filteredCategories = categories.value
 
@@ -64,19 +62,16 @@ export const addCategory = async (category: Category) => {
   const response = await categoriesStore.addCategory(category)
 
   if (response) return response
-  await categoriesStore.fetch()
 }
 
 export const updateCategory = async (category: Category) => {
   const response = await categoriesStore.updateCategory(category)
 
   if (response) return response
-  await categoriesStore.fetch()
 }
 
 export const deleteCategory = async (category: Category) => {
   const response = await categoriesStore.deleteCategory(category.id)
 
   if (response) return response
-  await categoriesStore.fetch()
 }

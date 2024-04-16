@@ -1,9 +1,12 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { Transaction } from '../transaction/transaction.entity';
 
-enum CategoryType {
+export enum CategoryType {
   INCOME = 'income',
-  EXPENSE = 'expense',
+  EXPENSE_NECESSARY = 'expense necessary',
+  EXPENSE_OPTIONAL = 'expense optional/secondary',
+  LONG_TERM = 'long-term investments',
+  SHORT_TERM = 'short-term investments',
 }
 
 @Entity()
@@ -14,12 +17,14 @@ export class Category {
   @Column()
   name: string;
 
-  // @Column({ type: 'enum', enum: ['income', 'expense'] }) other method
   @Column({ type: 'text' })
   category_type: CategoryType;
 
   @Column()
   color: string;
+
+  @Column()
+  date: Date;
 
   @OneToMany(() => Transaction, (transaction) => transaction.category)
   transactions: Transaction[];

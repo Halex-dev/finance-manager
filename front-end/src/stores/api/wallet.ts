@@ -41,7 +41,7 @@ export const useWalletsStore = defineStore('Wallets', {
     },
     async updateWallet(updateWallet: Wallet) {
       try {
-        await axios.post(`${import.meta.env.VITE_API_URL}/wallets/${updateWallet.id}`, updateWallet)
+        await axios.patch(`${import.meta.env.VITE_API_URL}/wallets/${updateWallet.id}`, updateWallet)
 
         const index = this.wallets.findIndex((wallet) => wallet.id === updateWallet.id)
         if (index !== -1) {

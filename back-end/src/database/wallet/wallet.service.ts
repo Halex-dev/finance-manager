@@ -35,13 +35,15 @@ export class WalletService {
     }
   }
 
-  async createWallet(wallet: Wallet): Promise<Wallet> {
+  async createWallet(wallet: Partial<Wallet>): Promise<Wallet> {
     try {
       await this.validateInput(wallet);
 
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { id, ...newWallet } = wallet;
-      return await this.walletRepository.save(newWallet);
+      if (wallet.id) {
+        throw new BadRequestException('No.');
+      }
+
+      return await this.walletRepository.save(wallet);
     } catch (error) {
       if (error instanceof BadRequestException) {
         throw error; // L'eccezione di univocità è già stata gestita, rilanciala
@@ -95,7 +97,7 @@ export class WalletService {
     }
   }
 
-  async validateUniqueness(wallet: Wallet, id = null): Promise<void> {
+  async validateUniqueness(wallet: Partial<Wallet>, id = null): Promise<void> {
     const name = wallet.name;
     const existingWallet = await this.walletRepository.findOne({
       where: [{ name }, { name: Like(`%${name}%`) }],
@@ -106,7 +108,7 @@ export class WalletService {
     }
   }
 
-  async validateInput(wallet: Wallet, id = null): Promise<void> {
+  async validateInput(wallet: Partial<Wallet>, id = null): Promise<void> {
     if (!wallet.name || wallet.name.trim() === '') {
       throw new BadRequestException('The name cannot be invalid.');
     }

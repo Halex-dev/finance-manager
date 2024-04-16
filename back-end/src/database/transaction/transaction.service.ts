@@ -11,10 +11,7 @@ import { logger } from '../../module/logger';
 import { Wallet } from '../wallet/wallet.entity';
 import { Category } from '../category/category.entity';
 
-enum CategoryType {
-  INCOME = 'income',
-  EXPENSE = 'expense',
-}
+import { CategoryType } from '../category/category.entity';
 
 @Injectable()
 export class TransactionService {
@@ -311,15 +308,13 @@ export class TransactionService {
       throw new BadRequestException('Invalid wallet');
     }
 
-    if (category.category_type === CategoryType.EXPENSE) {
-      wallet.currency += data.amount; //Era una spesa, aggiungo i soldi
-    }
-
     if (category.category_type === CategoryType.INCOME) {
       if (wallet.currency < data.amount) {
         throw new BadRequestException('Not enough money in the wallet');
       }
       wallet.currency -= data.amount; //Era un ingresso, levo i soldi
+    } else {
+      wallet.currency += data.amount; //Era una spesa, aggiungo i soldi
     }
   }
 
@@ -336,17 +331,15 @@ export class TransactionService {
       throw new BadRequestException('Invalid wallet');
     }
 
-    // Se la categoria è una spesa, controlla se ci sono abbastanza soldi nel portafoglio
-    if (category.category_type === CategoryType.EXPENSE) {
+    if (category.category_type === CategoryType.INCOME) {
+      wallet.currency += data.amount;
+    } else {
+      // Se la categoria è una spesa, controlla se ci sono abbastanza soldi nel portafoglio
       if (wallet.currency < data.amount) {
         throw new BadRequestException('Not enough money in the wallet');
       }
 
       wallet.currency -= data.amount;
-    }
-
-    if (category.category_type === CategoryType.INCOME) {
-      wallet.currency += data.amount;
     }
   }
 }

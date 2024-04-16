@@ -2,6 +2,7 @@ import { computed } from 'vue'
 import { Transaction } from './../../pages/transactions/types'
 import { useTransactionsStore } from './../../stores/api/transactions'
 import { walletsStore } from './wallets'
+import { CategoryType } from '../../pages/categories/types'
 
 export const transactionsStore = useTransactionsStore()
 await transactionsStore.fetch()
@@ -12,11 +13,6 @@ export type Pagination = {
   page: number
   perPage: number
   total: number
-}
-
-enum CategoryType {
-  INCOME = 'income',
-  EXPENSE = 'expense',
 }
 
 export type Sorting = {

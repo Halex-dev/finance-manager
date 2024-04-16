@@ -6,10 +6,23 @@ import { PropType, computed, toRef } from 'vue'
 import { Pagination, Sorting } from '../../../data/api/wallets'
 import { useVModel } from '@vueuse/core'
 
+import { format } from 'date-fns'
+
+//TODO modificare dipende alla lingua
+const formatDate = (value: string) => {
+  const date = Date.parse(value)
+  if (!isNaN(date)) {
+    return format(new Date(date), 'dd/MM/yyyy')
+  } else {
+    return 'Invalid Date'
+  }
+}
+
 const columns = defineVaDataTableColumns([
   { label: 'id', key: 'id', sortable: true },
   { label: 'Name', key: 'name', sortable: true },
   { label: 'Currency', key: 'currency', sortable: true },
+  { label: 'Date', key: 'date', sortable: true },
   { label: ' ', key: 'actions', align: 'right' },
 ])
 
@@ -63,11 +76,15 @@ const onWalletDelete = async (wallet: Wallet) => {
     :items="wallets"
     :loading="$props.loading"
   >
-    <template #cell(fullname)="{ rowData }">
+    <template #cell(name)="{ rowData }">
       <div class="flex items-center gap-2 max-w-[230px] ellipsis">
         <WalletAvatar :wallet="rowData as Wallet" size="small" />
         {{ rowData.name }}
       </div>
+    </template>
+
+    <template #cell(date)="{ rowData }">
+      {{ formatDate(rowData.date.toString()) }}
     </template>
 
     <template #cell(actions)="{ rowData }">

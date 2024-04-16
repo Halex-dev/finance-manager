@@ -87,19 +87,15 @@ import {
   generateRevenuesNull,
 } from '../../../../data/charts/revenueChartData'
 
-import { useCostsStore } from '../../../../stores/api/costs'
-import { useRevenuesStore } from '../../../../stores/api/revenue'
+import { useTransactionsStore } from '../../../../stores/api/transactions'
 
-// Ottieni lo store dei costi
-const costsStore = useCostsStore()
-const revenuesStore = useRevenuesStore()
+const transactionsStore = useTransactionsStore()
 
 //TODO togliere e mettere animazione
 let revenuesChart = generateRevenuesNull(months)
 
-const loading = computed(() => revenuesStore.loading || costsStore.loading)
-const costs = computed(() => costsStore.monthlyCostsGet)
-const revenues = computed(() => revenuesStore.monthlyRevenue)
+const loading = computed(() => transactionsStore.loading)
+const transactions = computed(() => transactionsStore.transactions)
 
 const currentYear = new Date().getFullYear()
 const monthsWithCurrentYear = months.map((month) => `${month} ${currentYear}`)
@@ -114,14 +110,13 @@ const totalEarnings = computed(() => {
   return earningsForSelectedMonth.value.earning + earningsForSelectedMonth.value.expenses
 })
 
-watch([costs, revenues, loading], ([costs, revenues, loading]) => {
-  if (!loading) revenuesChart = generateRevenues(months, costs, revenues)
+watch([transactions, loading], ([transactions, loading]) => {
+  if (!loading) revenuesChart = generateRevenues(months, transactions)
 })
 
 const exportAsCSV = () => {
   downloadAsCSV(revenuesChart, 'revenue-report')
 }
 
-costsStore.fetch(costsStore)
-revenuesStore.fetch(revenuesStore)
+transactionsStore.fetch()
 </script>

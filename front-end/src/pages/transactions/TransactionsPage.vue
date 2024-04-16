@@ -120,11 +120,18 @@ const onTransactionSaved = async (Transaction: Transaction) => {
 }
 
 const onTransactionDelete = async (Transaction: Transaction) => {
-  await transactionsApi.remove(Transaction)
-  notify({
-    message: `${Transaction.id} has been deleted`,
-    color: 'success',
-  })
+  const response = await transactionsApi.remove(Transaction)
+  if (response) {
+    notify({
+      message: response,
+      color: 'danger',
+    })
+  } else {
+    notify({
+      message: `${Transaction.id} has been updated`,
+      color: 'success',
+    })
+  }
 }
 
 const editFormRef = ref()

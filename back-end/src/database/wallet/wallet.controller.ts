@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Delete, Body, Param } from '@nestjs/common';
+import { Controller, Get, Post, Delete, Body, Param, Patch } from '@nestjs/common';
 import { WalletService } from './wallet.service';
 import { Wallet } from './wallet.entity';
 
@@ -7,30 +7,30 @@ export class WalletController {
   constructor(private readonly walletService: WalletService) {}
 
   @Get()
-  async getWallet(): Promise<Wallet[]> {
+  async findAll(): Promise<Wallet[]> {
     return this.walletService.findAllWallet();
   }
 
   @Get(':id') // Aggiunta della route per ottenere una riga tramite ID
-  async getWalletById(@Param('id') id: number): Promise<Wallet> {
+  async findOne(@Param('id') id: number): Promise<Wallet> {
     return this.walletService.findWalletById(id);
   }
 
   @Post()
-  async createWallet(@Body() cost: Wallet): Promise<Wallet> {
-    return this.walletService.createWallet(cost);
+  async create(@Body() wallet: Partial<Wallet>): Promise<Wallet> {
+    return this.walletService.createWallet(wallet);
   }
 
-  @Post(':id')
-  async updateWallet(
+  @Patch(':id')
+  async update(
     @Param('id') id: number,
-    @Body() cost: Wallet,
+    @Body() wallet: Wallet,
   ): Promise<Wallet> {
-    return this.walletService.updateWallet(id, cost);
+    return this.walletService.updateWallet(id, wallet);
   }
 
-  @Delete(':id') // Aggiunta della route per eliminare una riga tramite ID
-  async deleteWalletById(@Param('id') id: number): Promise<void> {
+  @Delete(':id')
+  async delete(@Param('id') id: number): Promise<void> {
     await this.walletService.deleteWallet(id);
   }
 }

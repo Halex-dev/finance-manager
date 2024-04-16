@@ -110,11 +110,19 @@ const onCategorySaved = async (category: Category) => {
 }
 
 const onCategoryDelete = async (category: Category) => {
-  await categoriesApi.remove(category)
-  notify({
-    message: `${category.name} has been deleted`,
-    color: 'success',
-  })
+  const response = await categoriesApi.remove(category)
+
+  if (response) {
+    notify({
+      message: response,
+      color: 'danger',
+    })
+  } else {
+    notify({
+      message: `${category.name} has been updated`,
+      color: 'success',
+    })
+  }
 }
 
 const editFormRef = ref()

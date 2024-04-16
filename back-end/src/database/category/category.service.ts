@@ -5,14 +5,8 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Like, Repository } from 'typeorm';
-import { Category } from './category.entity';
+import { Category, CategoryType } from './category.entity';
 import { logger } from '../../module/logger';
-
-//TODO fare una cosa globale???
-enum CategoryType {
-  INCOME = 'income',
-  EXPENSE = 'expense',
-}
 
 @Injectable()
 export class CategoryService {
@@ -41,13 +35,15 @@ export class CategoryService {
     }
   }
 
-  async createCategory(category: Category): Promise<Category> {
+  async createCategory(category: Partial<Category>): Promise<Category> {
     try {
       await this.validateInput(category);
 
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { id, ...newCategory } = category;
-      return await this.categoryRepository.save(newCategory);
+      if (category.id) {
+        throw new BadRequestException('No.');
+      }
+
+      return await this.categoryRepository.save(category);
     } catch (error) {
       if (error instanceof BadRequestException) {
         throw error; // L'eccezione di univocità è già stata gestita, rilanciala
@@ -102,7 +98,10 @@ export class CategoryService {
     }
   }
 
-  async validateUniqueness(category: Category, id = null): Promise<void> {
+  async validateUniqueness(
+    category: Partial<Category>,
+    id = null,
+  ): Promise<void> {
     const name = category.name;
     const existingCategory = await this.categoryRepository.findOne({
       where: [{ name }, { name: Like(`%${name}%`) }],
@@ -113,7 +112,11 @@ export class CategoryService {
     }
   }
 
-  async validateInput(category: Category, id = null): Promise<void> {
+  async validateInput(category: Partial<Category>, id = null): Promise<void> {
+    if (!category.date) {
+      throw new BadRequestException('The date cannot be invalid.');
+    }
+
     if (!category.name || category.name.trim() === '') {
       throw new BadRequestException('The name cannot be invalid.');
     }

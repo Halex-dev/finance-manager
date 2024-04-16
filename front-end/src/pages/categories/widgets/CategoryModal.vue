@@ -4,6 +4,8 @@ import { useForm } from 'vuestic-ui'
 import { Category } from '../types'
 import { validators } from '../../../services/utils'
 
+import { CategoryType, categoryOptions } from '../types'
+
 const props = defineProps({
   category: {
     type: Object as PropType<Category | null>,
@@ -32,23 +34,14 @@ function generateRandomHexColor() {
   return hexColor
 }
 
-enum CategoryType {
-  INCOME = 'income',
-  EXPENSE = 'expense',
-}
-const categoryOptions = [
-  { category_name: 'Income', value: 'income' },
-  { category_name: 'Expense', value: 'expense' },
-]
-
-const defaultNewCategory: Category = {
-  id: -1,
+const defaultNewCategory: Partial<Category> = {
   name: '',
-  category_type: CategoryType.EXPENSE,
+  category_type: CategoryType.INCOME,
   color: generateRandomHexColor(),
+  date: new Date(),
 }
 
-const newCategory = ref<Category>({ ...defaultNewCategory })
+const newCategory = ref<Partial<Category>>({ ...defaultNewCategory })
 
 const isFormHasUnsavedChanges = computed(() => {
   return Object.keys(newCategory.value).some((key) => {
