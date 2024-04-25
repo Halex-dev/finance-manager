@@ -7,6 +7,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Like, Repository } from 'typeorm';
 import { Wallet } from './wallet.entity';
 import { logger } from '../../module/logger';
+import * as fs from 'fs';
+import * as path from 'path';
+import { appConfig } from 'src/module/config';
 
 @Injectable()
 export class WalletService {
@@ -77,7 +80,24 @@ export class WalletService {
   //TODO GESTIRE BADREQUESTEXCEPTION se voglio eliminare tutto il wallet con i costi o no
   async deleteWallet(id: number): Promise<void> {
     try {
+      const wallet = await this.walletRepository.findOne({ where: { id } });
+
+      if (!wallet) {
+        throw new NotFoundException('Portafoglio non trovato');
+      }
+
+      const fileName = path.basename(wallet.avatar);
       await this.walletRepository.delete(id);
+
+      if (fileName) {
+        const fullPath = path.join(appConfig.uploadPath, fileName);
+
+        if (!fs.existsSync(fullPath)) {
+          throw new NotFoundException('Immagine non trovata');
+        }
+
+        await fs.promises.unlink(fullPath);
+      }
     } catch (error) {
       if (
         error instanceof Error &&

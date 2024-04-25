@@ -5,6 +5,7 @@ import WalletAvatar from './WalletAvatar.vue'
 import { PropType, computed, toRef } from 'vue'
 import { Pagination, Sorting } from '../../../data/api/wallets'
 import { useVModel } from '@vueuse/core'
+import { formatMoney } from '../../../data/charts/revenueChartData'
 
 import { format } from 'date-fns'
 
@@ -76,6 +77,11 @@ const onWalletDelete = async (wallet: Wallet) => {
     :items="wallets"
     :loading="$props.loading"
   >
+    <template #cell(currency)="{ rowData }">
+      <div class="flex items-center gap-2 max-w-[230px] ellipsis">
+        {{ formatMoney(rowData.currency) }}
+      </div>
+    </template>
     <template #cell(name)="{ rowData }">
       <div class="flex items-center gap-2 max-w-[230px] ellipsis">
         <WalletAvatar :wallet="rowData as Wallet" size="small" />

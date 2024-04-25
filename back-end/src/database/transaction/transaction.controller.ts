@@ -10,6 +10,7 @@ import {
 } from '@nestjs/common';
 import { Transaction } from './transaction.entity';
 import { TransactionService } from './transaction.service';
+import { endOfDay } from 'date-fns';
 
 @Controller('transactions')
 export class TransactionController {
@@ -21,13 +22,22 @@ export class TransactionController {
     return this.transactionService.findAll();
   }*/
 
-  @Get()
+  /*@Get()
   async findAll(): Promise<Transaction[]> {
     return this.transactionService.findAllWithRelations();
+  }*/
+
+  @Get()
+  async findAll(): Promise<Transaction[]> {
+    // Ottieni l'anno corrente
+    const currentYear = new Date().getFullYear();
+    // Utilizza il service per ottenere le transazioni dell'anno corrente
+    return this.transactionService.findAllByYear(currentYear);
   }
 
   @Get(':id')
   async findOne(@Param('id') id: string): Promise<Transaction> {
+    console.log('ah?');
     return this.transactionService.findOne(+id);
   }
 
@@ -51,17 +61,39 @@ export class TransactionController {
     return this.transactionService.delete(+id);
   }
 
-  @Get('date')
+  @Get('date/range')
   async findByDateRange(
     @Query('startDate') startDate: string,
     @Query('endDate') endDate: string,
   ): Promise<Transaction[]> {
-    try {
-      const start = new Date(startDate);
-      const end = new Date(endDate);
-      return this.transactionService.findByDateRange(start, end);
-    } catch (error) {
-      throw error;
-    }
+    const start = new Date(startDate);
+    const end = endOfDay(new Date(endDate));
+    return this.transactionService.findByDateRange(start, end);
+  }
+
+  @Get('date/start')
+  async findByStartDate(
+    @Query('startDate') startDate: string,
+  ): Promise<Transaction[]> {
+    const start = new Date(startDate);
+    return this.transactionService.findByStartDate(start);
+  }
+
+  @Get('date/end')
+  async findByEndDate(
+    @Query('endDate') endDate: string,
+  ): Promise<Transaction[]> {
+    const end = endOfDay(new Date(endDate));
+    return this.transactionService.findByEndDate(end);
+  }
+
+  @Get('year/:year')
+  async findByYear(@Param('year') year: number): Promise<Transaction[]> {
+    return this.transactionService.findAllByYear(year);
+  }
+
+  @Get('month/:month')
+  async findByMonth(@Param('month') month: number): Promise<Transaction[]> {
+    return this.transactionService.findAllByMonth(month);
   }
 }

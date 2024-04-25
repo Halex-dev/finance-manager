@@ -5,6 +5,7 @@ import { Transaction } from '../../pages/transactions/types'
 export const useTransactionsStore = defineStore('transactions', {
   state: () => ({
     transactions: [] as Transaction[],
+    transactionsMonth: [] as Transaction[],
     loading: false,
   }),
   actions: {
@@ -12,8 +13,11 @@ export const useTransactionsStore = defineStore('transactions', {
       try {
         this.loading = true
 
+        //console.log('Carico TRANSACTION')
         const response = await axios.get(`${import.meta.env.VITE_API_URL}/transactions/`)
         this.transactions = response.data
+
+        this.fetchByMonth(new Date().getMonth() + 1)
 
         this.loading = false
       } catch (error) {
@@ -50,6 +54,61 @@ export const useTransactionsStore = defineStore('transactions', {
       } catch (error: any) {
         if (error.response.data.message) return error.response.data.message
         else return 'Server error, contact administrator'
+      }
+    },
+    async fetchByDateRange(startDate: Date, endDate: Date) {
+      try {
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/transactions/date/range`, {
+          params: {
+            startDate,
+            endDate,
+          },
+        })
+        return response.data
+      } catch (error) {
+        console.error('Error fetching transactions by date range:', error)
+      }
+    },
+    async fetchByStartDate(startDate: Date) {
+      try {
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/transactions/date/start`, {
+          params: {
+            startDate,
+          },
+        })
+        this.transactions = response.data
+        return response.data
+      } catch (error) {
+        console.error('Error fetching transactions by start date:', error)
+      }
+    },
+    async fetchByEndDate(endDate: Date) {
+      try {
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/transactions/date/end`, {
+          params: {
+            endDate,
+          },
+        })
+        return response.data
+      } catch (error) {
+        console.error('Error fetching transactions by end date:', error)
+      }
+    },
+    async fetchByYear(year: number) {
+      try {
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/transactions/year/${year}`)
+        return response.data
+      } catch (error) {
+        console.error('Error fetching transactions with relations by year:', error)
+      }
+    },
+    async fetchByMonth(month: number) {
+      try {
+        //console.log('Carico TRANSACTIONMonth')
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/transactions/month/${month}`)
+        this.transactionsMonth = response.data
+      } catch (error) {
+        console.error('Error fetching transactions with relations by month:', error)
       }
     },
   },

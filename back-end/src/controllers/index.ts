@@ -4,6 +4,7 @@ import { WalletController } from '../database/wallet/wallet.controller';
 import { AmortizationController } from '../database/amortization/amortization.controller';
 import { TransactionController } from '../database/transaction/transaction.controller';
 import { MovementController } from 'src/database/movement/movement.controller';
+import { ImageController } from 'src/database/image/image.controller';
 
 const Controllers = [
   AppController,
@@ -12,6 +13,7 @@ const Controllers = [
   AmortizationController,
   TransactionController,
   MovementController,
+  ImageController,
 ];
 
 export default Controllers;

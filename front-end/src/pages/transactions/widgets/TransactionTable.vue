@@ -5,12 +5,14 @@ import { PropType, computed, toRef } from 'vue'
 import { Pagination, Sorting } from '../../../data/api/transactions'
 import { useVModel } from '@vueuse/core'
 import { format } from 'date-fns'
+import { formatMoney } from '../../../data/charts/revenueChartData'
+import { CategoryType } from '../../categories/types'
 
 //TODO modificare dipende alla lingua
 const formatDate = (value: string) => {
   const date = Date.parse(value)
   if (!isNaN(date)) {
-    return format(new Date(date), 'dd/MM/yyyy HH:mm')
+    return format(new Date(date), 'dd/MM/yyyy') //format(new Date(date), 'dd/MM/yyyy HH:mm')
   } else {
     return 'Invalid Date'
   }
@@ -18,11 +20,11 @@ const formatDate = (value: string) => {
 
 const columns = defineVaDataTableColumns([
   { label: 'id', key: 'id', sortable: true },
-  { label: 'Description', key: 'description', sortable: true },
   { label: 'Amount', key: 'amount', sortable: true },
-  { label: 'Date', key: 'date', sortable: true },
+  { label: 'Description', key: 'description', sortable: true },
   { label: 'Wallet', key: 'wallet.name', sortable: true },
   { label: 'Category', key: 'category.name', sortable: true },
+  { label: 'Date', key: 'date', sortable: true },
   { label: ' ', key: 'actions', align: 'right' },
 ])
 
@@ -76,6 +78,13 @@ const onTransactionDelete = async (transaction: Transaction) => {
     :items="transactions"
     :loading="$props.loading"
   >
+    <template #cell(amount)="{ rowData }">
+      {{
+        rowData.category.category_type !== CategoryType.INCOME
+          ? '- ' + formatMoney(rowData.amount)
+          : formatMoney(rowData.amount)
+      }}
+    </template>
     <template #cell(date)="{ rowData }">
       {{ formatDate(rowData.date.toString()) }}
     </template>

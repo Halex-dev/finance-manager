@@ -2,7 +2,7 @@ export const sleep = (ms = 0) => {
   return new Promise((resolve) => setTimeout(resolve, ms))
 }
 
-//TODO aggiungere italiano
+//TODO aggiungere funzioni utili
 /** Validation */
 export const validators = {
   email: (v: string) => {

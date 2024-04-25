@@ -1,5 +1,3 @@
-//TODO MODIFICARE
-
 <template>
   <div class="profile-dropdown-wrapper">
     <VaDropdown v-model="isShown" :offset="[9, 0]" class="profile-dropdown" stick-to-edges>

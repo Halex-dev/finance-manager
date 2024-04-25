@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { defineVaDataTableColumns, useModal } from 'vuestic-ui'
-import { Category } from '../types'
+import { Category} from '../types'
 import { PropType, computed, toRef } from 'vue'
 import { Pagination, Sorting } from '../../../data/api/categories'
 import { useVModel } from '@vueuse/core'
@@ -16,7 +16,6 @@ const formatDate = (value: string) => {
   }
 }
 
-//TODO cambiare expense e income e colore
 const columns = defineVaDataTableColumns([
   { label: 'id', key: 'id', sortable: true },
   { label: 'Name', key: 'name', sortable: true },
@@ -68,7 +67,6 @@ const onCategoryDelete = async (category: Category) => {
 }
 </script>
 
-//TODO mostro colore invece dell'hex
 <template>
   <VaDataTable
     v-model:sort-by="sortByVModel"
@@ -77,6 +75,23 @@ const onCategoryDelete = async (category: Category) => {
     :items="categories"
     :loading="$props.loading"
   >
+    <template #cell(category_type)="{ rowData }">
+      {{ rowData.category_type.toUpperCase() }}
+    </template>
+    <template #cell(color)="{ rowData }">
+      <div class="flex items-center">
+        <div
+          class="p-1 rounded mr-3"
+          :style="{
+            backgroundColor: rowData.color,
+            color: '\#ffffff',
+          }"
+        >
+          <slot name="icon"></slot>
+        </div>
+        <p class="text-sm">{{ rowData.color }}</p>
+      </div>
+    </template>
     <template #cell(date)="{ rowData }">
       {{ formatDate(rowData.date.toString()) }}
     </template>

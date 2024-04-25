@@ -1,9 +1,0 @@
-Poco complessi:
-
-- Gestire che ogni cateogira ha un colore (in database e che dopo posso modificarlo?)
-- Aggiungere campo "pagato/da pagare" in costi e in caso non prenderli in considerazione
-
-Richiedono tempo:
-
-- Delete category or wallet and recover it
-- Repeated costs/incomes automaticatly (con icona spesa effettuata o ancora da effettuare)

@@ -13,12 +13,12 @@ export class Transaction {
   @ManyToOne(() => Wallet, (wallet) => wallet.transactions)
   wallet: Wallet;
 
-  @Column()
+  @Column({ type: 'float' })
   amount: number;
 
-  @Column()
+  @Column({ type: 'text' })
   description: string;
 
-  @Column()
+  @Column({ type: 'date' })
   date: Date;
 }

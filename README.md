@@ -11,19 +11,25 @@ Welcome to the Financial Manager! This tool is designed to help you manage your 
 
 - Future Planning: Set the stage for the future by creating long-term financial goals, such as saving for a vacation or retirement. The Financial Manager will help you plan the actions needed to achieve them.
 
-
 - [X] Expense Tracking
-- [X] Amortization of costs
-- [ ] More reports and Charts
+- [X] More reports and Charts
+- [ ] Amortization of costs
 - [ ] Two or more languages
 - [ ] Repeated costs/incomes automaticatly (con icona spesa effettuata o ancora da effettuare)
+- [ ] Docker
 - [ ] Future Planning
+- [ ] Calendar with expenses
+- [ ] Integration with Banking APIs (If possible)
 - [ ] ETF, etc
 - [ ] Monitor price for funko etc
 - [ ] Famous cryptocurrencies with automatic earn or loss
 - [ ] Budget Alerts: Receive notifications when your expenses in a given category are about to exceed your established budget. This helps you avoid unpleasant surprises and stay in control of your finances.
+- [ ] SSE Event (Reactivity data)
+- [ ] Goal Tracking
+- [ ] Debt Management
+- [ ] Forecasting and Predictive Analysis
+- [ ] Customizable Dashboards
 - [ ] idk yet....
-
 
 # How to start it
 ### Work in progres....

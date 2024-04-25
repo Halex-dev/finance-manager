@@ -1,29 +1,39 @@
 <template>
+  <!--- //TODO SISTEMARE IL FLEX, non mi piace molto -->
   <h1 class="page-title">Transactions</h1>
-
   <VaCard>
     <VaCardContent>
-      <div class="flex flex-col md:flex-row gap-2 mb-2 justify-between">
-        <div class="flex flex-col md:flex-row gap-2 justify-start">
+      <div class="flex flex-wrap md:flex-row items-center mb-4">
+        <div class="md:w-auto flex flex-wrap items-center mb-2 md:mb-0">
           <VaButtonToggle
             v-model="filters.category_type"
             color="background-element"
             border-color="background-element"
+            class="mr-2"
             :options="[
               { label: 'All', value: 'all' },
               { label: 'Expense', value: 'expense' },
               { label: 'Income', value: 'income' },
             ]"
           />
-          <VaInput v-model="filters.search" placeholder="Search">
+        </div>
+        <div class="w-auto flex flex-wrap items-center mb-2 md:mb-0">
+          <VaInput v-model="filters.search" placeholder="Search" class="mr-2">
             <template #prependInner>
               <VaIcon name="search" color="secondary" size="small" />
             </template>
           </VaInput>
         </div>
-        <VaButton @click="showAddTransactionModal">Add Transaction</VaButton>
+        <div class="md:w-auto flex flex-wrap items-center mb-2 md:mb-0">
+          <VaDateInput v-model="filters.dateStart" name="Date start" class="mr-2" />
+        </div>
+        <div class="md:w-auto flex flex-wrap items-center mb-2 md:mb-0">
+          <VaDateInput v-model="filters.dateEnd" name="Date end" class="mr-2" />
+        </div>
+        <div class="md:w-auto flex flex-wrap items-center mb-2 md:mb-0">
+          <VaButton @click="showAddTransactionModal">Add Transaction</VaButton>
+        </div>
       </div>
-
       <TransactionTable
         v-model:sort-by="sorting.sortBy"
         v-model:sorting-order="sorting.sortingOrder"

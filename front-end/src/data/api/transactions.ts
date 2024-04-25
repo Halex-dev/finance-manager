@@ -21,8 +21,10 @@ export type Sorting = {
 }
 
 export type Filters = {
-  category_type: CategoryType | 'all'
+  category_type: 'income' | 'expense' | 'all'
   search: string
+  dateStart: Date
+  dateEnd: Date
 }
 
 export const getTransactions = async (filters: Partial<Filters & Pagination & Sorting>) => {
@@ -30,37 +32,50 @@ export const getTransactions = async (filters: Partial<Filters & Pagination & So
   // await sleep(1000)
 
   // Destructure filters
-  const { category_type, search, sortBy, sortingOrder } = filters
-
+  const { category_type, search, dateStart, dateEnd, sortBy, sortingOrder } = filters
+  let filteredTransactions = []
   // Get initial list of transactions
-  let filteredTransactions = transactions.value
+  if (dateStart && dateEnd) {
+    filteredTransactions = await transactionsStore.fetchByDateRange(dateStart, dateEnd)
+  } else if (dateEnd) {
+    filteredTransactions = await transactionsStore.fetchByEndDate(dateEnd)
+  } else if (dateStart) {
+    filteredTransactions = await transactionsStore.fetchByStartDate(dateStart)
+  } else {
+    filteredTransactions = transactions.value
+  }
 
   // Filter transactions by category type
-  filteredTransactions = filteredTransactions.filter((transaction) => {
-    if (category_type === 'all') {
-      // Return true if category type is 'all', indicating no filtering required
-      return true
-    } else {
-      // Otherwise, filter transactions based on category type
-      return transaction.category.category_type === category_type
-    }
-  })
+  filteredTransactions = filteredTransactions.filter(
+    (transaction: { category: { category_type: string | undefined } }) => {
+      if (category_type === 'all') {
+        // Return true if category type is 'all', indicating no filtering required
+        return true
+      }
+      if (category_type === 'expense') {
+        return transaction.category.category_type !== CategoryType.INCOME
+      } else {
+        // Otherwise, filter transactions based on category type
+        return transaction.category.category_type === category_type
+      }
+    },
+  )
 
   // If no filtered transactions, return empty data and pagination details
   if (!filteredTransactions) return { data: [], pagination: { page: 1, perPage: 10, total: 0 } }
 
   // Filter transactions by search query (if provided)
   if (search) {
-    filteredTransactions = filteredTransactions.filter((transactions) =>
+    filteredTransactions = filteredTransactions.filter((transactions: { description: string }) =>
       transactions.description.toLowerCase().includes(search.toLowerCase()),
     )
   }
 
   // Sort transactions (if sortBy and sortingOrder provided)
   if (sortBy && sortingOrder) {
-    filteredTransactions = filteredTransactions.sort((a, b) => {
-      const first = a.id
-      const second = b.id
+    filteredTransactions = filteredTransactions.sort((a: { date: Date }, b: { date: Date }) => {
+      const first = a.date
+      const second = b.date
       if (first > second) {
         return sortingOrder === 'asc' ? 1 : -1
       }

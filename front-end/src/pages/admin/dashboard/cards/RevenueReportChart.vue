@@ -5,8 +5,9 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted, nextTick } from 'vue'
+import { ref, onMounted, nextTick, computed } from 'vue'
 import { Chart, registerables } from 'chart.js'
+import tinycolor from 'tinycolor2'
 
 import type { Revenues } from '../../../../data/charts/revenueChartData'
 import { earningsColor, expensesColor, formatMoney } from '../../../../data/charts/revenueChartData'
@@ -20,6 +21,21 @@ Chart.register(...registerables)
 
 const BR_THICKNESS = 4
 
+const expensesData = computed(() => {
+  return revenues.map(({ expenses }) => {
+    return expenses
+  })
+})
+
+const revenueData = computed(() => {
+  return revenues.map(({ earning }) => {
+    return earning
+  })
+})
+
+const canvas = ref<HTMLCanvasElement | null>(null)
+const doShowChart = ref(false)
+
 Chart.register([
   {
     id: 'background-color',
@@ -31,7 +47,6 @@ Chart.register([
         const meta = chart.getDatasetMeta(datasetIndex)
         if (meta.type === 'bar') {
           const bgColor = earningsColor
-
           // Loop through each bar in the dataset
           meta.data.forEach(function (bar) {
             ctx.fillStyle = bgColor
@@ -43,9 +58,7 @@ Chart.register([
   },
 ])
 
-const canvas = ref<HTMLCanvasElement | null>(null)
-
-const doShowChart = ref(false)
+const darkEarningsColor = tinycolor(earningsColor).darken(20).toString()
 
 onMounted(() => {
   if (canvas.value) {
@@ -57,10 +70,16 @@ onMounted(() => {
           labels: months,
           datasets: [
             {
-              // Show relative expenses ratio
-              data: revenues.map(({ earning, expenses }) => (expenses / earning) * 100),
-              backgroundColor: expensesColor,
-              barThickness: BR_THICKNESS,
+              label: 'Expenses', // Etichetta del dataset delle spese
+              data: expensesData.value, // Dati delle spese
+              backgroundColor: expensesColor, // Colore per le barre delle spese
+              barThickness: BR_THICKNESS, // Spessore delle barre per il dataset delle spese
+            },
+            {
+              label: 'Earnings', // Etichetta del dataset dei costi
+              data: revenueData.value, // Dati dei costi
+              backgroundColor: darkEarningsColor, // Colore per le barre dei costi
+              barThickness: BR_THICKNESS, // Spessore delle barre per il dataset dei costi
             },
           ],
         },

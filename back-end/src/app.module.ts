@@ -5,16 +5,18 @@ import Controllers from './controllers/index';
 import Services from './services/index';
 import Entities from './entities/index';
 
-// ----------------------------------- Vue.js -----------------------
-import { ServeStaticModule } from '@nestjs/serve-static'; //For Vue.js
-import { join } from 'path'; //For Vue.js
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
   imports: [
+    /*ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '../..', 'front-end/dist'), //For front-end.js
+    }),*/ //TODO Aggiungere quando si può fare e si fa la build di Vite
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '../..', 'front-end/dist'), //For Vue.js
+      rootPath: join(process.cwd(), 'uploads'), // Serve le immagini statiche dalla directory 'uploads'
+      serveRoot: '/uploads', // Specifica il percorso dell'URL da cui saranno servite le immagini
     }),
-
     TypeOrmModule.forRoot({
       type: 'sqlite',
       database: './database/db.sqlite', // Path of SQLite file

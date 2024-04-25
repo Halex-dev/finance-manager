@@ -4,6 +4,7 @@ import { CategoryService } from '../database/category/category.service';
 import { WalletService } from '../database/wallet/wallet.service';
 import { AmortizationService } from 'src/database/amortization/amortization.service';
 import { MovementService } from 'src/database/movement/movement.service';
+import { ImageService } from 'src/database/image/image.service';
 
 const Services = [
   AppService,
@@ -12,6 +13,7 @@ const Services = [
   AmortizationService,
   TransactionService,
   MovementService,
+  ImageService,
 ];
 
 export default Services;

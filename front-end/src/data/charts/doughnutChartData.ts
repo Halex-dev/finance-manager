@@ -8,9 +8,9 @@ export const doughnutChartData: TDoughnutChartData = {
   labels: ['Profit', 'Expenses'],
   datasets: [
     {
-      label: 'Yearly Breakdown',
+      label: '',
       backgroundColor: [profitBackground, earningsBackground],
-      data: [432, 167],
+      data: [50, 50],
     },
   ],
 }

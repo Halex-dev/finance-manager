@@ -14,16 +14,16 @@ export class Category {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ type: 'text' })
   name: string;
 
   @Column({ type: 'text' })
   category_type: CategoryType;
 
-  @Column()
+  @Column({ type: 'text' })
   color: string;
 
-  @Column()
+  @Column({ type: 'date' })
   date: Date;
 
   @OneToMany(() => Transaction, (transaction) => transaction.category)

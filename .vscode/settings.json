@@ -1,0 +1,11 @@
+{
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "driver": "SQLite",
+            "name": "Database finance",
+            "database": "${workspaceFolder:finance-manager}/back-end/database/db.sqlite"
+        }
+    ],
+    "sqltools.useNodeRuntime": true
+}

@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectEntityManager, InjectRepository } from '@nestjs/typeorm';
-import { Between, EntityManager, Repository } from 'typeorm';
+import { Between, EntityManager, MoreThanOrEqual, Repository } from 'typeorm';
 import { Transaction } from './transaction.entity';
 import { logger } from '../../module/logger';
 
@@ -259,7 +259,7 @@ export class TransactionService {
   ): Promise<Transaction[]> {
     try {
       return await this.transactionRepository.find({
-        relations: ['category', 'transaction'],
+        relations: ['category', 'wallet'],
         where: {
           date: Between(startDate, endDate),
         },
@@ -271,6 +271,83 @@ export class TransactionService {
       }
       throw new BadRequestException(
         'Error while finding transactions by date range',
+      );
+    }
+  }
+
+  async findByStartDate(startDate: Date): Promise<Transaction[]> {
+    try {
+      return await this.transactionRepository.find({
+        relations: ['category', 'wallet'],
+        where: {
+          date: MoreThanOrEqual(startDate),
+        },
+      });
+    } catch (error) {
+      logger.error(`Error while finding transactions by start date: ${error}`);
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+      throw new BadRequestException(
+        'Error while finding transactions by start date',
+      );
+    }
+  }
+
+  async findByEndDate(endDate: Date): Promise<Transaction[]> {
+    try {
+      return await this.transactionRepository.find({
+        relations: ['category', 'wallet'],
+        where: {
+          date: Between(new Date(0), endDate),
+        },
+      });
+    } catch (error) {
+      logger.error(`Error while finding transactions by end date: ${error}`);
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+      throw new BadRequestException(
+        'Error while finding transactions by end date',
+      );
+    }
+  }
+
+  async findAllByYear(year: number): Promise<Transaction[]> {
+    try {
+      const startDate = new Date(year, 0, 1); // Inizio dell'anno corrente
+      const endDate = new Date(year, 11, 31); // Fine dell'anno corrente
+      return this.transactionRepository.find({
+        relations: ['category', 'wallet'],
+        where: {
+          date: Between(startDate, endDate),
+        },
+      });
+    } catch (error) {
+      logger.error(
+        `Error while finding transactions with relations by year: ${error}`,
+      );
+      throw new BadRequestException('Error while finding transactions by year');
+    }
+  }
+
+  async findAllByMonth(month: number): Promise<Transaction[]> {
+    try {
+      const currentYear = new Date().getFullYear(); // Ottiene l'anno corrente
+      const startDate = new Date(currentYear, month - 1, 1); // Inizio del mese specificato
+      const endDate = new Date(currentYear, month, 0); // Fine del mese specificato
+      return this.transactionRepository.find({
+        relations: ['category', 'wallet'],
+        where: {
+          date: Between(startDate, endDate),
+        },
+      });
+    } catch (error) {
+      logger.error(
+        `Error while finding transactions with relations by month: ${error}`,
+      );
+      throw new BadRequestException(
+        'Error while finding transactions by month',
       );
     }
   }

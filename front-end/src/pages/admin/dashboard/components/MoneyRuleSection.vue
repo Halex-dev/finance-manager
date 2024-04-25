@@ -1,64 +1,34 @@
 <template>
   <template v-if="loading">
     <div class="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-3 gap-3">
-      <MoneyRuleCard
-        title="50/30/20 Rule"
-        icon="fa-money-bill"
-        :change-text="'Save 20%'"
-        :up="true"
-        icon-background="#4CAF50"
-        icon-color="#ffffff"
-        :bars="[]"
-      />
-
-      <MoneyRuleCard
-        title="4 Bucket Rule"
-        icon="fa-hand-holding-usd"
-        :change-text="'Invest 40%'"
-        :up="true"
-        icon-background="#FDB813"
-        icon-color="#ffffff"
-        :bars="[]"
-      />
-
-      <MoneyRuleCard
-        title="70/30 Rule"
-        icon="fa-hand-holding-usd"
-        :change-text="'Invest 40%'"
-        :up="true"
-        icon-background="#18b5be"
-        icon-color="#ffffff"
-        :bars="[]"
-      />
+      <VaSkeleton variant="squared" height="12rem" />
+      <VaSkeleton variant="squared" height="12rem" />
     </div>
   </template>
   <template v-else>
     <div class="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-3 gap-3">
       <MoneyRuleCard
+        v-if="!loading && bar50Rule"
         title="50/30/20 Rule"
         icon="fa-money-bill"
-        :change-text="'Save 20%'"
-        :up="true"
         icon-background="#4CAF50"
         icon-color="#ffffff"
         :bars="bar50Rule"
       />
 
       <MoneyRuleCard
+        v-if="!loading && bar4Bucket"
         title="4 Bucket Rule"
         icon="fa-hand-holding-usd"
-        :change-text="'Invest 40%'"
-        :up="true"
         icon-background="#FDB813"
         icon-color="#ffffff"
         :bars="bar4Bucket"
       />
 
       <MoneyRuleCard
+        v-if="!loading && bar70Rule"
         title="70/30 Rule"
         icon="fa-hand-holding-usd"
-        :change-text="'Invest 40%'"
-        :up="true"
         icon-background="#18b5be"
         icon-color="#ffffff"
         :bars="bar70Rule"
@@ -68,50 +38,54 @@
 </template>
 
 <script setup lang="ts">
-import { computed, watch } from 'vue'
+import { computed, watch, onMounted, ref } from 'vue'
 import MoneyRuleCard from '../cards/MoneyRuleCard.vue'
 
 import { useTransactionsStore } from '../../../../stores/api/transactions'
 import { Transaction } from '../../../transactions/types'
 import { CategoryType } from '../../../categories/types'
 
-//TODO transform all in Asyinc
-//import { formatMoney } from '../../../data/charts/revenueChartData'
+import { formatMoney } from '../../../../data/charts/revenueChartData'
 
 const transactionsStore = useTransactionsStore()
 const loading = computed(() => transactionsStore.loading)
-const transactions = computed(() => transactionsStore.transactions)
+const transactionsMonth = computed(() => transactionsStore.transactionsMonth)
 
-let bar50Rule: {
+type RuleType = {
   label: string
   labelRight: string
   percent: number
   color?: string
-}[] = []
+}[]
 
-let bar4Bucket: {
-  label: string
-  labelRight: string
-  percent: number
-  color?: string
-}[] = []
+const bar50Rule = ref<RuleType>([])
+const bar4Bucket = ref<RuleType>([])
+const bar70Rule = ref<RuleType>([])
 
-let bar70Rule: {
-  label: string
-  labelRight: string
-  percent: number
-  color?: string
-}[] = []
+onMounted(async () => {
+  if (transactionsMonth.value.length === 0) {
+    await transactionsStore.fetchByMonth(new Date().getMonth() + 1)
+  }
 
-watch([transactions], ([transactions]) => {
-  const { income, expenses_necessary, expenses_optional, long_term, short_term } = calculateCategoriesType(transactions)
+  const { income, expenses_necessary, expenses_optional, long_term, short_term } = await calculateCategoriesType(
+    transactionsMonth.value,
+  )
 
-  bar50Rule = adaptBars50Rule(income, expenses_necessary, expenses_optional, long_term, short_term)
-  bar4Bucket = adaptBars4Bucket(income, expenses_necessary, expenses_optional, long_term, short_term)
-  bar70Rule = adaptBars70Rule(income, expenses_necessary, expenses_optional)
+  bar50Rule.value = await adaptBars50Rule(income, expenses_necessary, expenses_optional, long_term, short_term)
+  bar4Bucket.value = await adaptBars4Bucket(income, expenses_necessary, expenses_optional, long_term, short_term)
+  bar70Rule.value = await adaptBars70Rule(income, expenses_necessary, expenses_optional)
 })
 
-function getColorByPercentage(percent: number) {
+watch([transactionsMonth], async ([transactionsMonth]) => {
+  const { income, expenses_necessary, expenses_optional, long_term, short_term } =
+    await calculateCategoriesType(transactionsMonth)
+
+  bar50Rule.value = await adaptBars50Rule(income, expenses_necessary, expenses_optional, long_term, short_term)
+  bar4Bucket.value = await adaptBars4Bucket(income, expenses_necessary, expenses_optional, long_term, short_term)
+  bar70Rule.value = await adaptBars70Rule(income, expenses_necessary, expenses_optional)
+})
+
+async function getColorByPercentage(percent: number) {
   if (percent < 50) {
     return 'bg-info'
   } else if (percent < 85) {
@@ -121,7 +95,7 @@ function getColorByPercentage(percent: number) {
   }
 }
 
-function getColorByPercentageOpposite(percent: number) {
+async function getColorByPercentageOpposite(percent: number) {
   if (percent < 50) {
     return 'bg-danger'
   } else if (percent < 85) {
@@ -131,13 +105,13 @@ function getColorByPercentageOpposite(percent: number) {
   }
 }
 
-function adaptBars4Bucket(
+async function adaptBars4Bucket(
   income: number,
   expenses_necessary: number,
   expenses_optional: number,
   long_term: number,
   short_term: number,
-): { label: string; labelRight: string; percent: number; color: string }[] {
+): Promise<{ label: string; labelRight: string; percent: number; color: string }[]> {
   const total = income
   const limit50 = total * 0.5
   const limit30 = total * 0.3
@@ -156,36 +130,36 @@ function adaptBars4Bucket(
   return [
     {
       label: 'Necessary',
-      labelRight: `${expenses_necessary}/${limit50}`,
+      labelRight: `${formatMoney(expenses_necessary)}/${formatMoney(limit50)}`,
       percent: necessaryPercent,
-      color: getColorByPercentage(necessaryPercent),
+      color: await getColorByPercentage(necessaryPercent),
     },
     {
       label: 'Optional',
-      labelRight: `${expenses_optional}/${limit30}`,
+      labelRight: `${formatMoney(expenses_optional)}/${formatMoney(limit30)}`,
       percent: optionalPercent,
-      color: getColorByPercentage(optionalPercent),
+      color: await getColorByPercentage(optionalPercent),
     },
     {
       label: 'Short-term investments',
-      labelRight: `${short_term}/${limit10}`,
+      labelRight: `${formatMoney(short_term)}/${formatMoney(limit10)}`,
       percent: shortPercent,
-      color: getColorByPercentage(shortPercent),
+      color: await getColorByPercentage(shortPercent),
     },
     {
       label: 'Long-term investments',
-      labelRight: `${long_term}/${limit10}`,
+      labelRight: `${formatMoney(long_term)}/${formatMoney(limit10)}`,
       percent: longPercent,
-      color: getColorByPercentage(longPercent),
+      color: await getColorByPercentage(longPercent),
     },
   ]
 }
 
-function adaptBars70Rule(
+async function adaptBars70Rule(
   income: number,
   expenses_necessary: number,
   expenses_optional: number,
-): { label: string; labelRight: string; percent: number; color: string }[] {
+): Promise<{ label: string; labelRight: string; percent: number; color: string }[]> {
   const total = income
   const expenses = expenses_necessary + expenses_optional
   const limit70 = total * 0.7
@@ -200,26 +174,26 @@ function adaptBars70Rule(
   return [
     {
       label: 'Spent',
-      labelRight: `${expenses}/${Math.floor(limit70)}`,
+      labelRight: `${formatMoney(expenses)}/${formatMoney(limit70)}`,
       percent: spentPercent,
-      color: getColorByPercentage(spentPercent),
+      color: await getColorByPercentage(spentPercent),
     },
     {
       label: 'Save',
-      labelRight: `${income - expenses}/${Math.floor(limit30)}`,
+      labelRight: `${formatMoney(income - expenses)}/${formatMoney(limit30)}`,
       percent: savePercent,
-      color: getColorByPercentageOpposite(savePercent),
+      color: await getColorByPercentageOpposite(savePercent),
     },
   ]
 }
 
-function adaptBars50Rule(
+async function adaptBars50Rule(
   income: number,
   expenses_necessary: number,
   expenses_optional: number,
   long_term: number,
   short_term: number,
-): { label: string; labelRight: string; percent: number; color: string }[] {
+): Promise<{ label: string; labelRight: string; percent: number; color: string }[]> {
   const total = income
   const limit50 = total * 0.5
   const limit30 = total * 0.3
@@ -236,32 +210,32 @@ function adaptBars50Rule(
   return [
     {
       label: 'Necessary',
-      labelRight: `${expenses_necessary}/${Math.floor(limit50)}`,
+      labelRight: `${formatMoney(expenses_necessary)}/${formatMoney(limit50)}`,
       percent: necessaryPercent,
-      color: getColorByPercentage(necessaryPercent),
+      color: await getColorByPercentage(necessaryPercent),
     },
     {
       label: 'Optional',
-      labelRight: `${expenses_optional}/${Math.floor(limit30)}`,
+      labelRight: `${formatMoney(expenses_optional)}/${formatMoney(limit30)}`,
       percent: optionalPercent,
-      color: getColorByPercentage(optionalPercent),
+      color: await getColorByPercentage(optionalPercent),
     },
     {
       label: 'Investment',
-      labelRight: `${long_term + short_term}/${Math.floor(limit20)}`,
+      labelRight: `${formatMoney(long_term + short_term)}/${formatMoney(limit20)}`,
       percent: savedPercent,
-      color: getColorByPercentage(savedPercent),
+      color: await getColorByPercentage(savedPercent),
     },
   ]
 }
 
-function calculateCategoriesType(transactions: Transaction[]): {
+async function calculateCategoriesType(transactions: Transaction[]): Promise<{
   income: number
   expenses_necessary: number
   expenses_optional: number
   long_term: number
   short_term: number
-} {
+}> {
   let income = 0
   let expenses_necessary = 0
   let expenses_optional = 0
@@ -291,6 +265,4 @@ function calculateCategoriesType(transactions: Transaction[]): {
 
   return { income, expenses_necessary, expenses_optional, long_term, short_term }
 }
-
-transactionsStore.fetch()
 </script>

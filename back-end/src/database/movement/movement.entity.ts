@@ -9,12 +9,12 @@ export class Movement {
   @ManyToOne(() => Wallet, (wallet) => wallet.movements)
   wallet: Wallet;
 
-  @Column()
+  @Column({ type: 'float' })
   amount: number;
 
-  @Column()
+  @Column({ type: 'date' })
   date: Date;
 
-  @Column()
+  @Column({ type: 'text' })
   description: string;
 }
