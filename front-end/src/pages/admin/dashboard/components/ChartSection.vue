@@ -1,3 +1,4 @@
+//TODO fare statistiche
 <template>
   <template v-if="loading">
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-2">
@@ -164,10 +165,10 @@ function generateLabelIncome(transactions: Transaction[]): { income: { label: st
   const categoryIncomeMap = new Map<string, number>()
 
   transactions.forEach((transaction) => {
-    const categoryName = transaction.category.name
+    const categoryName = transaction.category ? transaction.category.name : 'Amortization'
     const transactionCost = transaction.amount
 
-    if (transaction.category.category_type === CategoryType.INCOME) {
+    if (transaction.category && transaction.category.category_type === CategoryType.INCOME) {
       if (categoryIncomeMap.has(categoryName)) {
         categoryIncomeMap.set(categoryName, categoryIncomeMap.get(categoryName)! + transactionCost)
       } else {
@@ -186,23 +187,23 @@ function generateLabelIncome(transactions: Transaction[]): { income: { label: st
 
 // Function to generate labels for expenses
 function generateLabelExpense(transactions: Transaction[]): { expense: { label: string; cost: number }[] } {
-  const categoryIncomeMap = new Map<string, number>()
+  const categoryExpenseMap = new Map<string, number>()
 
   transactions.forEach((transaction) => {
-    const categoryName = transaction.category.name
+    const categoryName = transaction.category ? transaction.category.name : 'Amortization'
     const transactionCost = transaction.amount
 
-    if (transaction.category.category_type !== CategoryType.INCOME) {
-      if (categoryIncomeMap.has(categoryName)) {
-        categoryIncomeMap.set(categoryName, categoryIncomeMap.get(categoryName)! + transactionCost)
+    if (!transaction.category || (transaction.category && transaction.category.category_type !== CategoryType.INCOME)) {
+      if (categoryExpenseMap.has(categoryName)) {
+        categoryExpenseMap.set(categoryName, categoryExpenseMap.get(categoryName)! + transactionCost)
       } else {
-        categoryIncomeMap.set(categoryName, transactionCost)
+        categoryExpenseMap.set(categoryName, transactionCost)
       }
     }
   })
 
   const expense: { label: string; cost: number }[] = []
-  categoryIncomeMap.forEach((cost, label) => {
+  categoryExpenseMap.forEach((cost, label) => {
     expense.push({ label, cost })
   })
 
@@ -241,6 +242,8 @@ function generateDoughnutChartData(
     const category = categories.value.find((cat) => cat.name === item.label)
     if (category) {
       colorBackgrounds.push(category.color)
+    } else {
+      colorBackgrounds.push('#ffa500') //Amortization color //TODO rendilo globale
     }
   })
 

@@ -10,7 +10,7 @@ import {
 import { Amortization } from './amortization.entity';
 import { AmortizationService } from './amortization.service';
 
-@Controller('amortization')
+@Controller('amortizations')
 export class AmortizationController {
   constructor(private readonly amortizationService: AmortizationService) {}
 

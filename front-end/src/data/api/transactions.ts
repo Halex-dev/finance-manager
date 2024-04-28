@@ -5,7 +5,6 @@ import { walletsStore } from './wallets'
 import { CategoryType } from '../../pages/categories/types'
 
 export const transactionsStore = useTransactionsStore()
-await transactionsStore.fetch()
 
 export const transactions = computed(() => transactionsStore.transactions)
 
@@ -27,10 +26,13 @@ export type Filters = {
   dateEnd: Date
 }
 
-export const getTransactions = async (filters: Partial<Filters & Pagination & Sorting>) => {
-  // Simulate delay (optional)
-  // await sleep(1000)
+const getSortItem = (obj: any, sortBy: string) => {
+  return obj[sortBy]
+}
 
+
+export const getTransactions = async (filters: Partial<Filters & Pagination & Sorting>) => {
+  await transactionsStore.fetch()
   // Destructure filters
   const { category_type, search, dateStart, dateEnd, sortBy, sortingOrder } = filters
   let filteredTransactions = []
@@ -74,8 +76,8 @@ export const getTransactions = async (filters: Partial<Filters & Pagination & So
   // Sort transactions (if sortBy and sortingOrder provided)
   if (sortBy && sortingOrder) {
     filteredTransactions = filteredTransactions.sort((a: { date: Date }, b: { date: Date }) => {
-      const first = a.date
-      const second = b.date
+      const first = getSortItem(a, sortBy)
+      const second = getSortItem(b, sortBy)
       if (first > second) {
         return sortingOrder === 'asc' ? 1 : -1
       }

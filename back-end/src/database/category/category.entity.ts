@@ -7,6 +7,7 @@ export enum CategoryType {
   EXPENSE_OPTIONAL = 'expense optional/secondary',
   LONG_TERM = 'long-term investments',
   SHORT_TERM = 'short-term investments',
+  AMORTIZATION = 'amortization',
 }
 
 @Entity()

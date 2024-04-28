@@ -1,10 +1,17 @@
 import * as winston from 'winston';
 
+//TODO Sistemarlo (info solo info etc) e aggiungere i colori
 // Configurazione dei trasporti per la scrittura dei log
 const transports = [
   new winston.transports.Console(), // Log su console
-  new winston.transports.File({ filename: './log/error.log', level: 'error' }), // Log degli errori su file
-  new winston.transports.File({ filename: './log/combined.log' }), // Log generale su file
+  new winston.transports.File({
+    filename: './storage/log/error.log',
+    level: 'error',
+  }), // Log degli errori su file
+  new winston.transports.File({
+    filename: './storage/log/info.log',
+    level: 'info',
+  }), // Log degli info su file
 ];
 
 // Creazione dell'istanza del logger

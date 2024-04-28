@@ -40,5 +40,11 @@ build/
 # DATABASE
 *.sqlite
 
+# BACKUPS FILES
 /bk/
 *.bk
+
+# DEV SCRIPTS
+*.sh
+*.bat
+

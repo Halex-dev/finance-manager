@@ -1,45 +1,42 @@
 import { Ref, ref, unref, watch } from 'vue'
 import {
-  getTransactions,
-  addTransaction,
-  updateTransaction,
-  deleteTransaction,
+  getAmortizations,
+  addAmortization,
+  updateAmortization,
+  deleteAmortization,
   type Filters,
   Pagination,
   Sorting,
-} from '../../../data/api/transactions'
-import { Transaction } from '../types'
+} from '../../../data/api/amortizations'
+import { Amortization } from '../types'
 import { watchIgnorable } from '@vueuse/core'
-import { startOfYear, endOfYear } from 'date-fns'
 
 const makePaginationRef = () => ref<Pagination>({ page: 1, perPage: 10, total: 0 })
 const makeSortingRef = () => ref<Sorting>({ sortBy: 'date', sortingOrder: 'desc' })
 const makeFiltersRef = () =>
   ref<Partial<Filters>>({
-    category_type: 'all',
+    type: 'all',
     search: '',
-    dateStart: startOfYear(new Date()),
-    dateEnd: endOfYear(new Date()),
   })
 
-export const useTransaction = (options?: {
+export const useAmortization = (options?: {
   pagination?: Ref<Pagination>
   sorting?: Ref<Sorting>
   filters?: Ref<Partial<Filters>>
 }) => {
   const isLoading = ref(false)
-  const transactions = ref<Transaction[]>([])
+  const amortizations = ref<Amortization[]>([])
 
   const { filters = makeFiltersRef(), sorting = makeSortingRef(), pagination = makePaginationRef() } = options || {}
 
   const fetch = async () => {
     isLoading.value = true
-    const { data, pagination: newPagination } = await getTransactions({
+    const { data, pagination: newPagination } = await getAmortizations({
       ...unref(filters),
       ...unref(sorting),
       ...unref(pagination),
     })
-    transactions.value = data
+    amortizations.value = data
 
     ignoreUpdates(() => {
       pagination.value = newPagination
@@ -69,13 +66,13 @@ export const useTransaction = (options?: {
     sorting,
     pagination,
 
-    transactions,
+    amortizations,
 
     fetch,
 
-    async add(Transaction: Transaction) {
+    async add(Amortization: Amortization) {
       isLoading.value = true
-      const response = await addTransaction(Transaction)
+      const response = await addAmortization(Amortization)
 
       if (response) {
         isLoading.value = false
@@ -86,9 +83,9 @@ export const useTransaction = (options?: {
       isLoading.value = false
     },
 
-    async update(Transaction: Transaction) {
+    async update(Amortization: Amortization) {
       isLoading.value = true
-      const response = await updateTransaction(Transaction)
+      const response = await updateAmortization(Amortization)
 
       if (response) {
         isLoading.value = false
@@ -99,9 +96,9 @@ export const useTransaction = (options?: {
       isLoading.value = false
     },
 
-    async remove(Transaction: Transaction) {
+    async remove(Amortization: Amortization) {
       isLoading.value = true
-      const response = await deleteTransaction(Transaction)
+      const response = await deleteAmortization(Amortization)
 
       if (response) {
         isLoading.value = false

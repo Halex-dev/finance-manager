@@ -105,6 +105,5 @@ onMounted(async () => {
   }
 
   revenuesChart.value = generateRevenues(months, transactions.value)
-  console.log(revenuesChart.value)
 })
 </script>

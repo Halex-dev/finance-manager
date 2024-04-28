@@ -33,12 +33,15 @@ export const generateRevenues = (months: string[], data: Transaction[]): Revenue
 
     // Calcolare il totale dei ricavi per il mese corrente
     const totalIncome = transactionsInMonth
-      .filter((transaction) => transaction.category.category_type === CategoryType.INCOME) // Filtra solo le transazioni di entrata
+      .filter((transaction) => transaction.category && transaction.category.category_type === CategoryType.INCOME) // Filtra solo le transazioni di entrata
       .reduce((total: number, income: Transaction) => total + income.amount, 0)
 
     // Calcolare il totale delle spese per il mese corrente
     const totalExpenses = transactionsInMonth
-      .filter((transaction) => transaction.category.category_type !== CategoryType.INCOME) // Filtra solo le transazioni di uscita
+      .filter(
+        (transaction) =>
+          !transaction.category || (transaction.category && transaction.category.category_type !== CategoryType.INCOME),
+      ) // Filtra solo le transazioni di uscita
       .reduce((total: number, expense: Transaction) => total + expense.amount, 0)
 
     // Calcolare il guadagno per il mese corrente

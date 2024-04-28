@@ -6,6 +6,7 @@
 import { computed } from 'vue'
 import type { ChartOptions, ChartData } from 'chart.js'
 import { defaultConfig, chartTypesMap } from './vaChartConfigs'
+import { DeepPartial } from 'chart.js/dist/types/utils'
 
 defineOptions({
   name: 'VaChart',
@@ -21,7 +22,7 @@ const chartComponent = chartTypesMap[props.type]
 
 const chartOptions = computed<ChartOptions<T>>(() => ({
   ...(defaultConfig as any),
-  ...props.options,
+  ...(props.options as DeepPartial<any>),
 }))
 </script>
 

@@ -1,18 +1,15 @@
 <script setup lang="ts">
 import { PropType, computed, ref, watch } from 'vue'
 import { useForm } from 'vuestic-ui'
-import { Transaction } from '../types'
+import { Amortization } from '../types'
 import { validators } from '../../../services/utils'
-
-import { Category } from '../../categories/types'
-import { useCategory } from '../../categories/composables/useCategory'
 
 import { Wallet } from '../../wallets/types'
 import { useWallet } from '../../wallets/composables/useWallet'
 
 const props = defineProps({
-  transaction: {
-    type: Object as PropType<Transaction | null>,
+  amortization: {
+    type: Object as PropType<Amortization | null>,
     default: null,
   },
   saveButtonLabel: {
@@ -21,24 +18,24 @@ const props = defineProps({
   },
 })
 
-const defaultNewTransaction: Partial<Transaction> = {
-  amount: 0,
+const defaultNewAmortization: Partial<Amortization> = {
+  startDate: new Date(),
+  initialAmount: 0,
+  durationMonths: 1,
+  residualValue: 0,
   description: '',
-  date: new Date(),
-  category: {} as Category,
   wallet: {} as Wallet,
+  date: new Date(),
 }
-
-const { categories } = useCategory({ pagination: ref({ page: 1, perPage: 9999, total: 10 }) })
 const { wallets } = useWallet({ pagination: ref({ page: 1, perPage: 9999, total: 10 }) })
 
-const newTransaction = ref<Partial<Transaction>>({ ...defaultNewTransaction })
+const newAmortization = ref<Partial<Amortization>>({ ...defaultNewAmortization })
 
 const isFormHasUnsavedChanges = computed(() => {
-  return Object.keys(newTransaction.value).some((key) => {
+  return Object.keys(newAmortization.value).some((key) => {
     return (
-      newTransaction.value[key as keyof Transaction] !==
-      (props.transaction ?? defaultNewTransaction)?.[key as keyof Transaction]
+      newAmortization.value[key as keyof Amortization] !==
+      (props.amortization ?? defaultNewAmortization)?.[key as keyof Amortization]
     )
   })
 })
@@ -48,26 +45,26 @@ defineExpose({
 })
 
 watch(
-  () => props.transaction,
+  () => props.amortization,
   () => {
-    if (!props.transaction) {
+    if (!props.amortization) {
       return
     }
 
-    newTransaction.value = {
-      ...props.transaction,
+    newAmortization.value = {
+      ...props.amortization,
     }
   },
   { immediate: true },
 )
 
-const form = useForm('add-Transaction-form')
+const form = useForm('add-Amortization-form')
 
 const emit = defineEmits(['close', 'save'])
 
 const onSave = () => {
   if (form.validate()) {
-    emit('save', newTransaction.value)
+    emit('save', newAmortization.value)
   }
 }
 </script>
@@ -75,49 +72,49 @@ const onSave = () => {
 <template>
   <VaForm
     v-slot="{ isValid }"
-    ref="add-Transaction-form"
+    ref="add-Amortization-form"
     class="flex-col justify-start items-start gap-4 inline-flex w-full"
   >
     <div class="self-stretch flex-col justify-start items-start gap-4 flex">
       <div class="flex gap-4 flex-col sm:flex-row w-full">
-        <VaInput v-model="newTransaction.description" label="Description" class="w-full sm:w-1/2" name="description" />
+        <VaInput v-model="newAmortization.description" label="Description" class="w-full sm:w-1/2" name="description" />
         <VaInput
-          v-model="newTransaction.amount"
+          v-model="newAmortization.initialAmount"
           label="Amount"
           class="w-full sm:w-1/2"
           :rules="[validators.required, validators.number]"
-          name="amount"
+          name="initialAmount"
           type="number"
           step="0.01"
         />
       </div>
       <div class="flex gap-4 flex-col sm:flex-row w-full">
-        <VaSelect
-          v-model="newTransaction.category"
-          label="Category"
+        <VaDateInput
+          v-model="newAmortization.startDate"
+          label="Start Date"
           class="w-full sm:w-1/2"
-          :options="categories"
           :rules="[validators.required]"
-          name="category"
-          text-by="name"
+          name="Date"
         />
+        <VaInput
+          v-model="newAmortization.durationMonths"
+          label="Duration Months"
+          class="w-full sm:w-1/2"
+          :rules="[validators.required, validators.number, validators.integer]"
+          name="durationMonths"
+          type="number"
+          step="1"
+        />
+      </div>
+      <div class="flex gap-4 flex-col sm:flex-row w-full">
         <VaSelect
-          v-model="newTransaction.wallet"
+          v-model="newAmortization.wallet"
           label="Wallet"
           class="w-full sm:w-1/2"
           :options="wallets"
           :rules="[validators.required]"
           name="wallet"
           text-by="name"
-        />
-      </div>
-      <div class="flex gap-4 flex-col sm:flex-row w-full">
-        <VaDateInput
-          v-model="newTransaction.date"
-          label="Date"
-          class="w-full sm:w-1/2"
-          :rules="[validators.required]"
-          name="Date"
         />
       </div>
       <div class="flex gap-2 flex-col-reverse items-stretch justify-end w-full sm:flex-row sm:items-center">

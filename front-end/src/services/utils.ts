@@ -23,4 +23,8 @@ export const validators = {
     const pattern = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/
     return pattern.test(v) || 'Please enter a valid HEX color code'
   },
+  integer: (v: any) => {
+    const isInteger = Number.isInteger(Number(v))
+    return isInteger || 'Please enter a valid integer number'
+  },
 }

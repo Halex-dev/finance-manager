@@ -98,7 +98,7 @@ async function generateMonthsEarning(transactions: Transaction[]) {
     const transactionDate = new Date(transaction.date)
     const transactionMonth = transactionDate.getMonth()
 
-    if (transaction.category.category_type === CategoryType.INCOME) {
+    if (transaction.category && transaction.category.category_type === CategoryType.INCOME) {
       monthsMap.set(transactionMonth, monthsMap.get(transactionMonth)! + transactionCost)
     }
   })
@@ -117,7 +117,7 @@ async function getIncome(transaction: Transaction[]) {
   let income = 0
 
   transaction.forEach((transaction) => {
-    if (transaction.category.category_type === CategoryType.INCOME) {
+    if (transaction.category && transaction.category.category_type === CategoryType.INCOME) {
       income += transaction.amount
     }
   })

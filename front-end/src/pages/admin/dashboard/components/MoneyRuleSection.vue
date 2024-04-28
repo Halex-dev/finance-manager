@@ -3,6 +3,7 @@
     <div class="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-3 gap-3">
       <VaSkeleton variant="squared" height="12rem" />
       <VaSkeleton variant="squared" height="12rem" />
+      <VaSkeleton variant="squared" height="12rem" />
     </div>
   </template>
   <template v-else>
@@ -249,7 +250,10 @@ async function calculateCategoriesType(transactions: Transaction[]): Promise<{
     const dateTransa = new Date(transaction.date)
     const transactionMonth = dateTransa.getMonth()
     if (transactionMonth === month) {
-      if (transaction.category.category_type === CategoryType.INCOME) {
+      if (!transaction.category) {
+        //Amortization as a necessary expense
+        expenses_necessary += transaction.amount
+      } else if (transaction.category.category_type === CategoryType.INCOME) {
         income += transaction.amount
       } else if (transaction.category.category_type === CategoryType.EXPENSE_NECESSARY) {
         expenses_necessary += transaction.amount

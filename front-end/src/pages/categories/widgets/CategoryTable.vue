@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { defineVaDataTableColumns, useModal } from 'vuestic-ui'
-import { Category} from '../types'
+import { Category } from '../types'
 import { PropType, computed, toRef } from 'vue'
 import { Pagination, Sorting } from '../../../data/api/categories'
 import { useVModel } from '@vueuse/core'

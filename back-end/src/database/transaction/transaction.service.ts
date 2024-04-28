@@ -4,7 +4,13 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectEntityManager, InjectRepository } from '@nestjs/typeorm';
-import { Between, EntityManager, MoreThanOrEqual, Repository } from 'typeorm';
+import {
+  Between,
+  EntityManager,
+  MoreThanOrEqual,
+  QueryRunner,
+  Repository,
+} from 'typeorm';
 import { Transaction } from './transaction.entity';
 import { logger } from '../../module/logger';
 
@@ -60,6 +66,47 @@ export class TransactionService {
       throw new BadRequestException(
         `Error while fetching transaction with id ${id}`,
       );
+    }
+  }
+
+  async createAmort(
+    transactionData: Partial<Transaction>,
+    queryRunner: QueryRunner,
+  ): Promise<Transaction> {
+    try {
+      let transaction: Transaction;
+      await this.validateInput(transactionData);
+
+      if (transactionData.id) {
+        throw new BadRequestException('No.');
+      }
+
+      if (!transactionData.wallet) {
+        throw new BadRequestException('wallet is required for transaction');
+      }
+
+      const wallet = await queryRunner.manager.findOneOrFail(Wallet, {
+        where: { id: transactionData.wallet.id },
+      });
+
+      // Se la categoria è una spesa, controlla se ci sono abbastanza soldi nel portafoglio
+      if (wallet.currency < transactionData.amount) {
+        throw new BadRequestException('Not enough money in the wallet');
+      }
+
+      wallet.currency -= transactionData.amount;
+
+      await queryRunner.manager.save(wallet);
+
+      transaction = this.entityManager.create(Transaction, transactionData);
+      transaction = await queryRunner.manager.save(transaction);
+
+      //await queryRunner.commitTransaction();
+
+      return transaction;
+    } catch (error) {
+      logger.error(`Error while creating (amortization) transaction: ${error}`);
+      throw new Error(error);
     }
   }
 
@@ -226,11 +273,16 @@ export class TransactionService {
         where: { id: existingTransaction.wallet.id },
       });
 
-      const category = await queryRunner.manager.findOneOrFail(Category, {
-        where: { id: existingTransaction.category.id },
-      });
+      if (!existingTransaction.category)
+        wallet.currency += existingTransaction.amount; //It was an amortization, add money
+      else {
+        const category = await queryRunner.manager.findOneOrFail(Category, {
+          where: { id: existingTransaction.category.id },
+        });
 
-      await this.rollbackTransition(wallet, category, existingTransaction);
+        await this.rollbackTransition(wallet, category, existingTransaction);
+      }
+
       await queryRunner.manager.save(wallet);
 
       // Eliminazione della transazione

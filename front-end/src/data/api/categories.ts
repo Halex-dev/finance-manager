@@ -20,6 +20,10 @@ export type Filters = {
   search: string
 }
 
+const getSortItem = (obj: any, sortBy: string) => {
+  return obj[sortBy]
+}
+
 export const getCategories = async (filters: Partial<Filters & Pagination & Sorting>) => {
   await categoriesStore.fetch()
   const { search, sortBy, sortingOrder } = filters
@@ -35,8 +39,8 @@ export const getCategories = async (filters: Partial<Filters & Pagination & Sort
 
   if (sortBy && sortingOrder) {
     filteredCategories = filteredCategories.sort((a, b) => {
-      const first = a.id
-      const second = b.id
+      const first = getSortItem(a, sortBy)
+      const second = getSortItem(b, sortBy)
       if (first > second) {
         return sortingOrder === 'asc' ? 1 : -1
       }

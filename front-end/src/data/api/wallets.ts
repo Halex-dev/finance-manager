@@ -3,7 +3,6 @@ import { Wallet } from './../../pages/wallets/types'
 import { useWalletsStore } from './../../stores/api/wallet'
 
 export const walletsStore = useWalletsStore()
-await walletsStore.fetch()
 
 export const wallets = computed(() => walletsStore.Allwallets)
 
@@ -22,8 +21,12 @@ export type Filters = {
   search: string
 }
 
+const getSortItem = (obj: any, sortBy: string) => {
+  return obj[sortBy]
+}
+
 export const getWallets = async (filters: Partial<Filters & Pagination & Sorting>) => {
-  //await sleep(1000)
+  await walletsStore.fetch()
   const { search, sortBy, sortingOrder } = filters
   let filteredWallets = wallets.value
 
@@ -35,8 +38,8 @@ export const getWallets = async (filters: Partial<Filters & Pagination & Sorting
 
   if (sortBy && sortingOrder) {
     filteredWallets = filteredWallets.sort((a, b) => {
-      const first = a.date
-      const second = b.date
+      const first = getSortItem(a, sortBy)
+      const second = getSortItem(b, sortBy)
       if (first > second) {
         return sortingOrder === 'asc' ? 1 : -1
       }

@@ -117,7 +117,8 @@ async function getRevenueAndExpense(data: Transaction[]): Promise<{ totalRevenue
   let totalExpense = 0
   for (const transaction of data) {
     // Aggiungi l'importo di ogni transazione alla variabile totale
-    if (transaction.category.category_type === CategoryType.INCOME) totalRevenue += transaction.amount
+    if (transaction.category && transaction.category.category_type === CategoryType.INCOME)
+      totalRevenue += transaction.amount
     else totalExpense += transaction.amount
   }
 

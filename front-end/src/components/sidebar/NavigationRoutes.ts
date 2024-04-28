@@ -26,6 +26,13 @@ export default {
       },
     },
     {
+      name: 'amortizations',
+      displayName: 'menu.amortizations',
+      meta: {
+        icon: 'pending_actions',
+      },
+    },
+    {
       name: 'wallets',
       displayName: 'menu.wallets',
       meta: {

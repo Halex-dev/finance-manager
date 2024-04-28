@@ -1,16 +1,16 @@
 <template>
-  <Bar :data="data" :options="options" />
+  <Bar :data="props.data" :options="options" />
 </template>
 
 <script lang="ts" setup>
 import { Bar } from 'vue-chartjs'
-import type { ChartOptions } from 'chart.js'
 import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, LinearScale, CategoryScale } from 'chart.js'
+import { DeepPartial } from 'chart.js/dist/types/utils'
 
 ChartJS.register(Title, Tooltip, Legend, BarElement, LinearScale, CategoryScale)
 
-defineProps<{
+const props = defineProps<{
   data: any
-  options?: ChartOptions<'bar'>
+  options?: DeepPartial<any>
 }>()
 </script>
