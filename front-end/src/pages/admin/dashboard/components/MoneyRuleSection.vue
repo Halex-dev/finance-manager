@@ -87,6 +87,8 @@ watch([transactionsMonth], async ([transactionsMonth]) => {
 })
 
 async function getColorByPercentage(percent: number) {
+  if (Number.isNaN(percent)) return 'bg-info'
+
   if (percent < 50) {
     return 'bg-info'
   } else if (percent < 85) {
@@ -250,10 +252,7 @@ async function calculateCategoriesType(transactions: Transaction[]): Promise<{
     const dateTransa = new Date(transaction.date)
     const transactionMonth = dateTransa.getMonth()
     if (transactionMonth === month) {
-      if (!transaction.category) {
-        //Amortization as a necessary expense
-        expenses_necessary += transaction.amount
-      } else if (transaction.category.category_type === CategoryType.INCOME) {
+      if (transaction.category.category_type === CategoryType.INCOME) {
         income += transaction.amount
       } else if (transaction.category.category_type === CategoryType.EXPENSE_NECESSARY) {
         expenses_necessary += transaction.amount

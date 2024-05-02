@@ -165,10 +165,10 @@ function generateLabelIncome(transactions: Transaction[]): { income: { label: st
   const categoryIncomeMap = new Map<string, number>()
 
   transactions.forEach((transaction) => {
-    const categoryName = transaction.category ? transaction.category.name : 'Amortization'
+    const categoryName = transaction.category.name
     const transactionCost = transaction.amount
 
-    if (transaction.category && transaction.category.category_type === CategoryType.INCOME) {
+    if (transaction.category.category_type === CategoryType.INCOME) {
       if (categoryIncomeMap.has(categoryName)) {
         categoryIncomeMap.set(categoryName, categoryIncomeMap.get(categoryName)! + transactionCost)
       } else {
@@ -190,10 +190,10 @@ function generateLabelExpense(transactions: Transaction[]): { expense: { label: 
   const categoryExpenseMap = new Map<string, number>()
 
   transactions.forEach((transaction) => {
-    const categoryName = transaction.category ? transaction.category.name : 'Amortization'
+    const categoryName = transaction.category.name
     const transactionCost = transaction.amount
 
-    if (!transaction.category || (transaction.category && transaction.category.category_type !== CategoryType.INCOME)) {
+    if (transaction.category.category_type !== CategoryType.INCOME) {
       if (categoryExpenseMap.has(categoryName)) {
         categoryExpenseMap.set(categoryName, categoryExpenseMap.get(categoryName)! + transactionCost)
       } else {
