@@ -219,7 +219,10 @@ export class AmortizationService {
     try {
       const existingAmortization = await queryRunner.manager.findOne(
         Amortization,
-        { where: { id: id }, relations: ['wallet', 'transactions', 'category'] },
+        {
+          where: { id: id },
+          relations: ['wallet', 'transactions', 'category'],
+        },
       );
 
       if (!existingAmortization) {

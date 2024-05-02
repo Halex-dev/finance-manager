@@ -1,0 +1,100 @@
+{
+  "menu": {
+    "dashboard": "Dashboard",
+    "amortizations": "Ammortamenti",
+    "settings": "Impostazioni",
+    "404": "404",
+    "faq": "FAQ",
+    "wallets": "Portafogli",
+    "categories": "Categorie",
+    "transactions": "Transazioni",
+    "movements": "Movimenti"
+  },
+  "transactions": {
+    "transaction": "Transazione",
+    "amount": "Soldi",
+    "description": "Descrizione",
+    "date": "Data",
+    "label": {
+      "all": "Tutti",
+      "expense": "Spese",
+      "income": "Entrate"
+    }
+  },
+  "amortizations": {
+    "amortization": "Ammortamento",
+    "description": "Descrizione",
+    "startDate": "Data inizio",
+    "initialAmount": "Totale",
+    "durationMonths": "Mesi",
+    "residualValue": "Da pagare",
+    "nextAmount": "Prossimo pagamento",
+    "nextDate": "Prossima data",
+    "finishDate": "Data fine",
+    "label": {
+      "all": "Tutti",
+      "active": "Attivi",
+      "finished": "Finiti",
+      "future": "Futuri"
+    }
+  },
+  "wallets": {
+    "wallet": "Portafoglio",
+    "name": "Nome",
+    "date": "Data",
+    "currency": "Soldi"
+  },
+  "categories": {
+    "category": "Categoria",
+    "name": "Nome",
+    "category_type": "Tipo",
+    "color": "Colore",
+    "date": "Data",
+    "type": {
+      "income": "Entrate",
+      "necessary_expense": "Spese Necessarie",
+      "optional_expense": "Spese Opzionali/Secondarie",
+      "long_term": "Investimenti lungo termine",
+      "short_term": "Investimenti breve termine"
+    }
+  },
+  "settings": {
+    "theme": "Tema",
+    "preferences": "Preferenze Generali",
+    "notification": "Notifiche che vuoi ricevere",
+    "language": {
+      "name": "Lingua",
+      "english": "Inglese",
+      "simplified_chinese": "Simplified Chinese",
+      "italian": "Italiano"
+    }
+  },
+  "modal_delete": {
+    "title": "Elimina",
+    "message": "Sei sicuro di voler eliminare"
+  },
+  "modal": {
+    "cancel": "Il modulo contiene modifiche non salvate. Siete sicuri di volerlo chiudere?"
+  },
+  "button": {
+    "add": "Aggiungi",
+    "edit": "Modifica",
+    "save": "Salva",
+    "cancel": "Annulla",
+    "delete": "Rimuovi",
+    "add_image": "Aggiungi immagine"
+  },
+  "notify": {
+    "update": "è stato aggiornato",
+    "add": "è stato aggiunto",
+    "delete": "è stato eliminato"
+  },
+  "table": {
+    "results": "risultati.",
+    "result_page": "Risultati per pagina"
+  },
+  "buttonSelect": {
+    "dark": "Dark",
+    "light": "Light"
+  }
+}

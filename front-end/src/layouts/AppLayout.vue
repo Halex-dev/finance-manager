@@ -87,6 +87,7 @@ const onCloseSidebarButtonClick = () => {
   isSidebarMinimized.value = true
 }
 
+//TODO spostarlo in un altro file
 const theme = localStorage.getItem('theme')
 const language = localStorage.getItem('languageName')
 

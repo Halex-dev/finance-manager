@@ -17,6 +17,13 @@
               <span class="text-secondary"> last year</span>
             </p>
           </div>
+          <div v-if="percentIncrease === -Infinity">
+            <p class="text-xs text-danger">
+              <VaIcon name="arrow_downward" />
+              {{ formatMoney(currentDifference) }}
+              <span class="text-secondary"> last year</span>
+            </p>
+          </div>
           <div v-else-if="percentIncrease < 0">
             <p class="text-xs text-danger">
               <VaIcon name="arrow_downward" />

@@ -9,6 +9,8 @@ import { formatMoney } from '../../../data/charts/revenueChartData'
 import { CategoryType } from '../../categories/types'
 import { Wallet } from '../../wallets/types'
 import WalletAvatar from '../../wallets/widgets/WalletAvatar.vue'
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
 
 //TODO modificare dipende alla lingua
 const formatDate = (value: string) => {
@@ -21,12 +23,11 @@ const formatDate = (value: string) => {
 }
 
 const columns = defineVaDataTableColumns([
-  { label: 'id', key: 'id', sortable: true },
-  { label: 'Amount', key: 'amount', sortable: true },
-  { label: 'Description', key: 'description', sortable: true },
-  { label: 'Wallet', key: 'wallet', sortable: true },
-  { label: 'Category', key: 'category', sortable: true },
-  { label: 'Date', key: 'date', sortable: true },
+  { label: t('transactions.amount'), key: 'amount', sortable: true },
+  { label: t('transactions.description'), key: 'description', sortable: true },
+  { label: t('wallets.wallet'), key: 'wallet', sortable: true },
+  { label: t('categories.category'), key: 'category', sortable: true },
+  { label: t('transactions.date'), key: 'date', sortable: true },
   { label: ' ', key: 'actions', align: 'right' },
 ])
 
@@ -58,10 +59,10 @@ const { confirm } = useModal()
 
 const onTransactionDelete = async (transaction: Transaction) => {
   const agreed = await confirm({
-    title: 'Delete transaction',
-    message: `Are you sure you want to delete ${transaction.id}?`,
-    okText: 'Delete',
-    cancelText: 'Cancel',
+    title: `${t('modal_delete.title')} ${t('transactions.transaction')}`,
+    message: `${t('modal_delete.message')} ${transaction.description}?`,
+    okText: `${t('button.delete')}`,
+    cancelText: `${t('button.cancel')}`,
     size: 'small',
     maxWidth: '380px',
   })
@@ -96,7 +97,7 @@ const onTransactionDelete = async (transaction: Transaction) => {
       </div>
     </template>
     <template #cell(category)="{ rowData }">
-      {{ !rowData.category ? 'Amortization' : rowData.category.name }}
+      {{ rowData.category.name }}
     </template>
     <template #cell(date)="{ rowData }">
       {{ formatDate(rowData.date.toString()) }}
@@ -124,8 +125,8 @@ const onTransactionDelete = async (transaction: Transaction) => {
 
   <div class="flex flex-col-reverse md:flex-row gap-2 justify-between items-center py-2">
     <div>
-      <b>{{ $props.pagination.total }} results.</b>
-      Results per page
+      <b>{{ $props.pagination.total }} {{ t('table.results') }}</b>
+      {{ t('table.result_page') }}
       <VaSelect v-model="$props.pagination.perPage" class="!w-20" :options="[10, 50, 100]" />
     </div>
 

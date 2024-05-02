@@ -5,6 +5,10 @@ import { PropType, computed, toRef } from 'vue'
 import { Pagination, Sorting } from '../../../data/api/categories'
 import { useVModel } from '@vueuse/core'
 import { format } from 'date-fns'
+import { useI18n } from 'vue-i18n'
+import { getCategoryOptions } from '../types'
+
+const { t } = useI18n()
 
 //TODO modificare dipende alla lingua
 const formatDate = (value: string) => {
@@ -17,11 +21,10 @@ const formatDate = (value: string) => {
 }
 
 const columns = defineVaDataTableColumns([
-  { label: 'id', key: 'id', sortable: true },
-  { label: 'Name', key: 'name', sortable: true },
-  { label: 'Type', key: 'category_type', sortable: true },
-  { label: 'Color', key: 'color', sortable: true },
-  { label: 'Date', key: 'date', sortable: true },
+  { label: t('categories.name'), key: 'name', sortable: true },
+  { label: t('categories.category_type'), key: 'category_type', sortable: true },
+  { label: t('categories.color'), key: 'color', sortable: true },
+  { label: t('categories.date'), key: 'date', sortable: true },
   { label: ' ', key: 'actions', align: 'right' },
 ])
 
@@ -53,10 +56,10 @@ const { confirm } = useModal()
 
 const onCategoryDelete = async (category: Category) => {
   const agreed = await confirm({
-    title: 'Delete category',
-    message: `Are you sure you want to delete ${category.name}?`,
-    okText: 'Delete',
-    cancelText: 'Cancel',
+    title: `${t('modal_delete.title')} ${t('categories.category')}`,
+    message: `${t('modal_delete.message')} ${category.name}?`,
+    okText: `${t('button.delete')}`,
+    cancelText: `${t('button.cancel')}`,
     size: 'small',
     maxWidth: '380px',
   })
@@ -76,7 +79,7 @@ const onCategoryDelete = async (category: Category) => {
     :loading="$props.loading"
   >
     <template #cell(category_type)="{ rowData }">
-      {{ rowData.category_type.toUpperCase() }}
+      {{ getCategoryOptions(rowData.category_type) }}
     </template>
     <template #cell(color)="{ rowData }">
       <div class="flex items-center">
@@ -118,8 +121,8 @@ const onCategoryDelete = async (category: Category) => {
 
   <div class="flex flex-col-reverse md:flex-row gap-2 justify-between items-center py-2">
     <div>
-      <b>{{ $props.pagination.total }} results.</b>
-      Results per page
+      <b>{{ $props.pagination.total }} {{ t('table.results') }}</b>
+      {{ t('table.result_page') }}
       <VaSelect v-model="$props.pagination.perPage" class="!w-20" :options="[10, 50, 100]" />
     </div>
 

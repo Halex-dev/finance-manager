@@ -1,5 +1,5 @@
 <template>
-  <h1 class="page-title">Amortizations</h1>
+  <h1 class="page-title">{{ t('menu.amortizations') }}</h1>
   <VaCard>
     <VaCardContent>
       <div class="flex flex-wrap md:flex-row items-center mb-4">
@@ -10,10 +10,10 @@
             border-color="background-element"
             class="mr-2"
             :options="[
-              { label: 'All', value: 'all' },
-              { label: 'Active', value: 'active' },
-              { label: 'Finished', value: 'finished' },
-              { label: 'Future', value: 'future' },
+              { label: t('amortizations.label.all'), value: 'all' },
+              { label: t('amortizations.label.active'), value: 'active' },
+              { label: t('amortizations.label.finished'), value: 'finished' },
+              { label: t('amortizations.label.future'), value: 'future' },
             ]"
           />
         </div>
@@ -25,7 +25,9 @@
           </VaInput>
         </div>
         <div class="md:w-auto flex flex-wrap items-center mb-2 md:mb-0">
-          <VaButton @click="showAddAmortizationModal">Add Amortization</VaButton>
+          <VaButton @click="showAddAmortizationModal"
+            >{{ t('button.add') }} {{ t('amortizations.amortization') }}</VaButton
+          >
         </div>
       </div>
       <AmortizationTable
@@ -49,11 +51,17 @@
     hide-default-actions
     :before-cancel="beforeEditFormModalClose"
   >
-    <h1 class="va-h5">{{ AmortizationToEdit ? 'Edit Amortization' : 'Add Amortization' }}</h1>
+    <h1 class="va-h5">
+      {{
+        AmortizationToEdit
+          ? `${t('button.edit')} ${t('amortizations.amortization')}`
+          : `${t('button.add')} ${t('amortizations.amortization')}`
+      }}
+    </h1>
     <AmortizationModal
       ref="editFormRef"
       :amortization="AmortizationToEdit"
-      :save-button-label="AmortizationToEdit ? 'Save' : 'Add'"
+      :save-button-label="AmortizationToEdit ? `${t('button.save')}` : `${t('button.add')}`"
       @close="cancel"
       @save="
         (Amortization) => {
@@ -72,6 +80,8 @@ import { ref } from 'vue'
 import AmortizationTable from './widgets/AmortizationTable.vue'
 import AmortizationModal from './widgets/AmortizationModal.vue'
 import { useModal, useToast } from 'vuestic-ui'
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
 
 const doShowEditAmortizationModal = ref(false)
 
@@ -102,7 +112,7 @@ const onAmortizationSaved = async (Amortization: Amortization) => {
       })
     } else {
       notify({
-        message: `${Amortization.id} has been updated`,
+        message: `${Amortization.name} ${t('notify.update')}`,
         color: 'success',
       })
     }
@@ -116,7 +126,7 @@ const onAmortizationSaved = async (Amortization: Amortization) => {
       })
     } else {
       notify({
-        message: `${Amortization.id} has been updated`,
+        message: `${Amortization.name} ${t('notify.add')}`,
         color: 'success',
       })
     }
@@ -132,7 +142,7 @@ const onAmortizationDelete = async (Amortization: Amortization) => {
     })
   } else {
     notify({
-      message: `${Amortization.id} has been updated`,
+      message: `${Amortization.name} ${t('notify.delete')}`,
       color: 'success',
     })
   }
@@ -146,7 +156,7 @@ const beforeEditFormModalClose = async (hide: () => unknown) => {
   if (editFormRef.value.isFormHasUnsavedChanges) {
     const agreed = await confirm({
       maxWidth: '380px',
-      message: 'Form has unsaved changes. Are you sure you want to close it?',
+      message: `${t('modal.cancel')}`,
       size: 'small',
     })
     if (agreed) {

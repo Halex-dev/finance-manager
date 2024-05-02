@@ -1,5 +1,5 @@
 <template>
-  <h1 class="page-title">Wallets</h1>
+  <h1 class="page-title">{{ t('menu.wallets') }}</h1>
 
   <VaCard>
     <VaCardContent>
@@ -11,7 +11,7 @@
             </template>
           </VaInput>
         </div>
-        <VaButton @click="showAddWalletModal">Add Wallet</VaButton>
+        <VaButton @click="showAddWalletModal">{{ t('button.add') }} {{ t('wallets.wallet') }}</VaButton>
       </div>
 
       <WalletsTable
@@ -35,11 +35,13 @@
     hide-default-actions
     :before-cancel="beforeEditFormModalClose"
   >
-    <h1 class="va-h5">{{ walletToEdit ? 'Edit wallet' : 'Add wallet' }}</h1>
+    <h1 class="va-h5">
+      {{ walletToEdit ? `${t('button.edit')} ${t('wallets.wallet')}` : `${t('button.add')} ${t('wallets.wallet')}` }}
+    </h1>
     <WalletModal
       ref="editFormRef"
       :wallet="walletToEdit"
-      :save-button-label="walletToEdit ? 'Save' : 'Add'"
+      :save-button-label="walletToEdit ? `${t('button.save')}` : `${t('button.add')}`"
       @close="cancel"
       @save="
         (wallet) => {
@@ -58,6 +60,8 @@ import { ref } from 'vue'
 import WalletsTable from './widgets/WalletsTable.vue'
 import WalletModal from './widgets/WalletModal.vue'
 import { useModal, useToast } from 'vuestic-ui'
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
 
 const doShowEditWalletModal = ref(false)
 
@@ -87,7 +91,7 @@ const onWalletSaved = async (wallet: Wallet) => {
       })
     } else {
       notify({
-        message: `${wallet.name} has been updated`,
+        message: `${wallet.name} ${t('notify.update')}`,
         color: 'success',
       })
     }
@@ -101,7 +105,7 @@ const onWalletSaved = async (wallet: Wallet) => {
       })
     } else {
       notify({
-        message: `${wallet.name} has been added`,
+        message: `${wallet.name} ${t('notify.add')}`,
         color: 'success',
       })
     }
@@ -117,7 +121,7 @@ const onWalletDelete = async (wallet: Wallet) => {
     })
   } else {
     notify({
-      message: `${wallet.name} has been deleted`,
+      message: `${wallet.name} ${t('notify.delete')}`,
       color: 'success',
     })
   }
@@ -131,7 +135,7 @@ const beforeEditFormModalClose = async (hide: () => unknown) => {
   if (editFormRef.value.isFormHasUnsavedChanges) {
     const agreed = await confirm({
       maxWidth: '380px',
-      message: 'Form has unsaved changes. Are you sure you want to close it?',
+      message: `${t('modal.cancel')}`,
       size: 'small',
     })
     if (agreed) {

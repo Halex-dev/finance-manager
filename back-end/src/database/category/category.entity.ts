@@ -4,11 +4,10 @@ import { Amortization } from '../amortization/amortization.entity';
 
 export enum CategoryType {
   INCOME = 'income',
-  EXPENSE_NECESSARY = 'necessary expense',
-  EXPENSE_OPTIONAL = 'optional/secondary expense',
-  LONG_TERM = 'long-term investments',
-  SHORT_TERM = 'short-term investments',
-  AMORTIZATION = 'amortization',
+  EXPENSE_NECESSARY = 'necessary_expense',
+  EXPENSE_OPTIONAL = 'optional_expense',
+  LONG_TERM = 'long_term',
+  SHORT_TERM = 'short_term',
 }
 
 @Entity()

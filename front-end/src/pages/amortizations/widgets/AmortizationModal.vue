@@ -5,8 +5,10 @@ import { Amortization } from '../types'
 import { validators } from '../../../services/utils'
 
 import { useWallet } from '../../wallets/composables/useWallet'
-
 import { useCategory } from '../../categories/composables/useCategory'
+
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
 
 const props = defineProps({
   amortization: {
@@ -81,10 +83,15 @@ const onSave = () => {
   >
     <div class="self-stretch flex-col justify-start items-start gap-4 flex">
       <div class="flex gap-4 flex-col sm:flex-row w-full">
-        <VaInput v-model="newAmortization.description" label="Description" class="w-full sm:w-1/2" name="description" />
+        <VaInput
+          v-model="newAmortization.description"
+          :label="t('amortizations.description')"
+          class="w-full sm:w-1/2"
+          name="description"
+        />
         <VaDateInput
           v-model="newAmortization.startDate"
-          label="Start Date"
+          :label="t('amortizations.startDate')"
           class="w-full sm:w-1/2"
           :rules="[validators.required]"
           name="Date"
@@ -93,7 +100,7 @@ const onSave = () => {
       <div class="flex gap-4 flex-col sm:flex-row w-full">
         <VaInput
           v-model="newAmortization.initialAmount"
-          label="Amount"
+          :label="t('amortizations.initialAmount')"
           class="w-full sm:w-1/2"
           :rules="[validators.required, validators.number]"
           name="initialAmount"
@@ -102,7 +109,7 @@ const onSave = () => {
         />
         <VaInput
           v-model="newAmortization.durationMonths"
-          label="Duration Months"
+          :label="t('amortizations.durationMonths')"
           class="w-full sm:w-1/2"
           :rules="[validators.required, validators.number, validators.integer, validators.amortization]"
           name="durationMonths"
@@ -113,7 +120,7 @@ const onSave = () => {
       <div class="flex gap-4 flex-col sm:flex-row w-full">
         <VaSelect
           v-model="newAmortization.wallet"
-          label="Wallet"
+          :label="t('wallets.wallet')"
           class="w-full sm:w-1/2"
           :options="wallets"
           :rules="[validators.required]"
@@ -122,7 +129,7 @@ const onSave = () => {
         />
         <VaSelect
           v-model="newAmortization.category"
-          label="Category"
+          :label="t('categories.category')"
           class="w-full sm:w-1/2"
           :options="categories"
           :rules="[validators.required]"
@@ -131,7 +138,7 @@ const onSave = () => {
         />
       </div>
       <div class="flex gap-2 flex-col-reverse items-stretch justify-end w-full sm:flex-row sm:items-center">
-        <VaButton preset="secondary" color="secondary" @click="$emit('close')">Cancel</VaButton>
+        <VaButton preset="secondary" color="secondary" @click="$emit('close')">{{ t('button.cancel') }}</VaButton>
         <VaButton :disabled="!isValid" @click="onSave">{{ saveButtonLabel }}</VaButton>
       </div>
     </div>

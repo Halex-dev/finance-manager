@@ -1,5 +1,5 @@
 <template>
-  <h1 class="page-title">Categories</h1>
+  <h1 class="page-title">{{ t('menu.categories') }}</h1>
 
   <VaCard>
     <VaCardContent>
@@ -11,7 +11,7 @@
             </template>
           </VaInput>
         </div>
-        <VaButton @click="showAddCategoryModal">Add Category</VaButton>
+        <VaButton @click="showAddCategoryModal">{{ t('button.add') }} {{ t('categories.category') }}</VaButton>
       </div>
 
       <CategoryTable
@@ -35,11 +35,17 @@
     hide-default-actions
     :before-cancel="beforeEditFormModalClose"
   >
-    <h1 class="va-h5">{{ categoryToEdit ? 'Edit category' : 'Add category' }}</h1>
+    <h1 class="va-h5">
+      {{
+        categoryToEdit
+          ? `${t('button.edit')} ${t('categories.category')}`
+          : `${t('button.add')} ${t('categories.category')}`
+      }}
+    </h1>
     <CategoryModal
       ref="editFormRef"
       :category="categoryToEdit"
-      :save-button-label="categoryToEdit ? 'Save' : 'Add'"
+      :save-button-label="categoryToEdit ? `${t('button.save')}` : `${t('button.add')}`"
       @close="cancel"
       @save="
         (category) => {
@@ -58,6 +64,8 @@ import { ref } from 'vue'
 import CategoryTable from './widgets/CategoryTable.vue'
 import CategoryModal from './widgets/CategoryModal.vue'
 import { useModal, useToast } from 'vuestic-ui'
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
 
 const doShowEditCategoryModal = ref(false)
 
@@ -88,7 +96,7 @@ const onCategorySaved = async (category: Category) => {
       })
     } else {
       notify({
-        message: `${category.name} has been updated`,
+        message: `${category.name} ${t('notify.update')}`,
         color: 'success',
       })
     }
@@ -102,7 +110,7 @@ const onCategorySaved = async (category: Category) => {
       })
     } else {
       notify({
-        message: `${category.name} has been updated`,
+        message: `${category.name} ${t('notify.add')}`,
         color: 'success',
       })
     }
@@ -119,7 +127,7 @@ const onCategoryDelete = async (category: Category) => {
     })
   } else {
     notify({
-      message: `${category.name} has been updated`,
+      message: `${category.name} ${t('notify.delete')}`,
       color: 'success',
     })
   }
@@ -133,7 +141,7 @@ const beforeEditFormModalClose = async (hide: () => unknown) => {
   if (editFormRef.value.isFormHasUnsavedChanges) {
     const agreed = await confirm({
       maxWidth: '380px',
-      message: 'Form has unsaved changes. Are you sure you want to close it?',
+      message: `${t('modal.cancel')}`,
       size: 'small',
     })
     if (agreed) {

@@ -7,6 +7,9 @@ import { validators } from '../../../services/utils'
 import { useCategory } from '../../categories/composables/useCategory'
 import { useWallet } from '../../wallets/composables/useWallet'
 
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
+
 const props = defineProps({
   transaction: {
     type: Object as PropType<Transaction | null>,
@@ -78,7 +81,7 @@ const onSave = () => {
         <VaInput v-model="newTransaction.description" label="Description" class="w-full sm:w-1/2" name="description" />
         <VaInput
           v-model="newTransaction.amount"
-          label="Amount"
+          :label="t('transactions.amount')"
           class="w-full sm:w-1/2"
           :rules="[validators.required, validators.number]"
           name="amount"
@@ -89,7 +92,7 @@ const onSave = () => {
       <div class="flex gap-4 flex-col sm:flex-row w-full">
         <VaSelect
           v-model="newTransaction.category"
-          label="Category"
+          :label="t('categories.category')"
           class="w-full sm:w-1/2"
           :options="categories"
           :rules="[validators.required]"
@@ -98,7 +101,7 @@ const onSave = () => {
         />
         <VaSelect
           v-model="newTransaction.wallet"
-          label="Wallet"
+          :label="t('wallets.wallet')"
           class="w-full sm:w-1/2"
           :options="wallets"
           :rules="[validators.required]"
@@ -109,14 +112,14 @@ const onSave = () => {
       <div class="flex gap-4 flex-col sm:flex-row w-full">
         <VaDateInput
           v-model="newTransaction.date"
-          label="Date"
+          :label="t('transactions.date')"
           class="w-full sm:w-1/2"
           :rules="[validators.required]"
           name="Date"
         />
       </div>
       <div class="flex gap-2 flex-col-reverse items-stretch justify-end w-full sm:flex-row sm:items-center">
-        <VaButton preset="secondary" color="secondary" @click="$emit('close')">Cancel</VaButton>
+        <VaButton preset="secondary" color="secondary" @click="$emit('close')">{{ t('button.cancel') }}</VaButton>
         <VaButton :disabled="!isValid" @click="onSave">{{ saveButtonLabel }}</VaButton>
       </div>
     </div>

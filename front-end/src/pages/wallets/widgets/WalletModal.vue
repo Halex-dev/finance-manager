@@ -5,6 +5,8 @@ import { Wallet } from '../types'
 import WalletAvatar from './WalletAvatar.vue'
 import { validators } from '../../../services/utils'
 import { imageAPI } from '../../../stores/api/image'
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
 
 const props = defineProps({
   wallet: {
@@ -106,7 +108,7 @@ const onSave = async () => {
       class="self-stretch justify-start items-center gap-4 inline-flex"
     >
       <WalletAvatar :wallet="newWallet" size="large" />
-      <VaButton preset="primary" size="small">Add image</VaButton>
+      <VaButton preset="primary" size="small">{{ t('button.add_image') }}</VaButton>
       <VaButton
         v-if="avatar"
         preset="primary"
@@ -121,14 +123,14 @@ const onSave = async () => {
       <div class="flex gap-4 flex-col sm:flex-row w-full">
         <VaInput
           v-model="newWallet.name"
-          label="Description"
+          :label="t('wallets.name')"
           class="w-full sm:w-1/2"
           :rules="[validators.required]"
           name="name"
         />
         <VaInput
           v-model="newWallet.currency"
-          label="Money"
+          :label="t('wallets.currency')"
           class="w-full sm:w-1/2"
           :rules="[validators.required, validators.number]"
           name="currency"
@@ -137,7 +139,7 @@ const onSave = async () => {
         />
       </div>
       <div class="flex gap-2 flex-col-reverse items-stretch justify-end w-full sm:flex-row sm:items-center">
-        <VaButton preset="secondary" color="secondary" @click="$emit('close')">Cancel</VaButton>
+        <VaButton preset="secondary" color="secondary" @click="$emit('close')">{{ t('button.cancel') }}</VaButton>
         <VaButton :disabled="!isValid" @click="onSave">{{ saveButtonLabel }}</VaButton>
       </div>
     </div>

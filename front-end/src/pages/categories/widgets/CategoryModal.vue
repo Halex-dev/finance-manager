@@ -4,7 +4,10 @@ import { useForm } from 'vuestic-ui'
 import { Category } from '../types'
 import { validators } from '../../../services/utils'
 
-import { CategoryType, categoryOptions } from '../types'
+import { CategoryType, useCategoryOptions } from '../types'
+
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
 
 const props = defineProps({
   category: {
@@ -49,6 +52,8 @@ const isFormHasUnsavedChanges = computed(() => {
   })
 })
 
+const categoryOptions = useCategoryOptions()
+
 defineExpose({
   isFormHasUnsavedChanges,
 })
@@ -88,7 +93,7 @@ const onSave = () => {
       <div class="flex gap-4 flex-col sm:flex-row w-full">
         <VaInput
           v-model="newCategory.name"
-          label="Description"
+          :label="t('categories.name')"
           class="w-full sm:w-1/2"
           :rules="[validators.required]"
           name="name"
@@ -96,7 +101,7 @@ const onSave = () => {
         <div class="w-1/2">
           <VaSelect
             v-model="newCategory.category_type"
-            label="category_type"
+            :label="t('categories.category_type')"
             class="w-full"
             :options="categoryOptions"
             :rules="[validators.required]"
@@ -109,7 +114,7 @@ const onSave = () => {
       <div class="flex gap-4 flex-col sm:flex-row w-full">
         <VaColorInput
           v-model="newCategory.color"
-          label="Color"
+          :label="t('categories.color')"
           class="w-full sm:w-1/2"
           :rules="[validators.hexColor]"
           name="color"
@@ -117,7 +122,7 @@ const onSave = () => {
         />
       </div>
       <div class="flex gap-2 flex-col-reverse items-stretch justify-end w-full sm:flex-row sm:items-center">
-        <VaButton preset="secondary" color="secondary" @click="$emit('close')">Cancel</VaButton>
+        <VaButton preset="secondary" color="secondary" @click="$emit('close')">{{ t('button.cancel') }}</VaButton>
         <VaButton :disabled="!isValid" @click="onSave">{{ saveButtonLabel }}</VaButton>
       </div>
     </div>

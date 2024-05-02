@@ -8,6 +8,8 @@ import { useVModel } from '@vueuse/core'
 import { formatMoney } from '../../../data/charts/revenueChartData'
 
 import { format } from 'date-fns'
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
 
 //TODO modificare dipende alla lingua
 const formatDate = (value: string) => {
@@ -20,10 +22,9 @@ const formatDate = (value: string) => {
 }
 
 const columns = defineVaDataTableColumns([
-  { label: 'id', key: 'id', sortable: true },
-  { label: 'Name', key: 'name', sortable: true },
-  { label: 'Currency', key: 'currency', sortable: true },
-  { label: 'Date', key: 'date', sortable: true },
+  { label: t('wallets.name'), key: 'name', sortable: true },
+  { label: t('wallets.currency'), key: 'currency', sortable: true },
+  { label: t('wallets.date'), key: 'date', sortable: true },
   { label: ' ', key: 'actions', align: 'right' },
 ])
 
@@ -55,10 +56,10 @@ const { confirm } = useModal()
 
 const onWalletDelete = async (wallet: Wallet) => {
   const agreed = await confirm({
-    title: 'Delete wallet',
-    message: `Are you sure you want to delete ${wallet.name}?`,
-    okText: 'Delete',
-    cancelText: 'Cancel',
+    title: `${t('modal_delete.title')} ${t('wallets.wallet')}`,
+    message: `${t('modal_delete.message')} ${wallet.name}?`,
+    okText: `${t('button.delete')}`,
+    cancelText: `${t('button.cancel')}`,
     size: 'small',
     maxWidth: '380px',
   })
@@ -116,8 +117,8 @@ const onWalletDelete = async (wallet: Wallet) => {
 
   <div class="flex flex-col-reverse md:flex-row gap-2 justify-between items-center py-2">
     <div>
-      <b>{{ $props.pagination.total }} results.</b>
-      Results per page
+      <b>{{ $props.pagination.total }} {{ t('table.results') }}</b>
+      {{ t('table.result_page') }}
       <VaSelect v-model="$props.pagination.perPage" class="!w-20" :options="[10, 50, 100]" />
     </div>
 

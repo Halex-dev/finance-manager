@@ -9,6 +9,8 @@ import { formatMoney } from '../../../data/charts/revenueChartData'
 import { Wallet } from '../../wallets/types'
 import WalletAvatar from '../../wallets/widgets/WalletAvatar.vue'
 import { addMonths } from 'date-fns'
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
 
 //TODO modificare dipende alla lingua
 const formatDate = (value: string) => {
@@ -21,16 +23,16 @@ const formatDate = (value: string) => {
 }
 
 const columns = defineVaDataTableColumns([
-  { label: 'Description', key: 'description', sortable: true },
-  { label: 'Start Date', key: 'startDate', sortable: true },
-  { label: 'Amount', key: 'initialAmount', sortable: true },
-  { label: 'Duration', key: 'durationMonths', sortable: true },
-  { label: 'Residual', key: 'residualValue', sortable: true },
-  { label: 'Next Amount', key: 'nextAmount', sortable: true },
-  { label: 'Next Date', key: 'nextDate', sortable: true },
-  { label: 'Wallet', key: 'wallet', sortable: true },
-  { label: 'Category', key: 'category', sortable: true },
-  { label: 'Finish Date', key: 'finishDate', sortable: true },
+  { label: t('amortizations.description'), key: 'description', sortable: true },
+  { label: t('amortizations.startDate'), key: 'startDate', sortable: true },
+  { label: t('amortizations.initialAmount'), key: 'initialAmount', sortable: true },
+  { label: t('amortizations.durationMonths'), key: 'durationMonths', sortable: true },
+  { label: t('amortizations.residualValue'), key: 'residualValue', sortable: true },
+  { label: t('amortizations.nextAmount'), key: 'nextAmount', sortable: true },
+  { label: t('amortizations.nextDate'), key: 'nextDate', sortable: true },
+  { label: t('wallets.wallet'), key: 'wallet', sortable: true },
+  { label: t('categories.category'), key: 'category', sortable: true },
+  { label: t('amortizations.finishDate'), key: 'finishDate', sortable: true },
   { label: ' ', key: 'actions', align: 'right' },
 ])
 
@@ -62,10 +64,10 @@ const { confirm } = useModal()
 
 const onAmortizationDelete = async (amortization: Amortization) => {
   const agreed = await confirm({
-    title: 'Delete amortization',
-    message: `Are you sure you want to delete ${amortization.id}?`,
-    okText: 'Delete',
-    cancelText: 'Cancel',
+    title: `${t('modal_delete.title')} ${t('amortizations.amortization')}`,
+    message: `${t('modal_delete.message')} ${amortization.description}?`,
+    okText: `${t('button.delete')}`,
+    cancelText: `${t('button.cancel')}`,
     size: 'small',
     maxWidth: '380px',
   })
@@ -133,8 +135,8 @@ const onAmortizationDelete = async (amortization: Amortization) => {
 
   <div class="flex flex-col-reverse md:flex-row gap-2 justify-between items-center py-2">
     <div>
-      <b>{{ $props.pagination.total }} results.</b>
-      Results per page
+      <b>{{ $props.pagination.total }} {{ t('table.results') }}</b>
+      {{ t('table.result_page') }}
       <VaSelect v-model="$props.pagination.perPage" class="!w-20" :options="[10, 50, 100]" />
     </div>
 
