@@ -13,7 +13,10 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { useNotificationsStore } from '../../../stores/notifications'
-
-const { notifications } = useNotificationsStore()
+const notifications = {
+  job: {
+    name: 'Coming soon..',
+    isEnabled: localStorage.getItem('Coming soon..'),
+  },
+}
 </script>

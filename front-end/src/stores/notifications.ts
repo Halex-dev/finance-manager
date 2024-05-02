@@ -4,50 +4,14 @@ export const useNotificationsStore = defineStore('notifications', {
   state: () => {
     return {
       notifications: {
-        searchingForAJob: {
+        job: {
           name: 'Searching for a job',
-          isEnabled: true,
+          isEnabled: localStorage.getItem('job'),
         },
-        hiringSomeone: {
+        hiring: {
           name: 'Hiring someone',
-          isEnabled: false,
-        },
-        connectingWithOthers: {
-          name: 'Connecting with others',
-          isEnabled: true,
-        },
-        postingAndCommenting: {
-          name: 'Posting and commenting',
-          isEnabled: true,
-        },
-        messaging: {
-          name: 'Messaging',
-          isEnabled: true,
-        },
-        groups: {
-          name: 'Groups',
-          isEnabled: false,
-        },
-        pages: {
-          name: 'Pages',
-          isEnabled: true,
-        },
-        attendingEvents: {
-          name: 'Attending events',
-          isEnabled: true,
-        },
-        newsAndReports: {
-          name: 'News and reports',
-          isEnabled: false,
-        },
-        updatingYourProfile: {
-          name: 'Updating your profile',
-          isEnabled: true,
-        },
-        verifications: {
-          name: 'Verifications',
-          isEnabled: true,
-        },
+          isEnabled: localStorage.getItem('hiring'),
+        }
       },
     }
   },

@@ -40,6 +40,12 @@ import AppLayoutNavigation from '../components/app-layout-navigation/AppLayoutNa
 import AppNavbar from '../components/navbar/AppNavbar.vue'
 import AppSidebar from '../components/sidebar/AppSidebar.vue'
 
+import { useColors } from 'vuestic-ui'
+const { applyPreset } = useColors()
+
+import { useI18n } from 'vue-i18n'
+const { locale } = useI18n()
+
 const GlobalStore = useGlobalStore()
 
 const breakpoints = useBreakpoint()
@@ -79,6 +85,21 @@ const isFullScreenSidebar = computed(() => isTablet.value && !isSidebarMinimized
 
 const onCloseSidebarButtonClick = () => {
   isSidebarMinimized.value = true
+}
+
+const theme = localStorage.getItem('theme')
+const language = localStorage.getItem('languageName')
+
+if (theme) {
+  applyPreset(theme)
+} else {
+  applyPreset(light)
+}
+
+if (language) {
+  locale.value = language
+} else {
+  locale.value = 'gb'
 }
 </script>
 
