@@ -19,7 +19,7 @@ const { revenues, months } = defineProps<{
 
 Chart.register(...registerables)
 
-const BR_THICKNESS = 4
+const BR_THICKNESS = 15
 
 const expensesData = computed(() => {
   return revenues.map(({ expenses }) => {
@@ -39,6 +39,8 @@ const doShowChart = ref(false)
 Chart.register([
   {
     id: 'background-color',
+    //If i want to do smth before draw the char
+    /*
     beforeDatasetDraw: function (chart) {
       const ctx = chart.ctx
       const config = chart.config
@@ -55,6 +57,7 @@ Chart.register([
         }
       })
     },
+    */
   },
 ])
 
@@ -70,16 +73,16 @@ onMounted(() => {
           labels: months,
           datasets: [
             {
-              label: 'Expenses', // Etichetta del dataset delle spese
-              data: expensesData.value, // Dati delle spese
-              backgroundColor: expensesColor, // Colore per le barre delle spese
-              barThickness: BR_THICKNESS, // Spessore delle barre per il dataset delle spese
-            },
-            {
               label: 'Earnings', // Etichetta del dataset dei costi
               data: revenueData.value, // Dati dei costi
               backgroundColor: darkEarningsColor, // Colore per le barre dei costi
               barThickness: BR_THICKNESS, // Spessore delle barre per il dataset dei costi
+            },
+            {
+              label: 'Expenses', // Etichetta del dataset delle spese
+              data: expensesData.value, // Dati delle spese
+              backgroundColor: expensesColor, // Colore per le barre delle spese
+              barThickness: BR_THICKNESS, // Spessore delle barre per il dataset delle spese
             },
           ],
         },
@@ -92,7 +95,7 @@ onMounted(() => {
           },
           scales: {
             x: {
-              stacked: true,
+              stacked: false,
               grid: {
                 display: false,
               },

@@ -100,10 +100,7 @@ watch([transactions], ([transactions]) => {
 })
 
 onMounted(async () => {
-  if (transactions.value.length === 0) {
-    await transactionsStore.fetch()
-  }
-
+  await transactionsStore.fetch()
   revenuesChart.value = generateRevenues(months, transactions.value)
 })
 </script>
