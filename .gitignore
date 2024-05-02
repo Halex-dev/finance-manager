@@ -48,3 +48,5 @@ build/
 *.sh
 *.bat
 
+# VSCODE
+.vscode/

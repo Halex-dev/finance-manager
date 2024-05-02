@@ -20,7 +20,7 @@
               <span class="text-secondary"> last month</span>
             </p>
           </div>
-          <div v-if="percentIncrease === -Infinity">
+          <div v-else-if="percentIncrease === -Infinity">
             <p class="text-xs text-danger">
               <VaIcon name="arrow_downward" />
               {{ formatMoney(monthlyEarnings) }}
