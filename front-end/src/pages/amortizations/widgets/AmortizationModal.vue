@@ -4,7 +4,6 @@ import { useForm } from 'vuestic-ui'
 import { Amortization } from '../types'
 import { validators } from '../../../services/utils'
 
-import { Wallet } from '../../wallets/types'
 import { useWallet } from '../../wallets/composables/useWallet'
 
 import { useCategory } from '../../categories/composables/useCategory'
@@ -23,10 +22,9 @@ const props = defineProps({
 const defaultNewAmortization: Partial<Amortization> = {
   startDate: new Date(),
   initialAmount: 0,
-  durationMonths: 1,
+  durationMonths: 2,
   residualValue: 0,
   description: '',
-  wallet: {} as Wallet,
   date: new Date(),
 }
 const { wallets } = useWallet({ pagination: ref({ page: 1, perPage: 9999, total: 10 }) })
@@ -84,6 +82,15 @@ const onSave = () => {
     <div class="self-stretch flex-col justify-start items-start gap-4 flex">
       <div class="flex gap-4 flex-col sm:flex-row w-full">
         <VaInput v-model="newAmortization.description" label="Description" class="w-full sm:w-1/2" name="description" />
+        <VaDateInput
+          v-model="newAmortization.startDate"
+          label="Start Date"
+          class="w-full sm:w-1/2"
+          :rules="[validators.required]"
+          name="Date"
+        />
+      </div>
+      <div class="flex gap-4 flex-col sm:flex-row w-full">
         <VaInput
           v-model="newAmortization.initialAmount"
           label="Amount"
@@ -93,20 +100,11 @@ const onSave = () => {
           type="number"
           step="0.01"
         />
-      </div>
-      <div class="flex gap-4 flex-col sm:flex-row w-full">
-        <VaDateInput
-          v-model="newAmortization.startDate"
-          label="Start Date"
-          class="w-full sm:w-1/2"
-          :rules="[validators.required]"
-          name="Date"
-        />
         <VaInput
           v-model="newAmortization.durationMonths"
           label="Duration Months"
           class="w-full sm:w-1/2"
-          :rules="[validators.required, validators.number, validators.integer]"
+          :rules="[validators.required, validators.number, validators.integer, validators.amortization]"
           name="durationMonths"
           type="number"
           step="1"

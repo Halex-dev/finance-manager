@@ -4,10 +4,7 @@ import { useForm } from 'vuestic-ui'
 import { Transaction } from '../types'
 import { validators } from '../../../services/utils'
 
-import { Category } from '../../categories/types'
 import { useCategory } from '../../categories/composables/useCategory'
-
-import { Wallet } from '../../wallets/types'
 import { useWallet } from '../../wallets/composables/useWallet'
 
 const props = defineProps({
@@ -21,16 +18,14 @@ const props = defineProps({
   },
 })
 
+const { categories } = useCategory({ pagination: ref({ page: 1, perPage: 9999, total: 10 }) })
+const { wallets } = useWallet({ pagination: ref({ page: 1, perPage: 9999, total: 10 }) })
+
 const defaultNewTransaction: Partial<Transaction> = {
   amount: 0,
   description: '',
   date: new Date(),
-  category: {} as Category,
-  wallet: {} as Wallet,
 }
-
-const { categories } = useCategory({ pagination: ref({ page: 1, perPage: 9999, total: 10 }) })
-const { wallets } = useWallet({ pagination: ref({ page: 1, perPage: 9999, total: 10 }) })
 
 const newTransaction = ref<Partial<Transaction>>({ ...defaultNewTransaction })
 

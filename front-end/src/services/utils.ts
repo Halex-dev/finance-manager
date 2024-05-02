@@ -27,4 +27,7 @@ export const validators = {
     const isInteger = Number.isInteger(Number(v))
     return isInteger || 'Please enter a valid integer number'
   },
+  amortization: (v: any) => {
+    return Number(v) > 1 || 'Please enter a valid number greater than 1'
+  },
 }
