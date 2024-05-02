@@ -103,7 +103,7 @@ const onTransactionDelete = async (transaction: Transaction) => {
       {{ formatDate(rowData.date.toString()) }}
     </template>
     <template #cell(actions)="{ rowData }">
-      <div v-if="rowData.category" class="flex gap-2 justify-end">
+      <div v-if="!rowData.amortization" class="flex gap-2 justify-end">
         <VaButton
           preset="primary"
           size="small"

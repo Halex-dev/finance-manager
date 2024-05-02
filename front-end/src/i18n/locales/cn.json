@@ -27,14 +27,14 @@
     "startDate": "开始日期",
     "initialAmount": "初始金额",
     "durationMonths": "月数",
-    "residualValue": "剩余价值",
+    "residualValue": "余额",
     "nextAmount": "下一笔金额",
     "nextDate": "下一个日期",
     "finishDate": "结束日期",
     "label": {
       "all": "全部",
-      "active": "活跃",
-      "finished": "完成",
+      "active": "进行中",
+      "finished": "已完成",
       "future": "未来"
     }
   },
@@ -95,6 +95,6 @@
   },
   "buttonSelect": {
     "dark": "暗",
-    "light": "光"
+    "light": "亮"
   }
 }

@@ -102,7 +102,11 @@ cd finance-manager
 3. Install the dependencies:
 
 ```sh
-Coming soon...
+cd front-end
+npm install
+cd ..
+cd back-end
+npm install
 ```
 
 ###  Running finance-manager
@@ -110,7 +114,11 @@ Coming soon...
 Use the following command to run finance-manager:
 
 ```sh
-Coming soon...
+cd front-end
+npm run build
+cd ..
+cd back-end
+npm run start
 ```
 
 ##  Project Roadmap
@@ -118,8 +126,8 @@ Coming soon...
 - [X] Expense Tracking
 - [X] More reports and Charts
 - [X] Amortization of costs
-- [ ] Settings
-- [ ] Two or more languages
+- [X] Settings
+- [X] Two or more languages
 - [ ] SSE Event (Reactivity data) && Optmize calling API
 - [ ] Repeated costs/incomes automatically
 - [ ] Docker

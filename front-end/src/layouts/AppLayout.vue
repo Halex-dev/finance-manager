@@ -94,7 +94,7 @@ const language = localStorage.getItem('languageName')
 if (theme) {
   applyPreset(theme)
 } else {
-  applyPreset(light)
+  applyPreset('light')
 }
 
 if (language) {

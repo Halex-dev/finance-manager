@@ -40,7 +40,7 @@ export class TransactionService {
   async findAllWithRelations(): Promise<Transaction[]> {
     try {
       return this.transactionRepository.find({
-        relations: ['category', 'wallet'],
+        relations: ['category', 'wallet', 'amortization'],
       });
     } catch (error) {
       logger.error(`Error while fetching all transactions: ${error}`);
@@ -51,7 +51,7 @@ export class TransactionService {
   async findOne(id: number): Promise<Transaction> {
     try {
       const transaction = await this.transactionRepository.findOne({
-        relations: ['category', 'transaction'],
+        relations: ['category', 'transaction', 'amortization'],
         where: { id: id },
       });
       if (!transaction) {
@@ -178,7 +178,7 @@ export class TransactionService {
         Transaction,
         {
           where: { id: transactionData.id },
-          relations: ['category', 'wallet'],
+          relations: ['category', 'wallet', 'amortization'],
         },
       );
 
@@ -262,7 +262,10 @@ export class TransactionService {
     try {
       const existingTransaction = await queryRunner.manager.findOne(
         Transaction,
-        { where: { id: id }, relations: ['category', 'wallet'] },
+        {
+          where: { id: id },
+          relations: ['category', 'wallet', 'amortization'],
+        },
       );
 
       if (!existingTransaction) {
@@ -311,7 +314,7 @@ export class TransactionService {
   ): Promise<Transaction[]> {
     try {
       return await this.transactionRepository.find({
-        relations: ['category', 'wallet'],
+        relations: ['category', 'wallet', 'amortization'],
         where: {
           date: Between(startDate, endDate),
         },
@@ -330,7 +333,7 @@ export class TransactionService {
   async findByStartDate(startDate: Date): Promise<Transaction[]> {
     try {
       return await this.transactionRepository.find({
-        relations: ['category', 'wallet'],
+        relations: ['category', 'wallet', 'amortization'],
         where: {
           date: MoreThanOrEqual(startDate),
         },
@@ -349,7 +352,7 @@ export class TransactionService {
   async findByEndDate(endDate: Date): Promise<Transaction[]> {
     try {
       return await this.transactionRepository.find({
-        relations: ['category', 'wallet'],
+        relations: ['category', 'wallet', 'amortization'],
         where: {
           date: Between(new Date(0), endDate),
         },
@@ -370,7 +373,7 @@ export class TransactionService {
       const startDate = new Date(year, 0, 1); // Inizio dell'anno corrente
       const endDate = new Date(year, 11, 31); // Fine dell'anno corrente
       return this.transactionRepository.find({
-        relations: ['category', 'wallet'],
+        relations: ['category', 'wallet', 'amortization'],
         where: {
           date: Between(startDate, endDate),
         },
@@ -389,7 +392,7 @@ export class TransactionService {
       const startDate = new Date(currentYear, month - 1, 1); // Inizio del mese specificato
       const endDate = new Date(currentYear, month, 0); // Fine del mese specificato
       return this.transactionRepository.find({
-        relations: ['category', 'wallet'],
+        relations: ['category', 'wallet', 'amortization'],
         where: {
           date: Between(startDate, endDate),
         },

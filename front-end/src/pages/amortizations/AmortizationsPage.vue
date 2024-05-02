@@ -112,7 +112,7 @@ const onAmortizationSaved = async (Amortization: Amortization) => {
       })
     } else {
       notify({
-        message: `${Amortization.name} ${t('notify.update')}`,
+        message: `${Amortization.description} ${t('notify.update')}`,
         color: 'success',
       })
     }
@@ -126,7 +126,7 @@ const onAmortizationSaved = async (Amortization: Amortization) => {
       })
     } else {
       notify({
-        message: `${Amortization.name} ${t('notify.add')}`,
+        message: `${Amortization.description} ${t('notify.add')}`,
         color: 'success',
       })
     }
@@ -142,7 +142,7 @@ const onAmortizationDelete = async (Amortization: Amortization) => {
     })
   } else {
     notify({
-      message: `${Amortization.name} ${t('notify.delete')}`,
+      message: `${Amortization.description} ${t('notify.delete')}`,
       color: 'success',
     })
   }

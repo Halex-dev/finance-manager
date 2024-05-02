@@ -30,7 +30,6 @@ const getSortItem = (obj: any, sortBy: string) => {
   return obj[sortBy]
 }
 
-
 export const getTransactions = async (filters: Partial<Filters & Pagination & Sorting>) => {
   await transactionsStore.fetch()
   // Destructure filters

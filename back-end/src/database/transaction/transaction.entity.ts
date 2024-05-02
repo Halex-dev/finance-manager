@@ -8,9 +8,7 @@ export class Transaction {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => Category, (category) => category.transactions, {
-    nullable: true, //For the ammortization
-  })
+  @ManyToOne(() => Category, (category) => category.transactions)
   category: Category;
 
   @ManyToOne(() => Wallet, (wallet) => wallet.transactions)
