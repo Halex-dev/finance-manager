@@ -1,5 +1,5 @@
 import { computed } from 'vue'
-import { Category } from './../../pages/categories/types'
+import { Category, CategoryType } from './../../pages/categories/types'
 import { useCategoriesStore } from './../../stores/api/categories'
 
 export const categoriesStore = useCategoriesStore()
@@ -18,6 +18,7 @@ export type Sorting = {
 
 export type Filters = {
   search: string
+  category_type: 'all' | 'expense' | 'income'
 }
 
 const getSortItem = (obj: any, sortBy: string) => {
@@ -26,7 +27,7 @@ const getSortItem = (obj: any, sortBy: string) => {
 
 export const getCategories = async (filters: Partial<Filters & Pagination & Sorting>) => {
   await categoriesStore.fetch()
-  const { search, sortBy, sortingOrder } = filters
+  const { category_type, search, sortBy, sortingOrder } = filters
   let filteredCategories = categories.value
 
   if (!filteredCategories) return { data: [], pagination: { page: 1, perPage: 10, total: 0 } }
@@ -36,6 +37,20 @@ export const getCategories = async (filters: Partial<Filters & Pagination & Sort
       categories.name.toLowerCase().includes(search.toLowerCase()),
     )
   }
+
+  // Filter transactions by category type
+  filteredCategories = filteredCategories.filter((category) => {
+    if (category_type === 'all') {
+      // Return true if category type is 'all', indicating no filtering required
+      return true
+    }
+    if (category_type === 'expense') {
+      return category.category_type !== CategoryType.INCOME
+    } else {
+      // Otherwise, filter transactions based on category type
+      return category.category_type === category_type
+    }
+  })
 
   if (sortBy && sortingOrder) {
     filteredCategories = filteredCategories.sort((a, b) => {

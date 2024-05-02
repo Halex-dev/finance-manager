@@ -38,8 +38,8 @@ export const getAmortizations = async (filters: Partial<Filters & Pagination & S
   // Filter transactions by category type
   filteredAmortizations = filteredAmortizations.filter((amortization) => {
     const startDate = new Date(amortization.startDate)
+
     if (type === 'all') {
-      // Return true if category type is 'all', indicating no filtering required
       return true
     } else if (type === 'active') {
       return startDate.getTime() < today.getTime() && amortization.residualValue > 0

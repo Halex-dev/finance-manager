@@ -13,7 +13,7 @@ import { watchIgnorable } from '@vueuse/core'
 
 const makePaginationRef = () => ref<Pagination>({ page: 1, perPage: 10, total: 0 })
 const makeSortingRef = () => ref<Sorting>({ sortBy: 'id', sortingOrder: 'asc' })
-const makeFiltersRef = () => ref<Partial<Filters>>({ search: '' })
+const makeFiltersRef = () => ref<Partial<Filters>>({ search: '', category_type: 'all' })
 
 export const useCategory = (options?: {
   pagination?: Ref<Pagination>

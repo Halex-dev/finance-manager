@@ -21,7 +21,6 @@ const formatDate = (value: string) => {
 }
 
 const columns = defineVaDataTableColumns([
-  { label: 'id', key: 'id', sortable: true },
   { label: 'Description', key: 'description', sortable: true },
   { label: 'Start Date', key: 'startDate', sortable: true },
   { label: 'Amount', key: 'initialAmount', sortable: true },
@@ -30,6 +29,7 @@ const columns = defineVaDataTableColumns([
   { label: 'Next Amount', key: 'nextAmount', sortable: true },
   { label: 'Next Date', key: 'nextDate', sortable: true },
   { label: 'Wallet', key: 'wallet', sortable: true },
+  { label: 'Category', key: 'category', sortable: true },
   { label: 'Finish Date', key: 'finishDate', sortable: true },
   { label: ' ', key: 'actions', align: 'right' },
 ])
@@ -89,6 +89,9 @@ const onAmortizationDelete = async (amortization: Amortization) => {
         {{ rowData.wallet.name }}
       </div>
     </template>
+    <template #cell(category)="{ rowData }">
+      {{ rowData.category.name }}
+    </template>
     <template #cell(nextAmount)="{ rowData }">
       {{ formatMoney(rowData.initialAmount / rowData.durationMonths) }}
     </template>
@@ -103,6 +106,9 @@ const onAmortizationDelete = async (amortization: Amortization) => {
     </template>
     <template #cell(startDate)="{ rowData }">
       {{ formatDate(rowData.startDate.toString()) }}
+    </template>
+    <template #cell(finishDate)="{ rowData }">
+      {{ formatDate(addMonths(rowData.startDate, rowData.durationMonths).toString()) }}
     </template>
     <template #cell(actions)="{ rowData }">
       <div class="flex gap-2 justify-end">

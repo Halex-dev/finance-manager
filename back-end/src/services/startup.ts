@@ -19,12 +19,12 @@ export class StartupService implements OnApplicationBootstrap {
   ) {}
 
   async onApplicationBootstrap() {
-    await this.createMonthlyTransaction();
+    //await this.createMonthlyTransaction();
 
     // Programma la funzione createMonthlyTransaction per essere eseguita ogni giorno alle ore 00:00.
     cron.schedule('0 0 * * *', async () => {
       try {
-        await this.createMonthlyTransaction();;
+        await this.createMonthlyTransaction();
       } catch (error) {
         logger.error(
           `Error while executing createMonthlyTransaction: ${error}`,
@@ -41,7 +41,7 @@ export class StartupService implements OnApplicationBootstrap {
     try {
       const amortizations = await queryRunner.manager.find(Amortization, {
         where: { residualValue: MoreThan(0) },
-        relations: ['wallet', 'transactions'],
+        relations: ['wallet', 'transactions', 'category'],
       });
 
       amortizations.forEach(async (amortization) => {
@@ -70,6 +70,7 @@ export class StartupService implements OnApplicationBootstrap {
               description: `Amortization: ${amortization.description}`,
               date: currentMonthDate,
               wallet: amortization.wallet,
+              category: amortization.category,
               amortization: amortization,
             };
 
@@ -84,6 +85,8 @@ export class StartupService implements OnApplicationBootstrap {
           }
         }
       });
+
+      await queryRunner.commitTransaction();
     } catch (error) {
       logger.error(`Error while executing createMonthlyTransaction: ${error}`);
       await queryRunner.rollbackTransaction();

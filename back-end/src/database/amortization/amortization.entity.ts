@@ -7,6 +7,7 @@ import {
 } from 'typeorm';
 import { Wallet } from '../wallet/wallet.entity';
 import { Transaction } from '../transaction/transaction.entity';
+import { Category } from '../category/category.entity';
 
 @Entity()
 export class Amortization {
@@ -33,6 +34,9 @@ export class Amortization {
 
   @ManyToOne(() => Wallet, (wallet) => wallet.amortizations)
   wallet: Wallet;
+
+  @ManyToOne(() => Category, (category) => category.amortizations)
+  category: Category;
 
   @OneToMany(() => Transaction, (transaction) => transaction.amortization)
   transactions: Transaction[];

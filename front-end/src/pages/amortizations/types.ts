@@ -1,3 +1,4 @@
+import { Category } from '../categories/types'
 import { Transaction } from '../transactions/types'
 import { Wallet } from '../wallets/types'
 
@@ -10,5 +11,6 @@ export type Amortization = {
   description: string
   date: Date
   wallet: Wallet
+  category: Category
   transactions: Transaction[]
 }

@@ -16,7 +16,7 @@ Welcome to the Financial Manager! This tool is designed to help you manage your 
 
 - [X] Expense Tracking
 - [X] More reports and Charts
-- [ ] Amortization of costs
+- [X] Amortization of costs
 - [ ] Two or more languages
 - [ ] Repeated costs/incomes automaticatly
 - [ ] Future Planning

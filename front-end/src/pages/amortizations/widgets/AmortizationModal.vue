@@ -7,6 +7,8 @@ import { validators } from '../../../services/utils'
 import { Wallet } from '../../wallets/types'
 import { useWallet } from '../../wallets/composables/useWallet'
 
+import { useCategory } from '../../categories/composables/useCategory'
+
 const props = defineProps({
   amortization: {
     type: Object as PropType<Amortization | null>,
@@ -28,6 +30,10 @@ const defaultNewAmortization: Partial<Amortization> = {
   date: new Date(),
 }
 const { wallets } = useWallet({ pagination: ref({ page: 1, perPage: 9999, total: 10 }) })
+const { categories } = useCategory({
+  pagination: ref({ page: 1, perPage: 9999, total: 10 }),
+  filters: ref({ category_type: 'expense' }),
+})
 
 const newAmortization = ref<Partial<Amortization>>({ ...defaultNewAmortization })
 
@@ -114,6 +120,15 @@ const onSave = () => {
           :options="wallets"
           :rules="[validators.required]"
           name="wallet"
+          text-by="name"
+        />
+        <VaSelect
+          v-model="newAmortization.category"
+          label="Category"
+          class="w-full sm:w-1/2"
+          :options="categories"
+          :rules="[validators.required]"
+          name="category"
           text-by="name"
         />
       </div>

@@ -37,5 +37,7 @@ lerna-debug.log*
 # DATABASE
 .sqlite
 
-# DATABASE
-uploads/*
+# STORAGE
+/storage/uploads/*
+/storage/logs/*
+/storage/database/*

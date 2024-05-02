@@ -4,13 +4,14 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectEntityManager, InjectRepository } from '@nestjs/typeorm';
-import { EntityManager, QueryRunner, Repository, MoreThan } from 'typeorm';
+import { EntityManager, QueryRunner, Repository, MoreThan, Not } from 'typeorm';
 import { Amortization } from './amortization.entity';
 import { logger } from '../../module/logger';
 import { addMonths, differenceInMonths, endOfDay, startOfDay } from 'date-fns';
 import { TransactionService } from '../transaction/transaction.service';
 import { Transaction } from '../transaction/transaction.entity';
 import { Wallet } from '../wallet/wallet.entity';
+import { Category, CategoryType } from '../category/category.entity';
 
 @Injectable()
 export class AmortizationService {
@@ -25,7 +26,7 @@ export class AmortizationService {
   async findAll(): Promise<Amortization[]> {
     try {
       return await this.amortizationRepository.find({
-        relations: ['wallet', 'transactions'],
+        relations: ['wallet', 'transactions', 'category'],
       });
     } catch (error) {
       logger.error(`Error while fetching all amortization data: ${error}`);
@@ -38,7 +39,7 @@ export class AmortizationService {
   async findAllActive(): Promise<Amortization[]> {
     try {
       return await this.amortizationRepository.find({
-        relations: ['wallet', 'transactions'],
+        relations: ['wallet', 'transactions', 'category'],
         where: { residualValue: MoreThan(0) },
       });
     } catch (error) {
@@ -53,7 +54,7 @@ export class AmortizationService {
     try {
       const amortization = await this.amortizationRepository.findOne({
         where: { id: id },
-        relations: ['wallet', 'transactions'],
+        relations: ['wallet', 'transactions', 'category'],
       });
       if (!amortization) {
         throw new NotFoundException(
@@ -99,6 +100,17 @@ export class AmortizationService {
         throw new BadRequestException('Invalid wallet');
       }
 
+      const category = await queryRunner.manager.findOneOrFail(Category, {
+        where: {
+          id: amortizationData.category.id,
+          category_type: Not(CategoryType.INCOME),
+        },
+      });
+
+      if (!category) {
+        throw new BadRequestException('Invalid category');
+      }
+
       amortization = this.entityManager.create(Amortization, amortizationData);
       amortization = await queryRunner.manager.save(amortization);
 
@@ -139,20 +151,12 @@ export class AmortizationService {
         Amortization,
         {
           where: { id: amortizationData.id },
-          relations: ['wallet', 'transactions'],
+          relations: ['wallet', 'transactions', 'category'],
         },
       );
 
       if (!existingAmortization) {
         throw new NotFoundException(`Transaction with id ${id} not found`);
-      }
-
-      const wallet = await queryRunner.manager.findOneOrFail(Wallet, {
-        where: { id: existingAmortization.wallet.id },
-      });
-
-      if (!wallet) {
-        throw new BadRequestException('Invalid wallet');
       }
 
       //Elimino tutte le transizioni collegate all'ammortamento fatte fino ad oggi
@@ -166,6 +170,7 @@ export class AmortizationService {
       existingAmortization.initialAmount = amortizationData.residualValue;
       existingAmortization.startDate = amortizationData.startDate;
       existingAmortization.wallet = amortizationData.wallet;
+      existingAmortization.category = amortizationData.category;
 
       //Rifaccio gli ammortamenti
       await this.createMonthlyTransaction(existingAmortization, queryRunner);
@@ -214,7 +219,7 @@ export class AmortizationService {
     try {
       const existingAmortization = await queryRunner.manager.findOne(
         Amortization,
-        { where: { id: id }, relations: ['wallet', 'transactions'] },
+        { where: { id: id }, relations: ['wallet', 'transactions', 'category'] },
       );
 
       if (!existingAmortization) {
@@ -300,6 +305,7 @@ export class AmortizationService {
           description: `Amortization: ${amortization.description}`,
           date: currentMonthDate,
           wallet: amortization.wallet,
+          category: amortization.category,
           amortization: amortization,
         };
 
@@ -325,6 +331,17 @@ export class AmortizationService {
 
     if (!wallet) {
       throw new BadRequestException('Invalid wallet');
+    }
+
+    const category = await queryRunner.manager.findOneOrFail(Category, {
+      where: {
+        id: amortization.category.id,
+        category_type: Not(CategoryType.INCOME),
+      },
+    });
+
+    if (!category) {
+      throw new BadRequestException('Invalid category');
     }
 
     amortization.residualValue = amortization.initialAmount;

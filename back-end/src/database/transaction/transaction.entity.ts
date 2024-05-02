@@ -16,9 +16,7 @@ export class Transaction {
   @ManyToOne(() => Wallet, (wallet) => wallet.transactions)
   wallet: Wallet;
 
-  @ManyToOne(() => Amortization, (amortization) => amortization.transactions, {
-    nullable: true, //For the ammortization
-  })
+  @ManyToOne(() => Amortization, (amortization) => amortization.transactions)
   amortization: Amortization;
 
   @Column({ type: 'float' })

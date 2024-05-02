@@ -5,5 +5,5 @@ dotenv.config();
 export const appConfig = {
   uploadPath:
     path.join(process.cwd(), process.env.UPLOAD_PATH) ||
-    path.join(process.cwd(), 'uploads'),
+    path.join(process.cwd(), '/storage/uploads'),
 };

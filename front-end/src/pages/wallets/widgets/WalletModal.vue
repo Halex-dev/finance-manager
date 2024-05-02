@@ -102,7 +102,7 @@ const onSave = async () => {
       v-model="avatar"
       type="single"
       hide-file-list
-      file-types="image/jpeg, image/png"
+      file-types="image/jpeg, image/png, image/jpg"
       class="self-stretch justify-start items-center gap-4 inline-flex"
     >
       <WalletAvatar :wallet="newWallet" size="large" />
