@@ -29,7 +29,7 @@ export class Amortization {
   @Column({ type: 'text' })
   description: string;
 
-  @Column({ type: 'date' }) //Date added
+  @Column({ type: 'date' })
   date: Date;
 
   @ManyToOne(() => Wallet, (wallet) => wallet.amortizations)

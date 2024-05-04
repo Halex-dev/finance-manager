@@ -23,6 +23,7 @@ export class AmortizationService {
     private readonly transactionService: TransactionService,
   ) {}
 
+  // Fetch all amortization data
   async findAll(): Promise<Amortization[]> {
     try {
       return await this.amortizationRepository.find({
@@ -36,6 +37,7 @@ export class AmortizationService {
     }
   }
 
+  // Fetch all active amortization data (residual value > 0)
   async findAllActive(): Promise<Amortization[]> {
     try {
       return await this.amortizationRepository.find({
@@ -50,6 +52,7 @@ export class AmortizationService {
     }
   }
 
+  // Find a specific amortization by its ID
   async findOne(id: number): Promise<Amortization> {
     try {
       const amortization = await this.amortizationRepository.findOne({
@@ -133,21 +136,22 @@ export class AmortizationService {
     id: number,
     amortizationData: Partial<Amortization>,
   ): Promise<Amortization> {
+    // Create a query runner to handle database queries
     const queryRunner = this.entityManager.connection.createQueryRunner();
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
+    await queryRunner.connect(); // Connect the query runner to the database
+    await queryRunner.startTransaction(); // Start a transaction
 
-    let updatedAmortization: Amortization;
+    let updatedAmortization: Amortization; // Variable to store the updated amortization object
 
     try {
-      await this.validateInput(amortizationData);
+      await this.validateInput(amortizationData); // Validate input data
 
       if (!id) {
         throw new BadRequestException('Amortization ID is required');
       }
 
-      // Controllo se la transazione esiste
-      const existingAmortization = await queryRunner.manager.findOne(
+      // Check if the amortization exists in the database
+      let existingAmortization = await queryRunner.manager.findOne(
         Amortization,
         {
           where: { id: amortizationData.id },
@@ -159,54 +163,53 @@ export class AmortizationService {
         throw new NotFoundException(`Transaction with id ${id} not found`);
       }
 
-      //Elimino tutte le transizioni collegate all'ammortamento fatte fino ad oggi
+      // Delete all transactions associated with the existing amortization
       await this.deleteAllTransactions(existingAmortization, queryRunner);
 
-      //TODO fare in un altro modo
-      existingAmortization.description = amortizationData.description;
-      existingAmortization.date = amortizationData.date;
-      existingAmortization.durationMonths = amortizationData.durationMonths;
-      existingAmortization.initialAmount = amortizationData.initialAmount;
-      existingAmortization.initialAmount = amortizationData.residualValue;
-      existingAmortization.startDate = amortizationData.startDate;
-      existingAmortization.wallet = amortizationData.wallet;
-      existingAmortization.category = amortizationData.category;
+      // Assign properties from amortizationData to existingAmortization using object destructuring
+      // and spread operator
+      existingAmortization = {
+        ...existingAmortization,
+        ...amortizationData,
+      };
 
-      //Rifaccio gli ammortamenti
+      // Recreate the monthly transactions
       await this.createMonthlyTransaction(existingAmortization, queryRunner);
 
-      //await queryRunner.manager.update(Amortization, id, existingAmortization);
+      // Save the updated amortization object in the database
       await queryRunner.manager.save(Amortization, existingAmortization);
 
-      // Recupero della transazione aggiornata
+      // Retrieve the updated amortization object
       updatedAmortization = await queryRunner.manager.findOne(Amortization, {
         where: { id: amortizationData.id },
       });
 
-      // Controllo se la transazione aggiornata esiste
+      // Check if the updated amortization object exists
       if (!updatedAmortization) {
         throw new NotFoundException(
           `Updated transaction with id ${id} not found`,
         );
       }
 
-      // Commit della transazione
+      // Commit the transaction
       await queryRunner.commitTransaction();
 
-      return updatedAmortization;
+      return updatedAmortization; // Return the updated amortization object
     } catch (error) {
+      // Handle errors
       logger.error(
         `Error while updating amortization data with id ${id}: ${error}`,
       );
-      await queryRunner.rollbackTransaction();
+      await queryRunner.rollbackTransaction(); // Rollback the transaction
       if (error instanceof NotFoundException) {
         throw error;
       }
+      // Throw a BadRequestException if there's an error
       throw new BadRequestException(
         `Error while updating amortization data with id ${id}`,
       );
     } finally {
-      // Rilascio del queryRunner
+      // Release the query runner resources
       await queryRunner.release();
     }
   }

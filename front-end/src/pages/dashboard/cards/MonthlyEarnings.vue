@@ -53,17 +53,17 @@
 <script setup lang="ts">
 import { computed, watch, onMounted, ref } from 'vue'
 import { VaCard } from 'vuestic-ui'
-import VaChart from '../../../../components/va-charts/VaChart.vue'
-import { useChartData } from '../../../../data/charts/composables/useChartData'
-import { lineChartData } from '../../../../data/charts/lineChartData'
-import { TLineChartData } from '../../../../data/types'
+import VaChart from '../../../components/va-charts/VaChart.vue'
+import { useChartData } from '../../../data/charts/composables/useChartData'
+import { lineChartData } from '../../../data/charts/lineChartData'
+import { TLineChartData } from '../../../data/types'
 import { ChartOptions } from 'chart.js'
 
-import { useTransactionsStore } from '../../../../stores/api/transactions'
-import { Transaction } from '../../../transactions/types'
-import { CategoryType } from '../../../categories/types'
+import { useTransactionsStore } from '../../../stores/api/transactions'
+import { Transaction } from '../../transactions/types'
+import { CategoryType } from '../../categories/types'
 
-import { formatMoney } from '../../../../data/charts/revenueChartData'
+import { formatMoney } from '../../../data/charts/revenueChartData'
 
 const transactionsStore = useTransactionsStore()
 const loading = computed(() => transactionsStore.loading)

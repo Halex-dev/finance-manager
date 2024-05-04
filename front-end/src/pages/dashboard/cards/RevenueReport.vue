@@ -49,7 +49,7 @@
 import { ref, computed, watch, onMounted } from 'vue'
 import { VaCard } from 'vuestic-ui'
 import RevenueReportChart from './RevenueReportChart.vue'
-import { downloadAsCSV } from '../../../../services/toCSV'
+import { downloadAsCSV } from '../../../services/toCSV'
 import {
   earningsColor,
   expensesColor,
@@ -58,9 +58,9 @@ import {
   getRevenuePerMonth,
   formatMoney,
   generateRevenuesNull,
-} from '../../../../data/charts/revenueChartData'
+} from '../../../data/charts/revenueChartData'
 
-import { useTransactionsStore } from '../../../../stores/api/transactions'
+import { useTransactionsStore } from '../../../stores/api/transactions'
 
 const transactionsStore = useTransactionsStore()
 

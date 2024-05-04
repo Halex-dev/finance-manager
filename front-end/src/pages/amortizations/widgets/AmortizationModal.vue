@@ -86,6 +86,7 @@ const onSave = () => {
         <VaInput
           v-model="newAmortization.description"
           :label="t('amortizations.description')"
+          :rules="[validators.required]"
           class="w-full sm:w-1/2"
           name="description"
         />

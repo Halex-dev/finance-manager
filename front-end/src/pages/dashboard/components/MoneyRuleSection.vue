@@ -42,11 +42,11 @@
 import { computed, watch, onMounted, ref } from 'vue'
 import MoneyRuleCard from '../cards/MoneyRuleCard.vue'
 
-import { useTransactionsStore } from '../../../../stores/api/transactions'
-import { Transaction } from '../../../transactions/types'
-import { CategoryType } from '../../../categories/types'
+import { useTransactionsStore } from '../../../stores/api/transactions'
+import { Transaction } from '../../transactions/types'
+import { CategoryType } from '../../categories/types'
 
-import { formatMoney } from '../../../../data/charts/revenueChartData'
+import { formatMoney } from '../../../data/charts/revenueChartData'
 
 const transactionsStore = useTransactionsStore()
 const loading = computed(() => transactionsStore.loading)

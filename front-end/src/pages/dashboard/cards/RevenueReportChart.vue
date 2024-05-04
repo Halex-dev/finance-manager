@@ -9,8 +9,8 @@ import { ref, onMounted, nextTick, computed } from 'vue'
 import { Chart, registerables } from 'chart.js'
 import tinycolor from 'tinycolor2'
 
-import type { Revenues } from '../../../../data/charts/revenueChartData'
-import { earningsColor, expensesColor, formatMoney } from '../../../../data/charts/revenueChartData'
+import type { Revenues } from '../../../data/charts/revenueChartData'
+import { earningsColor, expensesColor, formatMoney } from '../../../data/charts/revenueChartData'
 
 const { revenues, months } = defineProps<{
   months: string[]

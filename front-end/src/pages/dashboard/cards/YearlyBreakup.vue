@@ -66,18 +66,18 @@
 <script setup lang="ts">
 import { computed, watch, onMounted, ref } from 'vue'
 import { VaCard } from 'vuestic-ui'
-import VaChart from '../../../../components/va-charts/VaChart.vue'
-import { useChartData } from '../../../../data/charts/composables/useChartData'
-import { doughnutChartData, profitBackground, earningsBackground } from '../../../../data/charts/doughnutChartData'
-import { doughnutConfig } from '../../../../components/va-charts/vaChartConfigs'
+import VaChart from '../../../components/va-charts/VaChart.vue'
+import { useChartData } from '../../../data/charts/composables/useChartData'
+import { doughnutChartData, profitBackground, earningsBackground } from '../../../data/charts/doughnutChartData'
+import { doughnutConfig } from '../../../components/va-charts/vaChartConfigs'
 import { ChartOptions } from 'chart.js'
-import { externalTooltipHandler } from '../../../../components/va-charts/external-tooltip'
-import { TDoughnutChartData } from '../../../../data/types'
+import { externalTooltipHandler } from '../../../components/va-charts/external-tooltip'
+import { TDoughnutChartData } from '../../../data/types'
 
-import { useTransactionsStore } from '../../../../stores/api/transactions'
-import { formatMoney } from '../../../../data/charts/revenueChartData'
-import { CategoryType } from '../../../categories/types'
-import { Transaction } from '../../../transactions/types'
+import { useTransactionsStore } from '../../../stores/api/transactions'
+import { formatMoney } from '../../../data/charts/revenueChartData'
+import { CategoryType } from '../../categories/types'
+import { Transaction } from '../../transactions/types'
 
 const transactionsStore = useTransactionsStore()
 const loading = computed(() => transactionsStore.loading)

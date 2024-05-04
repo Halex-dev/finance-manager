@@ -84,20 +84,20 @@
 
 <script setup lang="ts">
 import { computed, watch, ref, onMounted } from 'vue'
-import { formatMoney } from '../../../../data/charts/revenueChartData'
+import { formatMoney } from '../../../data/charts/revenueChartData'
 import { VaCard } from 'vuestic-ui'
-import VaChart from '../../../../components/va-charts/VaChart.vue'
+import VaChart from '../../../components/va-charts/VaChart.vue'
 
-import { useTransactionsStore } from '../../../../stores/api/transactions'
-import { Transaction } from '../../../transactions/types'
-import { useCategoriesStore } from '../../../../stores/api/categories'
-import { CategoryType } from '../../../categories/types'
+import { useTransactionsStore } from '../../../stores/api/transactions'
+import { Transaction } from '../../transactions/types'
+import { useCategoriesStore } from '../../../stores/api/categories'
+import { CategoryType } from '../../categories/types'
 
-import { doughnutConfig } from '../../../../components/va-charts/vaChartConfigs'
+import { doughnutConfig } from '../../../components/va-charts/vaChartConfigs'
 import { ChartOptions } from 'chart.js'
-import { useChartData } from '../../../../data/charts/composables/useChartData'
-import { externalTooltipHandler } from '../../../../components/va-charts/external-tooltip'
-import { TDoughnutChartData } from '../../../../data/types'
+import { useChartData } from '../../../data/charts/composables/useChartData'
+import { externalTooltipHandler } from '../../../components/va-charts/external-tooltip'
+import { TDoughnutChartData } from '../../../data/types'
 
 const transactionsStore = useTransactionsStore()
 const categoriesStore = useCategoriesStore()
