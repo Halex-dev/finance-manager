@@ -298,7 +298,8 @@ export class AmortizationService {
     if (today.getTime() >= startDate.getTime()) {
       const monthsPassed = differenceInMonths(today, startDate);
 
-      const monthsToPay = Math.min(amortization.durationMonths, monthsPassed);
+      const duration = amortization.durationMonths - 1;
+      const monthsToPay = Math.min(duration, monthsPassed);
 
       for (let i = 0; i <= monthsToPay; i++) {
         const toPay = amortization.initialAmount / amortization.durationMonths;
