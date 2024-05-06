@@ -5,7 +5,7 @@
   <template v-else>
     <VaCard>
       <VaCardTitle class="pb-0!">
-        <h1 class="card-title text-secondary font-bold uppercase">Yearly Breakup</h1>
+        <h1 class="card-title text-secondary font-bold uppercase">{{ t('dashboard.yearly.title') }}</h1>
       </VaCardTitle>
       <VaCardContent class="flex flex-row gap-1">
         <section class="w-1/2">
@@ -14,38 +14,38 @@
             <p class="text-xs text-success">
               <VaIcon name="arrow_upward" />
               {{ formatMoney(currentDifference) }}
-              <span class="text-secondary"> last year</span>
+              <span class="text-secondary"> {{ t('dashboard.label.last_year') }}</span>
             </p>
           </div>
           <div v-else-if="percentIncrease === -Infinity">
             <p class="text-xs text-danger">
               <VaIcon name="arrow_downward" />
               {{ formatMoney(currentDifference) }}
-              <span class="text-secondary"> last year</span>
+              <span class="text-secondary"> {{ t('dashboard.label.last_year') }}</span>
             </p>
           </div>
           <div v-else-if="percentIncrease < 0">
             <p class="text-xs text-danger">
               <VaIcon name="arrow_downward" />
               {{ percentIncrease }}%
-              <span class="text-secondary"> last year</span>
+              <span class="text-secondary"> {{ t('dashboard.label.last_year') }}</span>
             </p>
           </div>
           <div v-else-if="percentIncrease > 0">
             <p class="text-xs text-success">
               <VaIcon name="arrow_upward" />
               {{ percentIncrease }}%
-              <span class="text-secondary"> last year</span>
+              <span class="text-secondary"> {{ t('dashboard.label.last_year') }}</span>
             </p>
           </div>
           <div class="my-4 gap-2 flex flex-col">
             <div class="flex items-center">
               <span class="inline-block w-2 h-2 mr-2" :style="{ backgroundColor: earningsBackground }"></span>
-              <span class="text-secondary">Earnings</span>
+              <span class="text-secondary">{{ t('dashboard.yearly.earning') }}</span>
             </div>
             <div class="flex items-center">
               <span class="inline-block w-2 h-2 mr-2" :style="{ backgroundColor: profitBackground }"></span>
-              <span class="text-secondary">Profit</span>
+              <span class="text-secondary">{{ t('dashboard.yearly.profit') }}</span>
             </div>
           </div>
         </section>
@@ -78,6 +78,9 @@ import { useTransactionsStore } from '../../../stores/api/transactions'
 import { formatMoney } from '../../../data/charts/revenueChartData'
 import { CategoryType } from '../../categories/types'
 import { Transaction } from '../../transactions/types'
+
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
 
 const transactionsStore = useTransactionsStore()
 const loading = computed(() => transactionsStore.loading)

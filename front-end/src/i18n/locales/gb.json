@@ -10,6 +10,66 @@
     "transactions": "Transactions",
     "movements": "Movements"
   },
+  "months": {
+    "jan": "January",
+    "feb": "February",
+    "mar": "March",
+    "apr": "April",
+    "may": "May",
+    "jun": "June",
+    "jul": "July",
+    "aug": "August",
+    "sep": "September",
+    "oct": "October",
+    "nov": "November",
+    "dec": "December"
+  },  
+  "dashboard": {
+    "revenue": {
+      "title": "Revenue Report",
+      "export": "Export",
+      "total": "Total earnings",
+      "earning": "Earnings this month",
+      "expense": "Expense this month"
+    },
+    "yearly": {
+      "title": "Yearly Breakup",
+      "earning": "Earnings",
+      "profit": "Profits"
+    },
+    "monthly": {
+      "title": "Monthly Earnings"
+    },
+    "rule": {
+      "title": "rule",
+      "necessary": "Necessary",
+      "optional": "Optional",
+      "investment": "Investment",
+      "short": "Short-term investments",
+      "long": "Long-term investments",
+      "save": "Save",
+      "spent": "Spent"
+    },
+    "chart": {
+      "month": {
+        "expense": "Month Expenses",
+        "income": "Month incomes"
+      },
+      "year": {
+        "expense": "Year Expenses",
+        "income": "Year incomes"
+      }
+    },
+    "label": {
+      "all": "All",
+      "expense": "Expenses",
+      "income": "Income",
+      "month": "Month",
+      "year": "Year",
+      "last_year": "last year",
+      "last_month": "last month"
+    }
+  },
   "transactions": {
     "transaction": "Transaction",
     "amount": "Amount",

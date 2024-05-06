@@ -2,51 +2,46 @@
   <template v-if="loading">
     <div class="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-3 gap-3">
       <VaSkeleton variant="squared" height="12rem" />
-      <VaSkeleton variant="squared" height="12rem" />
-      <VaSkeleton variant="squared" height="12rem" />
     </div>
   </template>
   <template v-else>
-    <div class="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-3 gap-3">
-      <MoneyRuleCard
-        v-if="!loading && bar50Rule"
-        title="50/30/20 Rule"
-        icon="fa-money-bill"
-        icon-background="#4CAF50"
-        icon-color="#ffffff"
-        :bars="bar50Rule"
-      />
-
-      <MoneyRuleCard
-        v-if="!loading && bar4Bucket"
-        title="4 Bucket Rule"
-        icon="fa-hand-holding-usd"
-        icon-background="#FDB813"
-        icon-color="#ffffff"
-        :bars="bar4Bucket"
-      />
-
-      <MoneyRuleCard
-        v-if="!loading && bar70Rule"
-        title="70/30 Rule"
-        icon="fa-hand-holding-usd"
-        icon-background="#18b5be"
-        icon-color="#ffffff"
-        :bars="bar70Rule"
-      />
+    <div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 gap-3">
+      <VaCard class="money-rule-card">
+        <VaCardContent>
+          <section>
+            <header class="flex items-center justify-between">
+              <p class="text-lg font-bold mb-2">{{ title }} {{ t('dashboard.rule.title') }}</p>
+              <VaSelect v-model="selectedRule" preset="small" :options="ruleChoosen" class="w-28" />
+            </header>
+            <div>
+              <div v-for="(bar, index) in barChoosen" :key="index" class="mb-2">
+                <p class="text-sm font-semibold">{{ bar.label }}</p>
+                <div class="flex items-center">
+                  <div class="w-full bg-gray-300 h-3 rounded-md mr-2">
+                    <div class="h-full rounded-md" :style="{ width: bar.percent + '%' }" :class="[bar.color]"></div>
+                  </div>
+                </div>
+                <p class="text-xs text-gray-600">{{ bar.labelRight }}</p>
+              </div>
+            </div>
+          </section>
+        </VaCardContent>
+      </VaCard>
     </div>
   </template>
 </template>
 
 <script setup lang="ts">
 import { computed, watch, onMounted, ref } from 'vue'
-import MoneyRuleCard from '../cards/MoneyRuleCard.vue'
 
 import { useTransactionsStore } from '../../../stores/api/transactions'
 import { Transaction } from '../../transactions/types'
 import { CategoryType } from '../../categories/types'
 
 import { formatMoney } from '../../../data/charts/revenueChartData'
+
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
 
 const transactionsStore = useTransactionsStore()
 const loading = computed(() => transactionsStore.loading)
@@ -58,6 +53,20 @@ type RuleType = {
   percent: number
   color?: string
 }[]
+
+const ruleChoosen: string[] = ['50/30/20', '4 Bucket', '70/30']
+const selectedRule = ref(ruleChoosen[0])
+const title = ref(ruleChoosen[0])
+
+watch([selectedRule], async ([selectedRule]) => {
+  title.value = selectedRule
+
+  if (selectedRule === '50/30/20') barChoosen.value = bar50Rule.value
+  else if (selectedRule === '4 Bucket') barChoosen.value = bar4Bucket.value
+  else if (selectedRule === '70/30') barChoosen.value = bar70Rule.value
+})
+
+const barChoosen = ref<RuleType>([])
 
 const bar50Rule = ref<RuleType>([])
 const bar4Bucket = ref<RuleType>([])
@@ -73,6 +82,7 @@ onMounted(async () => {
   )
 
   bar50Rule.value = await adaptBars50Rule(income, expenses_necessary, expenses_optional, long_term, short_term)
+  barChoosen.value = bar50Rule.value
   bar4Bucket.value = await adaptBars4Bucket(income, expenses_necessary, expenses_optional, long_term, short_term)
   bar70Rule.value = await adaptBars70Rule(income, expenses_necessary, expenses_optional)
 })
@@ -132,25 +142,25 @@ async function adaptBars4Bucket(
 
   return [
     {
-      label: 'Necessary',
+      label: t('dashboard.rule.necessary'),
       labelRight: `${formatMoney(expenses_necessary)}/${formatMoney(limit50)}`,
       percent: necessaryPercent,
       color: await getColorByPercentage(necessaryPercent),
     },
     {
-      label: 'Optional',
+      label: t('dashboard.rule.optional'),
       labelRight: `${formatMoney(expenses_optional)}/${formatMoney(limit30)}`,
       percent: optionalPercent,
       color: await getColorByPercentage(optionalPercent),
     },
     {
-      label: 'Short-term investments',
+      label: t('dashboard.rule.short'),
       labelRight: `${formatMoney(short_term)}/${formatMoney(limit10)}`,
       percent: shortPercent,
       color: await getColorByPercentage(shortPercent),
     },
     {
-      label: 'Long-term investments',
+      label: t('dashboard.rule.long'),
       labelRight: `${formatMoney(long_term)}/${formatMoney(limit10)}`,
       percent: longPercent,
       color: await getColorByPercentage(longPercent),
@@ -176,13 +186,13 @@ async function adaptBars70Rule(
 
   return [
     {
-      label: 'Spent',
+      label: t('dashboard.rule.spent'),
       labelRight: `${formatMoney(expenses)}/${formatMoney(limit70)}`,
       percent: spentPercent,
       color: await getColorByPercentage(spentPercent),
     },
     {
-      label: 'Save',
+      label: t('dashboard.rule.save'),
       labelRight: `${formatMoney(income - expenses)}/${formatMoney(limit30)}`,
       percent: savePercent,
       color: await getColorByPercentageOpposite(savePercent),
@@ -212,19 +222,19 @@ async function adaptBars50Rule(
 
   return [
     {
-      label: 'Necessary',
+      label: t('dashboard.rule.necessary'),
       labelRight: `${formatMoney(expenses_necessary)}/${formatMoney(limit50)}`,
       percent: necessaryPercent,
       color: await getColorByPercentage(necessaryPercent),
     },
     {
-      label: 'Optional',
+      label: t('dashboard.rule.optional'),
       labelRight: `${formatMoney(expenses_optional)}/${formatMoney(limit30)}`,
       percent: optionalPercent,
       color: await getColorByPercentage(optionalPercent),
     },
     {
-      label: 'Investment',
+      label: t('dashboard.rule.investment'),
       labelRight: `${formatMoney(long_term + short_term)}/${formatMoney(limit20)}`,
       percent: savedPercent,
       color: await getColorByPercentage(savedPercent),
@@ -269,3 +279,10 @@ async function calculateCategoriesType(transactions: Transaction[]): Promise<{
   return { income, expenses_necessary, expenses_optional, long_term, short_term }
 }
 </script>
+
+<style scoped>
+.money-rule-card .bar-label-right {
+  font-size: 10px; /* Imposta la dimensione del testo a 10px */
+  margin-top: 4px; /* Aggiungi spazio superiore per separare il testo dalla barra */
+}
+</style>

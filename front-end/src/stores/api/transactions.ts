@@ -13,10 +13,13 @@ export const useTransactionsStore = defineStore('transactions', {
       try {
         this.loading = true
 
-        //console.log('Carico TRANSACTION')
         const response = await axios.get(`${import.meta.env.VITE_API_URL}/transactions/`)
         this.transactions = response.data
 
+        /*const dateStart = startOfYear(new Date())
+        const dateEnd = addDays(new Date(), 1)
+        this.transactions = await this.fetchByDateRange(dateStart, dateEnd) //I take only the one until today
+        */
         this.fetchByMonth(new Date().getMonth() + 1)
 
         this.loading = false

@@ -10,6 +10,52 @@
     "transactions": "交易",
     "movements": "动态"
   },
+  "dashboard": {
+    "revenue": {
+      "title": "收入报告",
+      "export": "导出",
+      "total": "总收入",
+      "earning": "本月收入",
+      "expense": "本月支出"
+    },
+    "yearly": {
+      "title": "年度分布",
+      "earning": "收入",
+      "profit": "利润"
+    },
+    "monthly": {
+      "title": "每月收入"
+    },
+    "rule": {
+      "title": "规则",
+      "necessary": "必要",
+      "optional": "可选",
+      "investment": "投资",
+      "short": "短期投资",
+      "long": "长期投资",
+      "save": "保存",
+      "spent": "支出"
+    },
+    "chart": {
+      "month": {
+        "expense": "月度支出",
+        "income": "月度收入"
+      },
+      "year": {
+        "expense": "年度支出",
+        "income": "年度收入"
+      }
+    },
+    "label": {
+      "all": "全部",
+      "expense": "支出",
+      "income": "收入",
+      "month": "月份",
+      "year": "年份",
+      "last_year": "去年",
+      "last_month": "上个月"
+    }
+  },  
   "transactions": {
     "transaction": "交易",
     "amount": "金额",

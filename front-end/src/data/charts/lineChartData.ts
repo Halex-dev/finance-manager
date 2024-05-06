@@ -1,5 +1,6 @@
 import { TLineChartData } from '../types'
 
+//TODO lingua
 export const lineChartData: TLineChartData = {
   labels: [
     'January',

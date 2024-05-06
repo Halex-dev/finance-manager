@@ -98,7 +98,11 @@ const onAmortizationDelete = async (amortization: Amortization) => {
       {{ formatMoney(rowData.initialAmount / rowData.durationMonths) }}
     </template>
     <template #cell(nextDate)="{ rowData }">
-      {{ formatDate(addMonths(rowData.startDate, rowData.transactions.length).toString()) }}
+      {{
+        rowData.residualValue <= 0
+          ? '-'
+          : formatDate(addMonths(rowData.startDate, rowData.transactions.length).toString())
+      }}
     </template>
     <template #cell(initialAmount)="{ rowData }">
       {{ formatMoney(rowData.initialAmount) }}

@@ -5,7 +5,7 @@
   <template v-else>
     <VaCard>
       <VaCardTitle>
-        <h1 class="card-title text-tag text-secondary font-bold uppercase">Monthly Earnings</h1>
+        <h1 class="card-title text-tag text-secondary font-bold uppercase">{{ t('dashboard.monthly.title') }}</h1>
       </VaCardTitle>
       <VaCardContent>
         <div class="p-1 bg-black rounded absolute right-4 top-4">
@@ -17,28 +17,28 @@
             <p class="text-xs text-success">
               <VaIcon name="arrow_upward" />
               {{ formatMoney(monthlyEarnings) }}
-              <span class="text-secondary"> last month</span>
+              <span class="text-secondary"> {{ t('dashboard.label.last_month') }}</span>
             </p>
           </div>
           <div v-else-if="percentIncrease === -Infinity">
             <p class="text-xs text-danger">
               <VaIcon name="arrow_downward" />
               {{ formatMoney(monthlyEarnings) }}
-              <span class="text-secondary"> last month</span>
+              <span class="text-secondary"> {{ t('dashboard.label.last_month') }}</span>
             </p>
           </div>
           <div v-else-if="percentIncrease < 0">
             <p class="text-xs text-danger">
               <VaIcon name="arrow_downward" />
               {{ percentIncrease }}%
-              <span class="text-secondary"> last month</span>
+              <span class="text-secondary"> {{ t('dashboard.label.last_month') }}</span>
             </p>
           </div>
           <div v-else-if="percentIncrease > 0">
             <p class="text-xs text-success">
               <VaIcon name="arrow_upward" />
               {{ percentIncrease }}%
-              <span class="text-secondary"> last month</span>
+              <span class="text-secondary"> {{ t('dashboard.label.last_month') }}</span>
             </p>
           </div>
         </section>
@@ -64,6 +64,9 @@ import { Transaction } from '../../transactions/types'
 import { CategoryType } from '../../categories/types'
 
 import { formatMoney } from '../../../data/charts/revenueChartData'
+
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
 
 const transactionsStore = useTransactionsStore()
 const loading = computed(() => transactionsStore.loading)

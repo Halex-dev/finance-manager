@@ -10,6 +10,66 @@
     "transactions": "Transazioni",
     "movements": "Movimenti"
   },
+  "months": {
+    "jan": "Gennaio",
+    "feb": "Febbraio",
+    "mar": "Marzo",
+    "apr": "Aprile",
+    "may": "Maggio",
+    "jun": "Giugno",
+    "jul": "Luglio",
+    "aug": "Agosto",
+    "sep": "Settembre",
+    "oct": "Ottobre",
+    "nov": "Novembre",
+    "dec": "Dicembre"
+  },  
+  "dashboard": {
+    "revenue": {
+      "title": "Rapporto sui Ricavi",
+      "export": "Esporta",
+      "total": "Totale guadagni",
+      "earning": "Guadagni questo mese",
+      "expense": "Spesa questo mese"
+    },
+    "yearly": {
+      "title": "Suddivisione Annuale",
+      "earning": "Guadagni",
+      "profit": "Profitti"
+    },
+    "monthly": {
+      "title": "Guadagni Mensili"
+    },
+    "rule": {
+      "title": "Regola",
+      "necessary": "Necessaria",
+      "optional": "Opzionale",
+      "investment": "Investimento",
+      "short": "Investimenti a breve termine",
+      "long": "Investimenti a lungo termine",
+      "save": "Salva",
+      "spent": "Da spendere"
+    },  
+    "chart": {
+      "month": {
+        "expense": "Spese mensili",
+        "income": "Entrate mensili"
+      },
+      "year": {
+        "expense": "Spese annuali",
+        "income": "Entrate annuali"
+      }
+    },
+    "label": {
+      "all": "Tutto",
+      "expense": "Spese",
+      "income": "Entrate",
+      "month": "Mese",
+      "year": "Anno",
+      "last_year": "anno scorso",
+      "last_month": "mese scorso"
+    }
+  },
   "transactions": {
     "transaction": "Transazione",
     "amount": "Soldi",

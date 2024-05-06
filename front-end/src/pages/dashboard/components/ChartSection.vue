@@ -10,7 +10,9 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-2">
       <VaCard>
         <VaCardTitle class="pb-0!">
-          <h1 class="card-title text-secondary font-bold uppercase text-lg">{{ selectedOptionExp }} expense</h1>
+          <h1 class="card-title text-secondary font-bold uppercase text-lg">
+            {{ t(`dashboard.chart.${selectedOptionExp}.expense`) }}
+          </h1>
         </VaCardTitle>
         <VaCardContent class="flex flex-row gap-4 items-center">
           <div class="w-1/2">
@@ -25,10 +27,7 @@
                 v-model="selectedOptionExp"
                 color="background-element"
                 border-color="background-element"
-                :options="[
-                  { label: 'Month', value: 'month' },
-                  { label: 'Year', value: 'year' },
-                ]"
+                :options="optionsButton"
               />
             </div>
           </div>
@@ -45,7 +44,9 @@
       </VaCard>
       <VaCard>
         <VaCardTitle class="pb-0!">
-          <h1 class="card-title text-secondary font-bold uppercase text-lg">{{ selectedOptionInc }} Income</h1>
+          <h1 class="card-title text-secondary font-bold uppercase text-lg">
+            {{ t(`dashboard.chart.${selectedOptionInc}.income`) }}
+          </h1>
         </VaCardTitle>
         <VaCardContent class="flex flex-row gap-4 items-center">
           <div class="w-1/2">
@@ -60,10 +61,7 @@
                 v-model="selectedOptionInc"
                 color="background-element"
                 border-color="background-element"
-                :options="[
-                  { label: 'Month', value: 'month' },
-                  { label: 'Year', value: 'year' },
-                ]"
+                :options="optionsButton"
               />
             </div>
           </div>
@@ -106,6 +104,9 @@ const transactions = computed(() => transactionsStore.transactions)
 const transactionsMonth = computed(() => transactionsStore.transactionsMonth)
 const loading = computed(() => transactionsStore.loading)
 
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
+
 const exampleChartData: TDoughnutChartData = {
   labels: [],
   datasets: [
@@ -117,6 +118,10 @@ const exampleChartData: TDoughnutChartData = {
   ],
 }
 
+const optionsButton = [
+  { label: t('dashboard.label.month'), value: 'month' },
+  { label: t('dashboard.label.year'), value: 'year' },
+]
 const chartDataExp = ref<TDoughnutChartData>(useChartData(exampleChartData).value)
 const circumferenceExp = ref<number>(calculateCircumference(chartDataExp))
 
@@ -242,8 +247,6 @@ function generateDoughnutChartData(
     const category = categories.value.find((cat) => cat.name === item.label)
     if (category) {
       colorBackgrounds.push(category.color)
-    } else {
-      colorBackgrounds.push('#ffa500') //Amortization color //TODO rendilo globale
     }
   })
 
