@@ -23,7 +23,7 @@ import { join } from 'path';
       entities: Entities /* List of Entity for TypeORM*/,
       synchronize: true, // Attenzione: Remeber to put it false when after the production! //TODO mettilo false o perdi tabelle
       autoLoadEntities: true,
-      keepConnectionAlive: true, // Attenzione: Remeber to put it false when after the production!
+      keepConnectionAlive: true, // Attenzione: Remeber to put it false when after the production! //TODO mettilo false o perdi tabelle
     }),
     TypeOrmModule.forFeature(Entities),
   ],

@@ -9,7 +9,6 @@ import { Transaction } from 'src/database/transaction/transaction.entity';
 import * as cron from 'node-cron';
 import { logger } from 'src/module/logger'; //My logger
 
-//TODO verificare se funziona
 @Injectable()
 export class StartupService implements OnApplicationBootstrap {
   constructor(

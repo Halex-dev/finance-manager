@@ -23,7 +23,7 @@
     "oct": "Ottobre",
     "nov": "Novembre",
     "dec": "Dicembre"
-  },  
+  },
   "dashboard": {
     "revenue": {
       "title": "Rapporto sui Ricavi",
@@ -49,7 +49,7 @@
       "long": "Investimenti a lungo termine",
       "save": "Salva",
       "spent": "Da spendere"
-    },  
+    },
     "chart": {
       "month": {
         "expense": "Spese mensili",
