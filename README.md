@@ -130,7 +130,8 @@ docker build -t [nome_immagine] .
 ```
 
 ```sh
-docker run -p 3000:3000 [nome_immagine]
+docker run -p 3000:3000 --name finance_manager [nome_immagine]
+
 
 ```
 
