@@ -9,8 +9,6 @@ lerna-debug.log*
 # Dependency directories
 node_modules/
 
-# Environment variables
-.env
 
 # Compiled output
 dist/
@@ -30,9 +28,6 @@ build/
 
 # Dependency directories
 /node_modules/
-
-# Environment variables
-.env
 
 # Runtime data
 .nuxt/
