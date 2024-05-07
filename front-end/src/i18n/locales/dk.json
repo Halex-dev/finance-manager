@@ -1,0 +1,161 @@
+{
+    "menu": {
+      "dashboard": "Instrumentbræt",
+      "amortizations": "Afskrivninger",
+      "settings": "Indstillinger",
+      "404": "404",
+      "faq": "FAQ",
+      "wallets": "Pengepunge",
+      "categories": "Kategorier",
+      "transactions": "Transaktioner",
+      "movements": "Bevægelser"
+    },
+    "months": {
+      "jan": "Januar",
+      "feb": "Februar",
+      "mar": "Marts",
+      "apr": "April",
+      "may": "Maj",
+      "jun": "Juni",
+      "jul": "Juli",
+      "aug": "August",
+      "sep": "September",
+      "oct": "Oktober",
+      "nov": "November",
+      "dec": "December"
+    },
+    "dashboard": {
+      "revenue": {
+        "title": "Indtægtsrapport",
+        "export": "Eksport",
+        "total": "Samlet indtægt",
+        "earning": "Indtjening denne måned",
+        "expense": "Udgifter denne måned"
+      },
+      "yearly": {
+        "title": "Årlig opdeling",
+        "earning": "Indtjening",
+        "profit": "Profit"
+      },
+      "monthly": {
+        "title": "Månedlig indtjening"
+      },
+      "rule": {
+        "title": "regel",
+        "necessary": "Nødvendigt",
+        "optional": "Valgfrit",
+        "investment": "Investering",
+        "short": "Kortsigtede investeringer",
+        "long": "Langsigtede investeringer",
+        "save": "Gem",
+        "spent": "Brugt"
+      },
+      "chart": {
+        "month": {
+          "expense": "Månedsudgifter",
+          "income": "Månedsindtægter"
+        },
+        "year": {
+          "expense": "Årsudgifter",
+          "income": "Årsindtægter"
+        }
+      },
+      "label": {
+        "all": "Alle",
+        "expense": "Udgifter",
+        "income": "Indkomst",
+        "month": "Måned",
+        "year": "År",
+        "last_year": "sidste år",
+        "last_month": "sidste måned"
+      }
+    },
+    "transactions": {
+      "transaction": "Transaktion",
+      "amount": "Beløb",
+      "description": "Beskrivelse",
+      "date": "Dato",
+      "label": {
+        "all": "Alle",
+        "expense": "Udgifter",
+        "income": "Indkomst"
+      }
+    },
+    "amortizations": {
+      "amortization": "Afskrivning",
+      "description": "Beskrivelse",
+      "startDate": "Startdato",
+      "initialAmount": "Indledende beløb",
+      "durationMonths": "Måneder",
+      "residualValue": "Restværdi",
+      "nextAmount": "Næste beløb",
+      "nextDate": "Næste dato",
+      "finishDate": "Afslutningsdato",
+      "label": {
+        "all": "Alle",
+        "active": "Aktiv",
+        "finished": "Afsluttet",
+        "future": "Fremtid"
+      }
+    },
+    "wallets": {
+      "wallet": "Pung",
+      "name": "Navn",
+      "date": "Dato",
+      "currency": "Valuta"
+    },
+    "categories": {
+      "category": "Kategori",
+      "name": "Navn",
+      "category_type": "Type",
+      "color": "Farve",
+      "date": "Dato",
+      "type": {
+        "income": "Indkomst",
+        "necessary_expense": "Nødvendige Udgifter",
+        "optional_expense": "Valgfrie/Sekundære Udgifter",
+        "long_term": "Langsigtede Investeringer",
+        "short_term": "Kortsigtede Investeringer"
+      }
+    },
+    "settings": {
+      "theme": "Tema",
+      "preferences": "Generelle præferencer",
+      "notification": "Underretninger, du gerne vil modtage",
+      "language": {
+        "name": "Sprog",
+        "english": "Engelsk",
+        "simplified_chinese": "Forenklet Kinesisk",
+        "italian": "Italiensk"
+      }
+    },
+    "modal_delete": {
+      "title": "Slet",
+      "message": "Er du sikker på, at du vil slette"
+    },
+    "modal": {
+      "cancel": "Formularen indeholder ikke-gemte ændringer. Er du sikker på, at du vil lukke den?"
+    },
+    "button": {
+      "add": "Tilføj",
+      "edit": "Rediger",
+      "save": "Gem",
+      "cancel": "Annuller",
+      "delete": "Slet",
+      "add_image": "Tilføj billede"
+    },
+    "notify": {
+      "update": "er blevet opdateret",
+      "add": "er blevet tilføjet",
+      "delete": "er blevet slettet"
+    },
+    "table": {
+      "results": "resultater.",
+      "result_page": "Resultater pr. side"
+    },
+    "buttonSelect": {
+      "dark": "Mørk",
+      "light": "Lys"
+    }
+  }
+  

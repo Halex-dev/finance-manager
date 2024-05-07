@@ -17,12 +17,14 @@ const { locale, t } = useI18n()
 const languages: LanguageMap = {
   english: 'English',
   italian: 'Italian',
+  danish: 'Danish',
   simplified_chinese: 'Simplified Chinese',
 }
 
 const languageCodes: LanguageMap = {
   gb: languages.english,
   it: languages.italian,
+  dk: languages.danish,
   cn: languages.simplified_chinese,
 }
 
