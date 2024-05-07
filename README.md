@@ -121,6 +121,19 @@ cd back-end
 npm run start
 ```
 
+###  Docker finance-manager
+
+Use the following command to run finance-manager with docker:
+
+```sh
+docker build -t [nome_immagine] .
+```
+
+```sh
+docker run -p 3000:3000 [nome_immagine]
+
+```
+
 ##  Project Roadmap
 
 - [X] Expense Tracking

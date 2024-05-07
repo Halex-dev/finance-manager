@@ -9,7 +9,7 @@ import { Wallet } from './wallet.entity';
 import { logger } from '../../module/logger';
 import * as fs from 'fs';
 import * as path from 'path';
-import { appConfig } from 'src/module/config';
+import { appConfig } from '../../module/config';
 
 @Injectable()
 export class WalletService {

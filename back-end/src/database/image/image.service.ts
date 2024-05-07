@@ -3,7 +3,7 @@ import * as path from 'path';
 import * as fs from 'fs';
 import { v4 as uuidv4 } from 'uuid';
 import { logger } from 'src/module/logger';
-import { appConfig } from 'src/module/config';
+import { appConfig } from '../../module/config';
 import * as sharp from 'sharp';
 
 @Injectable()
