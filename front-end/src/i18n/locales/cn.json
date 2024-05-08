@@ -61,6 +61,14 @@
     "amount": "金额",
     "description": "描述",
     "date": "日期",
+    "state": "状态",
+    "states": {
+      "paid": "已支付",
+      "failed": "失败",
+      "unpaid": "未支付",
+      "not_received": "未收到",
+      "received": "已收到"
+    },
     "label": {
       "all": "全部",
       "expense": "支出",
@@ -142,5 +150,13 @@
   "buttonSelect": {
     "dark": "暗",
     "light": "亮"
+  },
+  "notifications": {
+    "all": "展开",
+    "less": "减少",
+    "labels": {
+      "error_money": "没有足够的钱支付金额"
+    }
   }
+
 }

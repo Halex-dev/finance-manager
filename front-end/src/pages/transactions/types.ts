@@ -17,7 +17,7 @@ export const colorMap: Record<StateType, string> = {
   [StateType.UNPAID]: '#FF5735',
   [StateType.NOT_RECEIVED]: '#FF5736',
   [StateType.RECEIVED]: '#B3D940',
-};
+}
 
 export type Transaction = {
   id: number

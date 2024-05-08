@@ -169,7 +169,7 @@
     "all": "Expand",
     "less": "Reduce",
     "labels": {
-      "error_money": "Not enough money"
+      "error_money": "Not enough money to pay an amount of"
     }
   }
 }

@@ -75,10 +75,18 @@
     "amount": "Beløb",
     "description": "Beskrivelse",
     "date": "Dato",
+    "state": "Tilstand",
+    "states": {
+      "paid": "Betalt",
+      "failed": "Mislykkedes",
+      "unpaid": "Ikke betalt",
+      "not_received": "Ikke modtaget",
+      "received": "Modtaget"
+    },
     "label": {
       "all": "Alle",
       "expense": "Udgifter",
-      "income": "Indkomst"
+      "income": "Indtægter"
     }
   },
   "amortizations": {
@@ -156,5 +164,12 @@
   "buttonSelect": {
     "dark": "Mørk",
     "light": "Lys"
+  },
+  "notifications": {
+    "all": "Udvid",
+    "less": "Reducer",
+    "labels": {
+      "error_money": "Ikke nok penge til at betale et beløb på"
+    }
   }
 }

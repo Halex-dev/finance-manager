@@ -2,7 +2,7 @@
   <VaButton
     preset="secondary"
     color="textPrimary"
-    href="https://github.com/epicmaxco/vuestic-admin"
+    href="https://github.com/Halex-dev/finance-manager"
     target="_blank"
     aria-label="Visit github"
   >

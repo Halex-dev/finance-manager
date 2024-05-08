@@ -72,9 +72,17 @@
   },
   "transactions": {
     "transaction": "Transazione",
-    "amount": "Soldi",
+    "amount": "Importo",
     "description": "Descrizione",
     "date": "Data",
+    "state": "Stato",
+    "states": {
+      "paid": "pagato",
+      "failed": "fallito",
+      "unpaid": "non pagato",
+      "not_received": "non ricevuto",
+      "received": "ricevuto"
+    },
     "label": {
       "all": "Tutti",
       "expense": "Spese",
@@ -156,5 +164,12 @@
   "buttonSelect": {
     "dark": "Dark",
     "light": "Light"
+  },
+  "notifications": {
+    "all": "Espandi",
+    "less": "Riduci",
+    "labels": {
+      "error_money": "Denaro insufficiente per pagare un importo di"
+    }
   }
 }

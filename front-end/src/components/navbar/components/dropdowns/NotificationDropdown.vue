@@ -39,7 +39,7 @@
 </template>
 
 <script setup lang="ts">
-//TODO risolvere bug non vedo notifiche +
+//TODO aggiungere x per eliminare la notifica e impostare il read per dire ho letto
 import { ref, computed, watch, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import VaIconNotification from '../../../icons/VaIconNotification.vue'

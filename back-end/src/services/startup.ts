@@ -43,7 +43,6 @@ export class StartupService implements OnApplicationBootstrap {
     });
   }
 
-  //TODO testare
   async checkTransction(): Promise<void> {
     const queryRunner = this.entityManager.connection.createQueryRunner();
     await queryRunner.connect();
@@ -53,7 +52,6 @@ export class StartupService implements OnApplicationBootstrap {
       const today = new Date();
       const endOfToday = endOfDay(today);
 
-      // Retrieve transactions with residual value greater than 0
       const transactions = await queryRunner.manager.find(Transaction, {
         where: {
           state: In([
@@ -100,7 +98,7 @@ export class StartupService implements OnApplicationBootstrap {
 
             const notification: Partial<Notification> = {
               icon: 'money_off',
-              message: `to pay an amount of ${transaction.amount} (ID ${transaction.id})`,
+              message: ` ${transaction.amount} (ID ${transaction.id})`,
               code: NotificationState.ERROR_MONEY,
               date: new Date(),
               read: false,
@@ -130,6 +128,7 @@ export class StartupService implements OnApplicationBootstrap {
     }
   }
 
+  //TODO testare
   async checkAmortization(): Promise<void> {
     // Create a queryRunner
     const queryRunner = this.entityManager.connection.createQueryRunner();
