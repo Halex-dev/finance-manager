@@ -133,7 +133,7 @@ const onTransactionSaved = async (Transaction: Transaction) => {
       })
     } else {
       notify({
-        message: `${Transaction.id} ${t('notify.add')}`,
+        message: `${Transaction.description} ${t('notify.add')}`,
         color: 'success',
       })
     }

@@ -8,16 +8,16 @@ export class Wallet {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ type: 'text' })
   name: string; //description to name
 
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   currency: number; //money to currency
 
-  @Column()
+  @Column({ type: 'date' })
   date: Date;
 
-  @Column()
+  @Column({ type: 'text' })
   avatar: string;
 
   @OneToMany(() => Transaction, (transaction) => transaction.wallet)

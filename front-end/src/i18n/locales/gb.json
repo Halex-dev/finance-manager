@@ -75,6 +75,14 @@
     "amount": "Amount",
     "description": "Description",
     "date": "Date",
+    "state": "State",
+    "states": {
+      "paid": "paid",
+      "failed": "failed",
+      "unpaid": "unpaid",
+      "not_received": "not received",
+      "received": "received"
+    },
     "label": {
       "all": "All",
       "expense": "Expenses",
@@ -156,5 +164,12 @@
   "buttonSelect": {
     "dark": "Dark",
     "light": "Light"
+  },
+  "notifications": {
+    "all": "Expand",
+    "less": "Reduce",
+    "labels": {
+      "error_money": "Not enough money"
+    }
   }
 }

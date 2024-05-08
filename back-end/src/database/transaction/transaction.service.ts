@@ -11,13 +11,14 @@ import {
   QueryRunner,
   Repository,
 } from 'typeorm';
-import { Transaction } from './transaction.entity';
+import { StateType, Transaction } from './transaction.entity';
 import { logger } from '../../module/logger';
 
 import { Wallet } from '../wallet/wallet.entity';
 import { Category } from '../category/category.entity';
 
 import { CategoryType } from '../category/category.entity';
+import { isBefore, isSameDay } from 'date-fns';
 
 @Injectable()
 export class TransactionService {
@@ -186,6 +187,8 @@ export class TransactionService {
         throw new NotFoundException(`Transaction with id ${id} not found`);
       }
 
+      const existDate = new Date(existingTransaction.date);
+      const dataDate = new Date(transactionData.date);
       // Controllo se l'attributo 'amount', 'category' o 'wallet' sono stati modificati
       if (
         (transactionData.amount !== undefined &&
@@ -193,7 +196,9 @@ export class TransactionService {
         (transactionData.category !== undefined &&
           existingTransaction.category.id !== transactionData.category.id) ||
         (transactionData.wallet !== undefined &&
-          existingTransaction.wallet.id !== transactionData.wallet.id)
+          existingTransaction.wallet.id !== transactionData.wallet.id) ||
+        (transactionData.date !== undefined &&
+          existDate.getTime() !== dataDate.getTime())
       ) {
         //ANNULLO OPERAZIONI PRECEDENTI
         const wallet = await queryRunner.manager.findOneOrFail(Wallet, {
@@ -463,15 +468,28 @@ export class TransactionService {
       throw new BadRequestException('Invalid wallet');
     }
 
-    if (category.category_type === CategoryType.INCOME) {
-      wallet.currency += data.amount;
-    } else {
-      // Se la categoria è una spesa, controlla se ci sono abbastanza soldi nel portafoglio
-      if (wallet.currency < data.amount) {
-        throw new BadRequestException('Not enough money in the wallet');
-      }
+    const today = new Date();
+    const transactionDate = new Date(data.date);
 
-      wallet.currency -= data.amount;
+    if (isBefore(transactionDate, today) || isSameDay(transactionDate, today)) {
+      if (category.category_type === CategoryType.INCOME) {
+        wallet.currency += data.amount;
+        data.state = StateType.RECEIVED;
+      } else {
+        // Se la categoria è una spesa, controlla se ci sono abbastanza soldi nel portafoglio
+        if (wallet.currency < data.amount) {
+          throw new BadRequestException('Not enough money in the wallet');
+        }
+
+        wallet.currency -= data.amount;
+        data.state = StateType.PAID;
+      }
+    } else {
+      if (category.category_type === CategoryType.INCOME) {
+        data.state = StateType.NOT_RECEIVED;
+      } else {
+        data.state = StateType.UNPAID;
+      }
     }
   }
 }

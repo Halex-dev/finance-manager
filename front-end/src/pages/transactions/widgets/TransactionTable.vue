@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { defineVaDataTableColumns, useModal } from 'vuestic-ui'
-import { Transaction } from '../types'
+import { StateType, Transaction, colorMap } from '../types'
 import { PropType, computed, toRef } from 'vue'
 import { Pagination, Sorting } from '../../../data/api/transactions'
 import { useVModel } from '@vueuse/core'
@@ -22,9 +22,14 @@ const formatDate = (value: string) => {
   }
 }
 
+const getColorByState = (state: StateType): string => {
+  return colorMap[state]
+}
+
 const columns = defineVaDataTableColumns([
   { label: t('transactions.amount'), key: 'amount', sortable: true },
   { label: t('transactions.description'), key: 'description', sortable: true },
+  { label: t('transactions.state'), key: 'state', sortable: true },
   { label: t('wallets.wallet'), key: 'wallet', sortable: true },
   { label: t('categories.category'), key: 'category', sortable: true },
   { label: t('transactions.date'), key: 'date', sortable: true },
@@ -72,7 +77,6 @@ const onTransactionDelete = async (transaction: Transaction) => {
   }
 }
 </script>
-//TODO segnare le spese in negativo
 <template>
   <VaDataTable
     v-model:sort-by="sortByVModel"
@@ -88,7 +92,10 @@ const onTransactionDelete = async (transaction: Transaction) => {
           : rowData.category.category_type !== CategoryType.INCOME
             ? '- ' + formatMoney(rowData.amount)
             : formatMoney(rowData.amount)
-      }}
+      }} </template
+    >state
+    <template #cell(state)="{ rowData }">
+      <VaBadge :text="t(`transactions.states.${rowData.state}`)" :color="getColorByState(rowData.state)" class="mr-2" />
     </template>
     <template #cell(wallet)="{ rowData }">
       <div class="flex items-center gap-2 max-w-[230px] ellipsis">

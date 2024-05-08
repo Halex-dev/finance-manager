@@ -61,6 +61,7 @@ export class TransactionController {
     return this.transactionService.delete(+id);
   }
 
+  //TODO risolvere bug non prende il giorno stesso
   @Get('date/range')
   async findByDateRange(
     @Query('startDate') startDate: string,
