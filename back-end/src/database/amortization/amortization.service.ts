@@ -9,7 +9,7 @@ import { Amortization } from './amortization.entity';
 import { logger } from '../../module/logger';
 import { addMonths, differenceInMonths, endOfDay, startOfDay } from 'date-fns';
 import { TransactionService } from '../transaction/transaction.service';
-import { Transaction } from '../transaction/transaction.entity';
+import { StateType, Transaction } from '../transaction/transaction.entity';
 import { Wallet } from '../wallet/wallet.entity';
 import { Category, CategoryType } from '../category/category.entity';
 
@@ -311,6 +311,7 @@ export class AmortizationService {
           amount: toPay,
           description: `Amortization: ${amortization.description}`,
           date: currentMonthDate,
+          state: StateType.PAID,
           wallet: amortization.wallet,
           category: amortization.category,
           amortization: amortization,
