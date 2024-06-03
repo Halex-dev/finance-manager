@@ -13,7 +13,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-import LanguageSwitcher from './components/LanguageSwitcher.vue'
+import LanguageSwitcher from './components/general/LanguageSwitcher.vue'
 import ThemeSwitcher from './components/ThemeSwitcher.vue'
 import Notifications from './components/Notifications.vue'
 

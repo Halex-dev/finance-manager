@@ -40,7 +40,6 @@ build/
 *.bk
 
 # DEV SCRIPTS
-*.sh
 *.bat
 
 # VSCODE

@@ -65,7 +65,6 @@ watch([notifications], async ([notifications]) => {
 const updateNotificationLength = () => {
   const list = notificationsSorted.value
   const filteredList = list.filter((notification) => notification.read === false)
-  console.log(filteredList.length)
   notificationLength.value = filteredList.length
 }
 

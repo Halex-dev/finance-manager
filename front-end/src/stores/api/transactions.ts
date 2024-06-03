@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { defineStore } from 'pinia'
 import { Transaction } from '../../pages/transactions/types'
+import { format } from 'date-fns'
 
 export const useTransactionsStore = defineStore('transactions', {
   state: () => ({
@@ -61,12 +62,16 @@ export const useTransactionsStore = defineStore('transactions', {
     },
     async fetchByDateRange(startDate: Date, endDate: Date) {
       try {
+        const formattedStartDate = format(startDate, "yyyy-MM-dd'T'00:00:00'Z'")
+        const formattedEndDate = format(endDate, "yyyy-MM-dd'T'23:59:59'Z'")
+
         const response = await axios.get(`${import.meta.env.VITE_API_URL}/transactions/date/range`, {
           params: {
-            startDate,
-            endDate,
+            startDate: formattedStartDate,
+            endDate: formattedEndDate,
           },
         })
+
         return response.data
       } catch (error) {
         console.error('Error fetching transactions by date range:', error)
@@ -74,9 +79,11 @@ export const useTransactionsStore = defineStore('transactions', {
     },
     async fetchByStartDate(startDate: Date) {
       try {
+        const formattedStartDate = format(startDate, "yyyy-MM-dd'T'00:00:00'Z'")
+
         const response = await axios.get(`${import.meta.env.VITE_API_URL}/transactions/date/start`, {
           params: {
-            startDate,
+            startDate: formattedStartDate,
           },
         })
         this.transactions = response.data
@@ -87,9 +94,10 @@ export const useTransactionsStore = defineStore('transactions', {
     },
     async fetchByEndDate(endDate: Date) {
       try {
+        const formattedEndDate = format(endDate, "yyyy-MM-dd'T'23:59:59'Z'")
         const response = await axios.get(`${import.meta.env.VITE_API_URL}/transactions/date/end`, {
           params: {
-            endDate,
+            endDate: formattedEndDate,
           },
         })
         return response.data

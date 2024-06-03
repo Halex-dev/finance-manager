@@ -375,8 +375,9 @@ export class TransactionService {
 
   async findAllByYear(year: number): Promise<Transaction[]> {
     try {
-      const startDate = new Date(year, 0, 1); // Inizio dell'anno corrente
-      const endDate = new Date(year, 11, 31); // Fine dell'anno corrente
+      const startDate = new Date(Date.UTC(year, 0, 1, 0, 0, 0));
+      const endDate = new Date(Date.UTC(year, 11, 31, 23, 59, 59, 999));
+
       return this.transactionRepository.find({
         relations: ['category', 'wallet', 'amortization'],
         where: {
@@ -393,9 +394,13 @@ export class TransactionService {
 
   async findAllByMonth(month: number): Promise<Transaction[]> {
     try {
-      const currentYear = new Date().getFullYear(); // Ottiene l'anno corrente
-      const startDate = new Date(currentYear, month - 1, 1); // Inizio del mese specificato
-      const endDate = new Date(currentYear, month, 0); // Fine del mese specificato
+      const currentYear = new Date().getUTCFullYear(); // Ottiene l'anno corrente
+
+      const startDate = new Date(Date.UTC(currentYear, month - 1, 1, 0, 0, 0));
+      const endDate = new Date(
+        Date.UTC(currentYear, month, 0, 23, 59, 59, 999),
+      );
+
       return this.transactionRepository.find({
         relations: ['category', 'wallet', 'amortization'],
         where: {
@@ -455,6 +460,7 @@ export class TransactionService {
     }
   }
 
+  //TODO controllare operazioni date
   async operationCheck(
     wallet: Wallet,
     category: Category,

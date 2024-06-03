@@ -10,7 +10,7 @@ import {
 } from '../../../data/api/transactions'
 import { Transaction } from '../types'
 import { watchIgnorable } from '@vueuse/core'
-import { startOfYear, endOfMonth } from 'date-fns'
+import { startOfMonth, endOfMonth } from 'date-fns'
 
 const makePaginationRef = () => ref<Pagination>({ page: 1, perPage: 10, total: 0 })
 const makeSortingRef = () => ref<Sorting>({ sortBy: 'date', sortingOrder: 'desc' })
@@ -18,9 +18,10 @@ const makeFiltersRef = () =>
   ref<Partial<Filters>>({
     category_type: 'all',
     search: '',
-    dateStart: startOfYear(new Date()),
+    dateStart: startOfMonth(new Date()),
     dateEnd: endOfMonth(new Date()),
-  })
+  }
+)
 
 export const useTransaction = (options?: {
   pagination?: Ref<Pagination>

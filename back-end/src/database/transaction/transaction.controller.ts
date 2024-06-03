@@ -10,7 +10,6 @@ import {
 } from '@nestjs/common';
 import { Transaction } from './transaction.entity';
 import { TransactionService } from './transaction.service';
-import { endOfDay } from 'date-fns';
 
 @Controller('transactions')
 export class TransactionController {
@@ -61,14 +60,16 @@ export class TransactionController {
     return this.transactionService.delete(+id);
   }
 
-  //TODO risolvere bug non prende il giorno stesso
   @Get('date/range')
   async findByDateRange(
     @Query('startDate') startDate: string,
     @Query('endDate') endDate: string,
   ): Promise<Transaction[]> {
+    // Parse the ISO strings to Date objects as UTC
     const start = new Date(startDate);
-    const end = endOfDay(new Date(endDate));
+    const end = new Date(endDate);
+
+    // Use the converted dates for the search
     return this.transactionService.findByDateRange(start, end);
   }
 
@@ -84,7 +85,7 @@ export class TransactionController {
   async findByEndDate(
     @Query('endDate') endDate: string,
   ): Promise<Transaction[]> {
-    const end = endOfDay(new Date(endDate));
+    const end = new Date(endDate);
     return this.transactionService.findByEndDate(end);
   }
 
